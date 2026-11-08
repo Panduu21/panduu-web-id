@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Panduu ✓ - Firebase panduu-ad0a6</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:12px}
+.wrap{max-width:480px;margin:0 auto;padding:10px}
+.top{display:flex;justify-content:space-between;align-items:center;padding:2px 0 8px}
+.logo{font-weight:900;font-size:19px}.logo span{color:#1d9bf0}
+.live{font-size:10px;background:#22c55e;color:#000;font-weight:800;padding:4px 8px;border-radius:20px}
+.slide{display:none;animation:fade .2s ease}.slide.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.hero{text-align:center;padding:8px 0}
+.avatar{width:88px;height:88px;border-radius:50%;overflow:hidden;border:3px solid #a78bfa;margin:0 auto}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:23px;font-weight:900;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.hero h1 span{color:#a78bfa}
+.verified{width:20px;height:20px;background:#1d9bf0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.verified svg{width:12px;height:12px}
+.typing{color:#a78bfa;font-weight:700;font-size:12px;height:18px;margin-top:3px}
+.hero p{color:#888;font-size:11px;line-height:1.5;margin-top:4px}
+.btn{padding:8px 11px;border-radius:20px;font-weight:700;font-size:11px;border:none;cursor:pointer}
+.btnW{background:#fff;color:#000}.btnB{background:#1d9bf0;color:#fff}.btnG{background:#222;color:#fff;border:1px solid #333}
+.btnRow{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.dashLive{background:linear-gradient(135deg,#0a1a2a,#111);border:1px solid #1d9bf055;border-radius:14px;padding:12px;margin-top:12px}
+.dashLive h3{font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.dashGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.dashCard{background:#000;border:1px solid #222;border-radius:11px;padding:10px;text-align:center;position:relative}
+.dashCard.live{border-color:#22c55e55}
+.dashCard .ic{font-size:18px}
+.dashCard b{font-size:15px;display:block;margin-top:4px;line-height:1.2;word-break:break-all}
+.dashCard small{color:#888;font-size:9px;display:block;margin-top:2px}
+.dashCard .liveDot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px #22c55e;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.battBar{height:6px;background:#222;border-radius:10px;overflow:hidden;margin-top:6px}
+.battFill{height:100%;background:#22c55e;transition:width .5s}
+.dashWide{grid-column:1/-1;background:#111;border:1px solid #222;border-radius:11px;padding:10px;display:flex;gap:10px;align-items:center;text-align:left}
+.dashWide img{width:38px;height:38px;border-radius:50%;object-fit:cover}
+.dashWide b{font-size:12px}.dashWide p{font-size:10px;color:#888;margin-top:2px}
+.memberList{display:flex;gap:6px;margin-top:8px;overflow-x:auto;padding-bottom:2px}
+.memberItem{background:#111;border:1px solid #22c55e55;border-radius:20px;padding:5px 9px;font-size:10px;white-space:nowrap;display:flex;gap:5px;align-items:center}
+.memberItem .dot{width:7px;height:7px;background:#22c55e;border-radius:50%}
+.memberItem.me{border-color:#1d9bf0;background:#0a1a2a}
+.jujurBox{background:#0a2a1a;border:1px solid #22c55e55;border-radius:10px;padding:9px;font-size:10px;line-height:1.6;margin-top:10px}
+.firebaseBox{background:#111;border:1px solid #ffaa00;border-radius:10px;padding:9px;font-size:10px;line-height:1.6;margin-top:8px;display:none}
+.anos{background:linear-gradient(135deg,#1a1033,#2a0a2e);border:1px solid #a78bfa55;border-radius:12px;padding:10px;display:flex;gap:10px;align-items:center;margin-top:12px;text-align:left}
+.anos img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #a78bfa}
+.anos b{font-size:12px;display:flex;gap:5px;align-items:center}.anos p{font-size:10px;color:#aaa;margin-top:2px}
+.section{margin-top:16px}.section h2{font-size:14px;font-weight:800}.section p.sub{color:#888;font-size:10px;margin:4px 0 8px}
+.searchBox{display:flex;gap:6px;margin-bottom:8px}.searchBox input{flex:1;background:#111;border:1px solid #222;border-radius:20px;padding:9px 12px;color:#fff;outline:none;font-size:11px}.searchBox button{background:#fff;color:#000;border:none;padding:9px 12px;border-radius:20px;font-weight:800;cursor:pointer;font-size:11px}
+.swipeHint{text-align:center;font-size:10px;color:#888;margin:6px 0}.swipeWrap{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;scrollbar-width:none}.swipeWrap::-webkit-scrollbar{display:none}
+.newsCard{flex:0 0 88%;scroll-snap-align:center;background:#111;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer;position:relative}
+.newsCard img{width:100%;height:170px;object-fit:cover;display:block}.newsCard .ov{position:absolute;top:0;left:0;right:0;height:170px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent 60%)}
+.newsCard .rank{position:absolute;top:8px;left:8px;background:#ff0000;color:#fff;font-size:10px;font-weight:900;padding:4px 7px;border-radius:20px;z-index:2}
+.newsCard .src{position:absolute;top:170px;transform:translateY(-100%);left:8px;background:rgba(0,0,0,.7);padding:4px 7px;border-radius:20px;font-size:10px;font-weight:700;z-index:2}
+.newsCard .info{padding:11px}.newsCard .info b{font-size:13px;line-height:1.3}.newsCard .info p{font-size:11px;color:#888;margin-top:4px;line-height:1.4}
+.dots{display:flex;gap:5px;justify-content:center;margin:4px 0 8px}.dot{width:6px;height:6px;border-radius:50%;background:#333;cursor:pointer}.dot.active{background:#fff;width:16px;border-radius:10px}
+.loading{text-align:center;padding:14px;color:#888;font-size:11px}.spin{width:22px;height:22px;border:3px solid #222;border-top:3px solid #a78bfa;border-radius:50%;margin:0 auto 6px;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.katRow{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}.kat{flex-shrink:0;padding:6px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid #333;background:#111;color:#aaa}.kat.active{background:#fff;color:#000}
+.toolsGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.toolCard{background:#111;border:1px solid #222;border-radius:11px;padding:8px 6px;cursor:pointer;text-align:center;min-height:72px}.toolCard:active{border-color:#1d9bf0;transform:scale(.97)}.toolCard .ic{font-size:19px}.toolCard b{font-size:10px;display:block;margin-top:5px;line-height:1.2}.toolCard.hot{border-color:#ff004c}.toolCard .badge{font-size:7px;background:#ff004c;padding:2px 5px;border-radius:10px;font-weight:800;display:inline-block;margin-top:3px}
+.toolPanel{background:#111;border:1px solid #1d9bf0;border-radius:12px;padding:11px;margin-top:10px;display:none}.toolPanel.show{display:block}.toolPanel h3{font-size:12px;margin-bottom:8px}.toolPanel input,.toolPanel textarea,.toolPanel select{width:100%;background:#000;border:1px solid #333;padding:9px 10px;border-radius:8px;color:#fff;outline:none;margin-bottom:6px;font-size:11px}.toolPanel textarea{min-height:58px;resize:none}.toolPanel button{padding:8px 10px;border-radius:8px;font-weight:700;border:none;cursor:pointer;margin:2px;font-size:11px}.toolOut{background:#000;border:1px solid #222;border-radius:8px;padding:9px;font-size:11px;line-height:1.5;white-space:pre-wrap;word-break:break-all;margin-top:6px;max-height:200px;overflow:auto}.toolOut img{max-width:100%;border-radius:6px}
+.bratPreview{background:#8ace00;color:#000;font-family:Arial,sans-serif;font-weight:900;text-align:center;padding:14px;border-radius:8px;word-break:break-word;font-size:28px}
+.fakeWin{background:#fff;color:#000;border:2px solid #000;border-radius:6px;overflow:hidden;text-align:left}.fakeWin .bar{background:#000099;color:#fff;padding:6px 8px;font-size:11px;font-weight:700;display:flex;justify-content:space-between}.fakeWin .body{padding:12px;font-size:12px}
+.mabarBox{background:linear-gradient(135deg,#0a2a1a,#111);border:1px solid #22c55e55;border-radius:14px;padding:12px;margin-bottom:10px}.mabarBox h3{font-size:12px;display:flex;justify-content:space-between;align-items:center}.statusDot{width:10px;height:10px;border-radius:50%;background:#ff3b30;display:inline-block}.statusDot.on{background:#22c55e;box-shadow:0 0 8px #22c55e}.mabarBtns{display:flex;gap:6px;margin-top:8px}.mabarBtns button{flex:1;padding:9px;border-radius:10px;font-weight:800;border:none;cursor:pointer;font-size:11px}.linkBox{background:#000;border:1px dashed #22c55e;border-radius:8px;padding:8px;font-size:10px;word-break:break-all;margin-top:8px;display:none}
+.gameTabs{display:flex;gap:6px;margin:10px 0}.gameTabs button{flex:1;padding:9px;border-radius:11px;font-weight:800;border:1px solid #333;background:#111;color:#aaa;cursor:pointer;font-size:11px}.gameTabs button.active{background:#fff;color:#000;border-color:#fff}.gamePanel{display:none}.gamePanel.active{display:block}
+.scoreBoard{display:flex;justify-content:space-between;background:#111;border:1px solid #222;border-radius:11px;padding:10px;margin-bottom:10px;text-align:center}.scoreBoard b{font-size:13px}.scoreBoard small{color:#888;font-size:9px}
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:260px;margin:0 auto}.ttt button{aspect-ratio:1;background:#111;border:1px solid #333;border-radius:11px;font-size:32px;font-weight:900;color:#fff;cursor:pointer}.ttt button.x{color:#1d9bf0}.ttt button.o{color:#ff004c}
+.chessBoard{display:grid;grid-template-columns:repeat(8,1fr);gap:0;max-width:330px;margin:0 auto;border:2px solid #333;border-radius:8px;overflow:hidden}.chessCell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;position:relative}.chessCell.light{background:#ebecd0;color:#000}.chessCell.dark{background:#739552;color:#000}.chessCell.selected{outline:3px solid #1d9bf0;outline-offset:-3px;background:#f6f669!important}.chessCell.canMove::after{content:'';position:absolute;width:10px;height:10px;background:rgba(29,155,240,.7);border-radius:50%}
+.chatHead{background:#111;border:1px solid #222;border-radius:12px;padding:11px;display:flex;gap:10px;align-items:center}.chatHead img{width:44px;height:44px;border-radius:50%;object-fit:cover}.chatBox{background:#111;border:1px solid #222;border-radius:12px;padding:11px;margin-top:10px;min-height:200px;display:flex;flex-direction:column;gap:8px}.msg{max-width:85%;padding:8px 10px;border-radius:12px;font-size:11px;line-height:1.4}.msg.bot{background:#222;align-self:flex-start;border-bottom-left-radius:4px}.msg.me{background:#1d9bf0;align-self:flex-end;border-bottom-right-radius:4px}
+.chatInput{display:flex;gap:6px;margin-top:8px}.chatInput input{flex:1;background:#111;border:1px solid #222;border-radius:20px;padding:10px 12px;color:#fff;outline:none;font-size:11px}.chatInput button{background:#1d9bf0;color:#fff;border:none;padding:10px 12px;border-radius:20px;font-weight:800;cursor:pointer;font-size:11px}
+.quickChat{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.quickChat button{background:#222;border:1px solid #333;color:#fff;padding:6px 9px;border-radius:20px;font-size:10px;cursor:pointer}
+.loginCard{background:linear-gradient(135deg,#1a1033,#111);border:1px solid #a78bfa44;border-radius:16px;padding:16px}.loginCard h2{font-size:16px;text-align:center}.loginCard p{font-size:10px;color:#888;text-align:center;margin:6px 0 10px;line-height:1.5}.loginCard input{width:100%;background:#111;border:1px solid #333;padding:10px 12px;border-radius:10px;color:#fff;outline:none;margin-bottom:8px;font-size:11px}.loginCard button{width:100%;background:#1d9bf0;color:#fff;border:none;padding:11px;border-radius:10px;font-weight:800;cursor:pointer;font-size:12px}
+.ownerCard{background:linear-gradient(135deg,#201600,#111);border:1px solid #ffaa00;border-radius:14px;padding:14px;margin-top:12px}.ownerCard h3{font-size:13px;margin-bottom:8px}.ownerCard p{font-size:10px;color:#aaa;line-height:1.5;margin:5px 0 9px}.ownerCard input{width:100%;background:#000;border:1px solid #444;padding:10px;border-radius:9px;color:#fff;margin:4px 0;font-size:11px}.ownerCard button{background:#ffaa00;color:#000;border:0;border-radius:9px;padding:9px 12px;font-weight:800;font-size:11px;margin:4px 3px 0 0}.ownerPanel{display:none;background:#15120a;border:1px solid #ffaa00;border-radius:14px;padding:12px;margin-top:12px}.ownerPanel h3{font-size:14px;margin-bottom:8px}.ownerStats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0}.ownerStat{background:#080808;border:1px solid #333;border-radius:9px;padding:10px;text-align:center}.ownerStat b{display:block;font-size:17px;color:#ffaa00}.ownerStat small{font-size:9px;color:#aaa}.ownerTable{font-size:10px;line-height:1.6;word-break:break-word;max-height:220px;overflow:auto;background:#080808;border:1px solid #333;border-radius:9px;padding:8px;margin-top:8px}.profilCard{background:linear-gradient(135deg,#1a1033,#111);border:1px solid #a78bfa44;border-radius:14px;padding:14px;text-align:center}.profilCard img{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa}.profilCard h2{font-size:18px;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:12px}.stat{background:#111;border:1px solid #222;padding:8px;border-radius:11px;text-align:center}.stat b{font-size:13px}.stat small{color:#888;font-size:9px}
+.links{display:flex;flex-direction:column;gap:8px;margin-top:10px}.link{display:flex;align-items:center;gap:10px;background:#111;border:1px solid #222;padding:11px;border-radius:11px;color:#fff;text-decoration:none}.link .ic{width:30px;height:30px;border-radius:8px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:14px}.link b{font-size:12px}.link small{color:#777;font-size:10px}.link span{margin-left:auto;color:#444}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;z-index:99;padding:6px 0}.navInner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}.navBtn{background:none;border:none;color:#777;cursor:pointer;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:9px;font-weight:700}.navBtn .ic{font-size:18px}.navBtn.active{color:#fff}.navBtn .dot{width:4px;height:4px;background:#1d9bf0;border-radius:50%;display:none}.navBtn.active .dot{display:block}
+#toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:8px 14px;border-radius:20px;font-weight:700;display:none;z-index:100;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div class="logo">panduu<span> ✓</span></div><div class="live">● <span id="firebaseStatus">MENGHUBUNG...</span> • <span id="topJam">00:00</span></div></div>
+
+<div id="slide-home" class="slide active">
+  <div class="hero"><div class="avatar"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"></div>
+  <h1>Panduu<span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h1>
+  <div class="typing" id="typing"></div><p>Wellcome to Panduu.web.id<br>Developer & Creator dari <b style="color:#fff">SIDOARJO</b>.</p>
+  <div class="btnRow"><button class="btn btnW" onclick="goSlide('search')">🛠️ AM Tools</button><button class="btn btnB" onclick="goSlide('game')">🎮 Mabar 2 HP</button><button class="btn btnG" onclick="goSlide('chat')">💬 Chat</button></div></div>
+
+  <div class="dashLive">
+    <h3>📊 Dashboard Live <span style="font-size:9px;background:#22c55e;color:#000;padding:3px 7px;border-radius:20px" id="dashBadge">● FIREBASE panduu-ad0a6</span></h3>
+    <p style="font-size:10px;color:#888;margin-top:4px"><span id="dashTanggal">...</span> • <span id="dashCuacaMini">Sidoarjo: --°C</span></p>
+    <div class="dashGrid">
+      <div class="dashCard live"><span class="liveDot"></span><div class="ic">🕐</div><b id="jamBesar">00:00:00</b><small>Waktu Sekarang - Jam HP Lo</small><small id="tanggalKecil" style="color:#1d9bf0">WIB</small></div>
+      <div class="dashCard live"><span class="liveDot"></span><div class="ic" id="battIcon">🔋</div><b id="battPersen">--%</b><small>Baterai Sekarang - Sisa HP Lo</small><small id="battStatus">Mengecek...</small><div class="battBar"><div class="battFill" id="battFill" style="width:50%"></div></div></div>
+      <div class="dashCard live"><span class="liveDot"></span><div class="ic">🌍</div><b id="ipLive">Memuat...</b><small>IP Live Lo</small><small id="ipKota">Kota: ...</small></div>
+      <div class="dashCard live"><span class="liveDot"></span><div class="ic">👥</div><b id="onlineLive" style="color:#22c55e">1 Online</b><small>Member Online - Global Firebase</small><small id="onlineInfo">Cuma kamu yang online</small></div>
+      <div class="dashCard"><div class="ic">📈</div><b id="memberTotal">1</b><small>Total Member - Yang Beneran Login</small><small id="memberHariIni">Belum ada yang lain login</small></div>
+      <div class="dashCard"><div class="ic">🌤️</div><b id="cuacaLive">--°C</b><small>Cuaca Sidoarjo Live</small><small id="cuacaDetail">Angin: -- • Lembap: --%</small></div>
+      <div class="dashWide"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Siapa yang lagi online? (Global)</b><p id="memberOnlineText">Cuma kamu yang online sekarang. Kalau temen lo di kota lain buka web ini, nama nya langsung muncul di bawah, real-time.</p></div></div>
+    </div>
+    <div class="memberList" id="memberList"><div class="memberItem me"><span class="dot"></span><span id="memberKamu">Kamu • Online</span></div></div>
+    <div class="firebaseBox" id="firebaseBox" style="display:none">⚠️ Firebase belum nyambung. Cek Rules di Firebase Console → Realtime Database → Rules → harus <b>"read": true, "write": true</b>. Database: <b>panduu-ad0a6-default-rtdb.firebaseio.com</b></div>
+    <div class="jujurBox">✅ <b>Firebase Global, No Bot:</b><br>• Database: <b>panduu-ad0a6-default-rtdb.firebaseio.com</b><br>• Waktu = jam HP lo beneran<br>• Baterai = sisa baterai HP lo beneran<br>• IP = IP lo beneran<br>• Online = semua HP di dunia yang buka web ini, nama beneran dari login. Tutup web = langsung hilang (onDisconnect).<br>• Total Member = semua yang pernah login beneran, tersimpan di Firebase.</div>
+  </div>
+
+  <div class="anos"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Anos Voldigoad <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><p>"Apakah kalian pikir aku akan kalah? Aku adalah Raja Iblis."<br><span style="color:#a78bfa">The Misfit of Demon King Academy • Sidoarjo</span></p></div></div>
+  <div class="section"><h2>📰 Berita Viral <span style="font-size:10px;background:#ff0000;padding:3px 7px;border-radius:20px">GESER ➜</span></h2><p class="sub">Geser kiri-kanan • <span id="viralCount">...</span> • <span id="viralStatus" style="color:#22c55e">● Terhubung</span></p>
+  <div class="katRow" id="katViral"><div class="kat active" onclick="gantiViral('viral',this)">🔥 Viral</div><div class="kat" onclick="gantiViral('Sidoarjo',this)">📍 Sidoarjo</div><div class="kat" onclick="gantiViral('Teknologi',this)">💻 Teknologi</div><div class="kat" onclick="gantiViral('Anime',this)">Anime</div></div>
+  <div id="loadingViral" class="loading"><div class="spin"></div>Mengambil Berita...</div>
+  <div class="swipeHint" id="swipeHint" style="display:none">👈 Geser 👉 • <span id="swipePos">1 / 10</span></div>
+  <div class="swipeWrap" id="swipeViral" onscroll="updateDots()"></div><div class="dots" id="dotsViral"></div>
+  <div style="display:flex;gap:6px"><button onclick="geserBerita(-1)" style="flex:1;padding:9px;border-radius:10px;font-weight:800;border:none;cursor:pointer;background:#222;color:#fff;font-size:11px">← Sebelumnya</button><button onclick="geserBerita(1)" style="flex:1;padding:9px;border-radius:10px;font-weight:800;border:none;cursor:pointer;background:#fff;color:#000;font-size:11px">Selanjutnya →</button></div></div>
+</div>
+
+<div id="slide-search" class="slide">
+  <h2 style="font-size:16px;font-weight:900">🛠️ AM Tools</h2><p style="color:#888;font-size:10px;margin:4px 0 8px">21 Alat - Semua Work 100% • Font kecil</p>
+  <div class="searchBox"><input id="cariTools" placeholder="Cari alat... brat, qr, base64..." oninput="filterTools()"><button onclick="filterTools()">Cari</button></div>
+  <div class="searchBox"><input id="cariInput" placeholder="Cari berita... Sidoarjo..."><button onclick="cariBerita()">📰 Berita</button></div>
+  <div id="loadingSearch" class="loading" style="display:none"><div class="spin"></div>Mencari...</div>
+  <div class="swipeWrap" id="swipeSearch" style="display:none"></div><div class="dots" id="dotsSearch"></div>
+  <div id="toolsGrid" class="toolsGrid"></div><div id="toolPanel" class="toolPanel"></div>
+</div>
+
+<div id="slide-game" class="slide">
+  <h2 style="font-size:16px;font-weight:900">🎮 Mabar 2 HP</h2><p style="color:#888;font-size:10px;margin:4px 0 10px">Main berdua, beda HP, lewat link undangan</p>
+  <div class="mabarBox"><h3>🔗 Mabar 2 HP <span><span id="mabarDot" class="statusDot"></span> <span id="mabarStatus" style="font-size:10px">Belum Nyambung</span></span></h3>
+  <p id="mabarInfo" style="font-size:10px;color:#aaa;margin-top:6px;line-height:1.5">HP 1: Buat Room → Salin Link → kirim ke temen lo.<br>HP 2: Buka link itu, otomatis masuk.</p>
+  <div class="mabarBtns"><button onclick="buatRoom()" style="background:#22c55e;color:#000">➕ Buat Room</button><button onclick="salinLink()" style="background:#fff;color:#000">📋 Salin Link</button><button onclick="shareWA()" style="background:#25D366;color:#fff">💬 Kirim WA</button></div>
+  <div id="linkBox" class="linkBox"></div>
+  <div style="display:flex;gap:6px;margin-top:8px"><input id="kodeJoin" placeholder="Paste Kode Room..." style="flex:1;background:#000;border:1px solid #333;padding:9px 10px;border-radius:8px;color:#fff;outline:none;font-size:11px"><button onclick="joinKode()" style="background:#1d9bf0;color:#fff;border:none;padding:9px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:11px">Gabung</button></div>
+  <div style="display:flex;gap:6px;margin-top:6px"><button onclick="putusMabar()" style="flex:1;background:#222;color:#fff;border:none;padding:8px;border-radius:8px;font-size:11px;cursor:pointer">🚪 Keluar</button><button onclick="resetMabar()" style="flex:1;background:#ff9500;color:#000;border:none;padding:8px;border-radius:8px;font-size:11px;cursor:pointer">🔄 Ulang Game</button></div></div>
+  <div class="gameTabs"><button id="tab-ttt" class="active" onclick="pilihGameTab('ttt')">❌ Tic Tac Toe • Mabar</button><button id="tab-catur" onclick="pilihGameTab('catur')">♟️ Catur • Mabar</button></div>
+  <div id="panel-ttt" class="gamePanel active" style="display:block"><div class="scoreBoard"><div><b id="scoreX">0</b><br><small>Kamu (X)</small></div><div><b id="scoreSeri">0</b><br><small>Seri</small></div><div><b id="scoreO">0</b><br><small>Lawan (O)</small></div></div><p style="text-align:center;font-size:11px;margin-bottom:8px" id="statusTTT">Mode Solo: Giliran Kamu (X)</p><p id="giliranMabarTTT" style="text-align:center;font-size:10px;color:#22c55e;margin-bottom:8px;display:none">🟢 Mabar: Kamu X</p><div class="ttt" id="tttBoard"></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btnW" style="flex:1" onclick="resetTTT()">🔄 Main Lagi</button><button class="btn btnB" style="flex:1" onclick="gantiModeTTT()">Mode: <span id="modeTTT">Lawan HP</span></button></div></div>
+  <div id="panel-catur" class="gamePanel"><div class="scoreBoard"><div><b>♔ Putih</b><br><small id="giliranCatur">Giliran Putih</small></div><div><b id="statusCatur">Main!</b><br><small id="dimakanCatur">Dimakan: -</small></div><div><b>♚ Hitam</b><br><small>2 Pemain</small></div></div><p id="giliranMabarCatur" style="text-align:center;font-size:10px;color:#22c55e;margin-bottom:8px;display:none">🟢 Mabar: Kamu Putih</p><div class="chessBoard" id="chessBoard"></div><p style="text-align:center;font-size:10px;color:#888;margin:8px 0" id="infoCatur">Klik bidak → klik titik biru.</p><div style="display:flex;gap:6px"><button class="btn btnW" style="flex:1" onclick="resetCatur()">🔄 Ulang</button><button class="btn btnB" style="flex:1" onclick="undoCatur()">↩ Undo</button></div></div>
+  <div class="section"><h2>🏆 Skor Kamu</h2><div class="stats"><div class="stat"><b id="totalMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="totalMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="totalCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="totalSeri2">0</b><br><small>Seri</small></div></div></div>
+</div>
+
+<div id="slide-chat" class="slide">
+  <h2 style="font-size:16px;font-weight:900">💬 Chat</h2><p style="color:#888;font-size:10px;margin:4px 0 10px">Chat ke Panduu, ke WA 088376846674</p>
+  <div class="chatHead"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b style="display:flex;gap:5px;align-items:center;font-size:12px">Panduu <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><small style="color:#22c55e;font-size:10px">● Online • Sidoarjo</small></div></div>
+  <div class="chatBox" id="chatBox"><div class="msg bot">Halo! Aku Panduu ✓<br>Dari Sidoarjo. Mau tanya apa?</div><div class="msg bot">Ketik pesan di bawah, nanti kebuka WA aku 088376846674 📩</div></div>
+  <div class="quickChat"><button onclick="quickChat('Bang, minta info Free Fire terbaru')">🔥 Free Fire?</button><button onclick="quickChat('Bang, buatin web dong')">💻 Buatin web</button><button onclick="quickChat('Bang, kapan mabar?')">🎮 Mabar?</button></div>
+  <div class="chatInput"><input id="chatInput" placeholder="Ketik pesan ke Panduu..."><button onclick="kirimChat()">Kirim ➤</button></div>
+  <input id="namaPesan" placeholder="Nama lo..." style="width:100%;background:#111;border:1px solid #222;padding:10px;border-radius:10px;color:#fff;outline:none;margin-top:8px;font-size:11px">
+  <button onclick="bukaWA()" style="background:#25D366;color:#fff;border:none;padding:11px;border-radius:20px;font-weight:800;cursor:pointer;width:100%;margin-top:8px;font-size:11px">💬 Buka WA Panduu - 088376846674</button>
+</div>
+
+<div id="slide-profil" class="slide">
+  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Login dulu yuk! 🔐</h2><p>Masuk pake nama lo, biar kedetect online di Firebase panduu-ad0a6.</p><input id="loginNama" placeholder="Nama lo..."><input id="loginUser" placeholder="Username... @budi123"><input id="loginKota" placeholder="Kota lo... Sidoarjo"><input id="loginPass" type="password" placeholder="Password"><button onclick="doLogin()">✅ Masuk ke Web Panduu</button></div></div>
+  <div id="profilBox" style="display:none"><div class="profilCard"><img id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><h2><span id="profilNama">Nama Lo</span> <span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span style="color:#22c55e">● Login sebagai Pengunjung</span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
+  <div class="section"><h2>📊 Skor Lo</h2><div class="stats"><div class="stat"><b id="profilMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="profilMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="profilCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="profilLogin">1</b><br><small>Login</small></div></div></div>
+  <div class="section"><h2>🔥 Link Panduu ✓</h2><div class="links" id="linksContainer"></div></div></div>
+  <div class="ownerCard" id="ownerLoginCard"><h3>👑 Login Khusus Owner</h3><p>Login terpisah menggunakan akun Firebase Authentication owner. Akun pengunjung tidak bisa membuka panel ini.</p><input id="ownerEmail" type="email" autocomplete="username" placeholder="Email owner"><input id="ownerPassword" type="password" autocomplete="current-password" placeholder="Password owner"><button onclick="loginOwner()">🔐 Login Owner</button><p id="ownerLoginStatus">Panel hanya tersedia untuk UID owner yang diizinkan.</p></div>
+  <div class="ownerPanel" id="ownerPanel"><h3>👑 OWNER PANEL • PANDUU</h3><p id="ownerIdentity" style="color:#ffaa00"></p><div class="ownerStats"><div class="ownerStat"><b id="ownerTotalMember">-</b><small>Total Member</small></div><div class="ownerStat"><b id="ownerOnlineNow">-</b><small>Online Sekarang</small></div></div><button onclick="refreshOwnerPanel()">🔄 Refresh Data</button><button onclick="logoutOwner()" style="background:#ff5252;color:#fff">Keluar Owner</button><h3 style="margin-top:12px">👥 Daftar Member</h3><div id="ownerMemberList" class="ownerTable">Memuat data...</div><h3 style="margin-top:12px">🟢 Member Online</h3><div id="ownerOnlineList" class="ownerTable">Memuat data...</div></div>
+</div>
+</div>
+
+<div class="bottomNav"><div class="navInner">
+<button class="navBtn active" id="nav-home" onclick="goSlide('home')"><span class="ic">🏠</span>Home<span class="dot"></span></button>
+<button class="navBtn" id="nav-search" onclick="goSlide('search')"><span class="ic">🔍</span>Search<span class="dot"></span></button>
+<button class="navBtn" id="nav-game" onclick="goSlide('game')"><span class="ic">🎮</span>Game<span class="dot"></span></button>
+<button class="navBtn" id="nav-chat" onclick="goSlide('chat')"><span class="ic">💬</span>Chat<span class="dot"></span></button>
+<button class="navBtn" id="nav-profil" onclick="goSlide('profil')"><span class="ic">👤</span>Profil<span class="dot"></span></button>
+</div></div>
+<div id="toast"></div>
+
+<script>
+// ===== FIREBASE LO - panduu-ad0a6 =====
+// Database lo: https://panduu-ad0a6-default-rtdb.firebaseio.com/
+// Kalau mau full config, ambil di Firebase Console -> Project Overview -> </> Web -> copy apiKey & appId, ganti yang masih PASTE_ di bawah.
+// Tapi untuk Realtime Database online presence, databaseURL aja udah cukup, udah bisa jalan global.
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAxnq999etTkFvfuBlnE7M2Wk5-Thf-zYs",
+  authDomain: "panduu-ad0a6.firebaseapp.com",
+  databaseURL: "https://panduu-ad0a6-default-rtdb.firebaseio.com/",
+  projectId: "panduu-ad0a6",
+  storageBucket: "panduu-ad0a6.firebasestorage.app",
+  messagingSenderId: "43031399887",
+  appId: "1:43031399887:web:e6a4c780088de4f40fd6ba",
+  measurementId: "G-1D22FDHT4Q"
+};
+// Isi dengan UID akun owner dari Firebase Console > Authentication > Users.
+// Jangan gunakan password owner yang ditanam langsung di file HTML.
+const OWNER_UID = "z5emv0knpdcdLT5OEQpxaji9oVL2";
+let fbAuth=null, ownerUser=null;
+const CONFIG={nama:"Panduu",username:"panduuxpungki",kota:"SIDOARJO",fotoAnos:"https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg",typingTexts:["Game Developer","Web Developer","Anos Voldigoad Mode ON","Sidoarjo Pride","Firebase panduu-ad0a6"],tiktok:"https://tiktok.com/@panduuxpungki",instagram:"https://instagram.com/panduuxpungki",youtube:"https://youtube.com/@panduuxpungki",whatsapp:"https://wa.me/6288376846674"};
+document.getElementById('linksContainer').innerHTML=[{icon:'🎵',judul:'TikTok Panduu',sub:'@panduuxpungki',link:CONFIG.tiktok},{icon:'💬',judul:'WhatsApp Panduu',sub:'088376846674',link:CONFIG.whatsapp},{icon:'📸',judul:'Instagram Panduu',sub:'@panduuxpungki',link:CONFIG.instagram},{icon:'▶️',judul:'YouTube Panduu',sub:'Panduu Channel',link:CONFIG.youtube}].map(l=>'<a class="link" href="'+l.link+'" target="_blank"><div class="ic">'+l.icon+'</div><div><b>'+l.judul+'</b><br><small>'+l.sub+'</small></div><span>↗</span></a>').join('');
+function goSlide(nama){ document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active')); document.getElementById('slide-'+nama).classList.add('active'); document.querySelectorAll('.navBtn').forEach(b=>b.classList.remove('active')); document.getElementById('nav-'+nama).classList.add('active'); window.scrollTo({top:0}); if(nama=='home' && !window._homeLoaded){ window._homeLoaded=true; ambilBerita('viral'); } if(nama=='game') updateSkorUI(); if(nama=='profil') cekLogin(); }
+
+// ===== FIREBASE GLOBAL - panduu-ad0a6 =====
+let fbApp=null, fbDB=null, fbOnlineRef=null, fbMyKey=null, fbConnected=false;
+let fbOnlineData={};
+function getNamaAsli(){ try{ let u=JSON.parse(localStorage.getItem('panduu_user')||'{}'); if(u.nama) return u.nama; }catch(e){} return 'Tamu'; }
+function getUserAsli(){ try{ return JSON.parse(localStorage.getItem('panduu_user')||'{}'); }catch(e){ return {}; } }
+function initFirebase(){
+  try{
+    fbApp=firebase.initializeApp(FIREBASE_CONFIG);
+    fbDB=firebase.database();
+    fbAuth=firebase.auth();
+    fbAuth.onAuthStateChanged(user=>{
+      ownerUser=user||null;
+      const isOwner=!!(user && OWNER_UID && OWNER_UID!="ISI_UID_OWNER_DARI_FIREBASE_AUTH" && user.uid===OWNER_UID);
+      document.getElementById('ownerPanel').style.display=isOwner?'block':'none';
+      document.getElementById('ownerLoginCard').style.display=isOwner?'none':'block';
+      if(user && !isOwner){ document.getElementById('ownerLoginStatus').innerText='Akun ini bukan owner yang diizinkan.'; }
+      if(isOwner){ document.getElementById('ownerIdentity').innerText='Login sebagai '+(user.email||user.uid); refreshOwnerPanel(); }
+    });
+    fbConnected=true;
+    document.getElementById('firebaseStatus').innerText='FIREBASE ●';
+    document.getElementById('dashBadge').innerText='● GLOBAL FIREBASE panduu-ad0a6';
+    let myId='user-'+Date.now()+'-'+Math.random().toString(36).slice(2,6);
+    fbMyKey=myId;
+    fbOnlineRef=fbDB.ref('panduu_online/'+myId);
+    let user=getUserAsli();
+    fbOnlineRef.set({nama:getNamaAsli(), username:user.username||'tamu', kota:user.kota||'Indonesia', time:Date.now(), ip:window._myIP||''});
+    fbOnlineRef.onDisconnect().remove();
+    window._fbUpdateOnline=()=>{
+      let u2=getUserAsli();
+      if(fbOnlineRef) fbOnlineRef.set({nama:getNamaAsli(), username:u2.username||'tamu', kota:u2.kota||'Indonesia', time:Date.now(), ip:window._myIP||''});
+    };
+    fbDB.ref('panduu_online').on('value',(snap)=>{ fbOnlineData=snap.val()||{}; refreshMemberFirebase(); });
+    if(user.username){ fbDB.ref('panduu_members/'+user.username).set({nama:user.nama, kota:user.kota, lastLogin:Date.now()}); }
+    fbDB.ref('panduu_members').on('value',(snap)=>{
+      let members=snap.val()||{}; let total=Object.keys(members).length || 1;
+      document.getElementById('memberTotal').innerText=total;
+      document.getElementById('memberHariIni').innerText= total==1 ? 'Baru kamu yang pernah login' : total+' orang beneran pernah login';
+    });
+    window.addEventListener('beforeunload',()=>{ if(fbOnlineRef) fbOnlineRef.remove(); });
+    // Cek koneksi Firebase - kalau Rules masih block, kasih tau
+    fbDB.ref('.info/connected').on('value',(s)=>{ if(!s.val()){ document.getElementById('firebaseBox').style.display='block'; } else { document.getElementById('firebaseBox').style.display='none'; } });
+  }catch(e){
+    console.log('Firebase gagal',e);
+    document.getElementById('firebaseStatus').innerText='GAGAL';
+    document.getElementById('firebaseBox').style.display='block';
+    refreshMemberLokal();
+  }
+}
+function refreshMemberFirebase(){
+  let keys=Object.keys(fbOnlineData);
+  let onlineCount=keys.length || 1;
+  let list=[];
+  keys.forEach(k=>{ let v=fbOnlineData[k]; let isMe=(k==fbMyKey); list.push({key:k, nama:v.nama||'Tamu', kota:v.kota||'', username:v.username||'', isMe:isMe, time:v.time||0}); });
+  list.sort((a,b)=> (b.isMe - a.isMe) || (b.time - a.time));
+  document.getElementById('onlineLive').innerText=onlineCount+' Online';
+  document.getElementById('onlineInfo').innerText= onlineCount==1 ? 'Cuma kamu yang online di dunia' : onlineCount+' orang beneran online di dunia';
+  document.getElementById('memberOnlineText').innerText= onlineCount==1 ? 'Cuma kamu yang online sekarang. Kalau temen lo di kota lain buka web ini, nama nya langsung muncul di bawah, real-time.' : list.map(x=>x.nama+(x.isMe?' (Kamu)':'')).join(', ')+' lagi online sekarang (orang beneran, global).';
+  let html='';
+  list.forEach(p=>{ html+='<div class="memberItem '+(p.isMe?'me':'')+'"><span class="dot"></span><span>'+p.nama+(p.isMe?' • Online (Kamu)':' • '+p.kota+' • Online')+'</span></div>'; });
+  if(!list.length) html='<div class="memberItem me"><span class="dot"></span><span>'+getNamaAsli()+' • Online (Kamu)</span></div>';
+  document.getElementById('memberList').innerHTML=html;
+  document.getElementById('memberKamu').innerText=getNamaAsli()+' • Online';
+}
+function refreshMemberLokal(){
+  document.getElementById('onlineLive').innerText='1 Online';
+  document.getElementById('onlineInfo').innerText='Cuma kamu (Firebase gagal, mode lokal)';
+  document.getElementById('memberOnlineText').innerText='Cuma kamu yang online sekarang.';
+  document.getElementById('memberList').innerHTML='<div class="memberItem me"><span class="dot"></span><span>'+getNamaAsli()+' • Online (Kamu)</span></div>';
+  document.getElementById('memberTotal').innerText='1';
+  document.getElementById('memberHariIni').innerText='Mode lokal - baru kamu';
+}
+function updateWaktu(){
+  let n=new Date();
+  let jam=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+  document.getElementById('jamBesar').innerText=jam;
+  document.getElementById('topJam').innerText=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  let hari=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][n.getDay()];
+  let bulan=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][n.getMonth()];
+  let tgl=hari+', '+n.getDate()+' '+bulan+' '+n.getFullYear();
+  document.getElementById('dashTanggal').innerText=tgl;
+  document.getElementById('tanggalKecil').innerText=tgl+' • WIB';
+}
+updateWaktu(); setInterval(updateWaktu,1000);
+async function updateBaterai(){
+  try{
+    if(!navigator.getBattery){ document.getElementById('battPersen').innerText='--%'; document.getElementById('battStatus').innerText='HP ini gak kasih izin baca baterai'; return; }
+    let b=await navigator.getBattery();
+    function render(){
+      let persen=Math.round(b.level*100);
+      document.getElementById('battPersen').innerText=persen+'%';
+      document.getElementById('battFill').style.width=persen+'%';
+      document.getElementById('battFill').style.background= persen>50 ? '#22c55e' : persen>20 ? '#ffaa00' : '#ff3b30';
+      document.getElementById('battIcon').innerText= b.charging ? '🔌' : persen>50 ? '🔋' : '🪫';
+      if(b.charging) document.getElementById('battStatus').innerText='⚡ Lagi Ngecas sekarang';
+      else if(b.dischargingTime==Infinity) document.getElementById('battStatus').innerText='🔋 Gak ngecas';
+      else document.getElementById('battStatus').innerText='🔋 Sisa ~'+Math.round(b.dischargingTime/60)+' menit';
+    }
+    render(); b.addEventListener('levelchange',render); b.addEventListener('chargingchange',render);
+  }catch(e){ document.getElementById('battStatus').innerText='Gak bisa baca baterai'; }
+}
+updateBaterai();
+async function updateIP(){
+  try{ let r=await fetch('https://ipapi.co/json/'); let d=await r.json(); window._myIP=d.ip; document.getElementById('ipLive').innerText=d.ip; document.getElementById('ipKota').innerText='Kota: '+d.city+', '+d.country_name; if(window._fbUpdateOnline) window._fbUpdateOnline(); }
+  catch(e){ try{ let r2=await fetch('https://api.ipify.org?format=json'); let d2=await r2.json(); window._myIP=d2.ip; document.getElementById('ipLive').innerText=d2.ip; }catch(e2){ document.getElementById('ipLive').innerText='Gagal'; } }
+}
+updateIP();
+async function updateCuaca(){
+  try{ let r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-7.45&longitude=112.71&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=auto'); let d=await r.json(); document.getElementById('cuacaLive').innerText=d.current.temperature_2m+'°C'; document.getElementById('cuacaDetail').innerText='Angin: '+d.current.wind_speed_10m+' km/j • Lembap: '+d.current.relative_humidity_2m+'%'; document.getElementById('dashCuacaMini').innerText='Sidoarjo: '+d.current.temperature_2m+'°C'; }catch(e){}
+}
+updateCuaca();
+initFirebase();
+let texts=CONFIG.typingTexts, ti=0, ci=0, del=false; function typing(){ let el=document.getElementById('typing'), cur=texts[ti]; if(!del){ ci++; el.innerText=cur.slice(0,ci)+'|'; if(ci>=cur.length){ del=true; setTimeout(typing,1200); return } } else { ci--; el.innerText=cur.slice(0,ci)+'|'; if(ci==0){ del=false; ti=(ti+1)%texts.length } } setTimeout(typing, del?40:90) } typing();
+function bersihinJudul(j){ let p=j.split(' - '); let k=p.length>1?p.pop():'Google News'; return {judul:p.join(' - '),koran:k} }
+function waktuRelatif(t){ try{ let d=new Date(t), n=new Date(), diff=(n-d)/1000; if(diff<60) return 'Baru saja'; if(diff<3600) return Math.floor(diff/60)+' menit lalu'; if(diff<86400) return Math.floor(diff/3600)+' jam lalu'; return Math.floor(diff/86400)+' hari lalu' }catch(e){ return 'Hari ini' } }
+function ambilFotoBerita(item,i){ let img=''; if(item.thumbnail) img=item.thumbnail; if(!img && item.enclosure && item.enclosure.link) img=item.enclosure.link; if(!img){ let h=(item.content||'')+' '+(item.description||''); let m=h.match(/https?:\/\/[^"'\s<>]+\.(jpg|jpeg|png|webp)/i); if(m) img=m[0] } if(!img){ img='https://picsum.photos/seed/berita-'+encodeURIComponent(item.title||'')+'-'+i+'/800/450' } return img; }
+async function fetchRSS(rssUrl){ try{ let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rssUrl)); let d=await r.json(); if(d.items && d.items.length>0) return d.items; }catch(e){} for(let url of ['https://api.allorigins.win/raw?url='+encodeURIComponent(rssUrl),'https://corsproxy.io/?url='+encodeURIComponent(rssUrl)]){ try{ let r=await fetch(url); let txt=await r.text(); if(txt.includes('<item')){ let xml=new DOMParser().parseFromString(txt,'text/xml'); let items=Array.from(xml.querySelectorAll('item')).map(it=>{ let enc=it.querySelector('enclosure'); return {title:it.querySelector('title')?.textContent||'Berita',link:it.querySelector('link')?.textContent||'https://news.google.com',pubDate:it.querySelector('pubDate')?.textContent||'',description:it.querySelector('description')?.textContent||'',thumbnail:enc?.getAttribute('url')||'',enclosure:{link:enc?.getAttribute('url')||''}} }); if(items.length>0) return items; } }catch(e){} } return null; }
+function beritaCadangan(k){ return [{title:k+' - Berita Viral Hari Ini - Google News',link:'https://news.google.com/search?q='+encodeURIComponent(k)+'&hl=id&gl=ID&ceid=ID:id',pubDate:new Date().toISOString(),description:'Klik untuk lihat berita '+k+' viral hari ini.',thumbnail:'https://picsum.photos/seed/berita-'+encodeURIComponent(k)+'-0/800/450',enclosure:{link:'https://picsum.photos/seed/berita-'+encodeURIComponent(k)+'-0/800/450'}},{title:'Berita '+k+' Terbaru - Google',link:'https://news.google.com/search?q='+encodeURIComponent(k)+'&hl=id&gl=ID&ceid=ID:id',pubDate:new Date().toISOString(),description:'Berita '+k+' update tiap jam.',thumbnail:'https://picsum.photos/seed/berita-'+encodeURIComponent(k)+'-1/800/450',enclosure:{link:'https://picsum.photos/seed/berita-'+encodeURIComponent(k)+'-1/800/450'}}]; }
+let dataViral=[];
+function renderSwipe(items, containerId, dotsId){ let wrap=document.getElementById(containerId); wrap.style.display='flex'; wrap.innerHTML=items.map((item,i)=>{ let b=bersihinJudul(item.title); let img=ambilFotoBerita(item,i); return '<div class="newsCard" onclick="window.open(\''+item.link+'\',\'_blank\')"><img src="'+img+'" loading="lazy"><div class="ov"></div><div class="rank">#'+(i+1)+' VIRAL</div><div class="src">📰 '+b.koran+'</div><div class="info"><b>'+b.judul+'</b><p>'+(item.description?item.description.replace(/<[^>]*>/g,'').slice(0,120)+'...':'Klik untuk baca.')+'</p><div style="display:flex;gap:8px;font-size:10px;color:#666;margin-top:6px"><span>⏰ '+waktuRelatif(item.pubDate)+'</span><span>📰 '+b.koran+'</span></div></div></div>'; }).join(''); let dots=document.getElementById(dotsId); if(dots) dots.innerHTML=items.map((_,i)=>'<div class="dot '+(i==0?'active':'')+'" onclick="lompatKe(\''+containerId+'\','+i+')"></div>').join(''); }
+function lompatKe(id,i){ let w=document.getElementById(id); let c=w.children[i]; if(c) c.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}); }
+function geserBerita(a){ let w=document.getElementById('swipeViral'); w.scrollBy({left:a*(w.clientWidth*0.9),behavior:'smooth'}); }
+function updateDots(){ let w=document.getElementById('swipeViral'); let idx=Math.round(w.scrollLeft/(w.clientWidth*0.9)); document.querySelectorAll('#dotsViral .dot').forEach((d,i)=>d.classList.toggle('active',i==idx)); let p=document.getElementById('swipePos'); if(p) p.innerText=(idx+1)+' / '+dataViral.length; }
+async function ambilBerita(keyword){ let loadingEl=document.getElementById('loadingViral'); loadingEl.style.display='block'; let rssUrl='https://news.google.com/rss/search?q='+encodeURIComponent(keyword)+'&hl=id&gl=ID&ceid=ID:id'; let items=await fetchRSS(rssUrl); if(!items){ items=beritaCadangan(keyword); document.getElementById('viralStatus').innerText='● Mode Cadangan'; } else { document.getElementById('viralStatus').innerText='● Terhubung'; } dataViral=items; document.getElementById('viralCount').innerText=items.length+' berita, geser aja'; renderSwipe(items,'swipeViral','dotsViral'); document.getElementById('swipeHint').style.display='block'; loadingEl.style.display='none'; }
+function gantiViral(k,el){ document.querySelectorAll('#katViral .kat').forEach(x=>x.classList.remove('active')); el.classList.add('active'); ambilBerita(k); }
+async function cariBerita(){ let q=document.getElementById('cariInput').value.trim(); if(!q){ alert('Ketik dulu!'); return; } document.getElementById('loadingSearch').style.display='block'; showToast('🔍 Cari berita "'+q+'"'); let items=await fetchRSS('https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=id&gl=ID&ceid=ID:id'); if(!items) items=beritaCadangan(q); renderSwipe(items,'swipeSearch','dotsSearch'); document.getElementById('loadingSearch').style.display='none'; }
+document.getElementById('cariInput').addEventListener('keypress',e=>{ if(e.key=='Enter') cariBerita(); });
+const TOOLS=[{id:'am',icon:'🎬',nama:'AM Premium',hot:true},{id:'base64',icon:'<>',nama:'Base64'},{id:'bratAnime',icon:'📝',nama:'Brat Anime'},{id:'bratWin',icon:'🪟',nama:'Fake Error'},{id:'brat',icon:'🟩',nama:'Brat Gen'},{id:'ip',icon:'🌍',nama:'Cek IP'},{id:'speed',icon:'⚡',nama:'Speed Test'},{id:'phising',icon:'🛡️',nama:'Cek Phising'},{id:'imgSize',icon:'📐',nama:'Ukuran Foto'},{id:'website',icon:'🌐',nama:'Cek Website'},{id:'convert',icon:'🔄',nama:'Convert'},{id:'cuaca',icon:'🌤️',nama:'Cuaca'},{id:'currency',icon:'💱',nama:'Currency'},{id:'downloader',icon:'⬇️',nama:'Downloader'},{id:'qr',icon:'🔲',nama:'QR Code'},{id:'gethtml',icon:'📄',nama:'Get HTML'},{id:'resizer',icon:'🖼️',nama:'Resizer'},{id:'kalkulator',icon:'🧮',nama:'Kalkulator'},{id:'lirik',icon:'🎵',nama:'Lirik Lagu'},{id:'password',icon:'🔑',nama:'Password'},{id:'removebg',icon:'✂️',nama:'Remove BG'},{id:'tts',icon:'🔊',nama:'TTS'}];
+function renderTools(filter=''){ let list=TOOLS.filter(t=>t.nama.toLowerCase().includes(filter.toLowerCase())); document.getElementById('toolsGrid').innerHTML=list.map(t=>'<div class="toolCard '+(t.hot?'hot':'')+'" onclick="bukaTool(\''+t.id+'\')"><div class="ic">'+t.icon+'</div><b>'+t.nama+'</b>'+(t.hot?'<span class="badge">🔥 POPULER</span>':'')+'</div>').join(''); }
+function filterTools(){ renderTools(document.getElementById('cariTools').value); }
+function bukaTool(id){ let panel=document.getElementById('toolPanel'); panel.classList.add('show'); panel.scrollIntoView({behavior:'smooth',block:'nearest'}); let h='';
+  if(id=='am'){ h='<h3>🎬 AM Premium & Preset</h3><input id="amQ" placeholder="Cari preset..."><button style="background:#fff;color:#000" onclick="cariPreset()">🔍 Cari di Google</button><div class="toolOut" id="amOut">Ketik preset → kebuka Google.</div>'; }
+  else if(id=='base64'){ h='<h3><> Base64</h3><textarea id="b64In">Halo Panduu</textarea><button style="background:#fff;color:#000" onclick="doB64(\'enc\')">Encode →</button><button style="background:#1d9bf0;color:#fff" onclick="doB64(\'dec\')">← Decode</button><div class="toolOut" id="b64Out">Hasil...</div>'; }
+  else if(id=='brat'){ h='<h3>🟩 Brat Generator</h3><input id="bratIn" value="panduu"><input type="range" id="bratSize" min="20" max="100" value="48" oninput="updateBrat()"><button style="background:#fff;color:#000" onclick="updateBrat()">🎨 Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadBrat()">⬇️ Unduh PNG</button><div class="bratPreview" id="bratPrev" style="margin-top:8px">panduu</div>'; }
+  else if(id=='bratAnime'){ h='<h3>📝 Brat Anime</h3><input id="bratAnimeIn" value="Panduu"><button style="background:#fff;color:#000" onclick="buatBratAnime()">✏️ Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadBratAnimeCanvas()">⬇️ Unduh PNG</button><div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:100%;display:block"><div id="bratAnimeTxt" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%) rotate(-3deg);background:#fff;color:#000;padding:8px 12px;font-weight:800;font-size:12px;box-shadow:0 4px 10px rgba(0,0,0,.4);max-width:80%;text-align:center">Panduu</div></div>'; }
+  else if(id=='bratWin'){ h='<h3>🪟 Fake Error</h3><input id="winIn" value="Panduu ganteng banget"><button style="background:#fff;color:#000" onclick="updateWin()">🪟 Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadWin()">⬇️ Unduh PNG</button><div style="margin-top:8px"><div class="fakeWin"><div class="bar"><span>⚠️ Error</span><span>✕</span></div><div class="body"><b>⚠️ Windows Error</b><p id="winTxt" style="margin-top:6px">Panduu ganteng banget</p></div></div></div>'; }
+  else if(id=='ip'){ h='<h3>🌍 Cek IP</h3><input id="ipIn" placeholder="Kosongin = IP lo"><button style="background:#fff;color:#000" onclick="cekIP()">🔍 Cek IP</button><div class="toolOut" id="ipOut">Klik Cek IP...</div>'; }
+  else if(id=='speed'){ h='<h3>⚡ Speed Test</h3><button style="background:#fff;color:#000" onclick="tesSpeed()">⚡ Tes</button><div class="toolOut" id="speedOut">Klik Tes...</div>'; }
+  else if(id=='phising'){ h='<h3>🛡️ Cek Phising</h3><input id="phIn" placeholder="Paste link..."><button style="background:#fff;color:#000" onclick="cekPhising()">🛡️ Cek</button><div class="toolOut" id="phOut">Hasil...</div>'; }
+  else if(id=='imgSize'){ h='<h3>📐 Ukuran Foto</h3><input type="file" accept="image/*" onchange="cekImgSize(event)"><div class="toolOut" id="imgSizeOut">Pilih gambar...</div>'; }
+  else if(id=='website'){ h='<h3>🌐 Cek Website</h3><input id="webIn" placeholder="google.com"><button style="background:#fff;color:#000" onclick="cekWebsite()">🔍 Cek</button><div class="toolOut" id="webOut">Hasil...</div>'; }
+  else if(id=='convert'){ h='<h3>🔄 Convert</h3><input type="file" id="convFile" accept="image/*"><select id="convTo"><option value="image/jpeg">Ke JPG</option><option value="image/png">Ke PNG</option></select><button style="background:#fff;color:#000" onclick="convertImg()">🔄 Convert & Unduh</button><div class="toolOut" id="convOut">Pilih gambar...</div>'; }
+  else if(id=='cuaca'){ h='<h3>🌤️ Cuaca</h3><input id="cuacaIn" value="Sidoarjo"><button style="background:#fff;color:#000" onclick="cekCuaca()">🌤️ Cek</button><div class="toolOut" id="cuacaOut">Klik Cek...</div>'; }
+  else if(id=='currency'){ h='<h3>💱 Currency</h3><input id="currAmt" type="number" value="100000"><div style="display:flex;gap:6px"><select id="currFrom" style="flex:1"><option value="IDR">IDR</option><option value="USD">USD</option></select><select id="currTo" style="flex:1"><option value="USD">USD</option><option value="IDR">IDR</option></select></div><button style="background:#fff;color:#000" onclick="convertCurr()">💱 Convert</button><div class="toolOut" id="currOut">Hasil...</div>'; }
+  else if(id=='downloader'){ h='<h3>⬇️ Downloader</h3><input id="dlIn" placeholder="Paste link TikTok..."><button style="background:#fff;color:#000" onclick="doDownload()">⬇️ Download</button><div class="toolOut" id="dlOut">Paste link...</div>'; }
+  else if(id=='qr'){ h='<h3>🔲 QR Code</h3><input id="qrIn" value="https://tiktok.com/@panduuxpungki"><button style="background:#fff;color:#000" onclick="buatQR()">📷 Buat QR</button><div class="toolOut" id="qrOut" style="text-align:center">QR...</div>'; }
+  else if(id=='gethtml'){ h='<h3>📄 Get HTML</h3><input id="htmlIn" placeholder="https://example.com"><button style="background:#fff;color:#000" onclick="getHTML()">📥 Ambil</button><div class="toolOut" id="htmlOut">HTML...</div>'; }
+  else if(id=='resizer'){ h='<h3>🖼️ Resizer</h3><input type="file" id="resizeFile" accept="image/*"><div style="display:flex;gap:6px"><input id="resizeW" type="number" value="500"><input id="resizeH" type="number" value="500"></div><button style="background:#fff;color:#000" onclick="resizeImg()">📐 Resize & Unduh</button><div class="toolOut" id="resizeOut">Pilih gambar...</div>'; }
+  else if(id=='kalkulator'){ h='<h3>🧮 Kalkulator</h3><input id="calcIn" readonly style="font-size:16px;text-align:right"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px"><button style="background:#222;color:#fff" onclick="calcTekan(\'7\')">7</button><button style="background:#222;color:#fff" onclick="calcTekan(\'8\')">8</button><button style="background:#222;color:#fff" onclick="calcTekan(\'9\')">9</button><button style="background:#ff9500;color:#fff" onclick="calcTekan(\'/\')">÷</button><button style="background:#222;color:#fff" onclick="calcTekan(\'4\')">4</button><button style="background:#222;color:#fff" onclick="calcTekan(\'5\')">5</button><button style="background:#222;color:#fff" onclick="calcTekan(\'6\')">6</button><button style="background:#ff9500;color:#fff" onclick="calcTekan(\'*\')">×</button><button style="background:#222;color:#fff" onclick="calcTekan(\'1\')">1</button><button style="background:#222;color:#fff" onclick="calcTekan(\'2\')">2</button><button style="background:#222;color:#fff" onclick="calcTekan(\'3\')">3</button><button style="background:#ff9500;color:#fff" onclick="calcTekan(\'-\')">-</button><button style="background:#222;color:#fff" onclick="calcTekan(\'0\')">0</button><button style="background:#222;color:#fff" onclick="calcTekan(\'.\')">.</button><button style="background:#ff3b30;color:#fff" onclick="calcTekan(\'C\')">C</button><button style="background:#ff9500;color:#fff" onclick="calcTekan(\'+\')">+</button></div><button style="background:#fff;color:#000;width:100%;margin-top:6px" onclick="calcTekan(\'=\')">= Hitung</button><div class="toolOut" id="calcOut">Hasil: -</div>'; }
+  else if(id=='lirik'){ h='<h3>🎵 Lirik</h3><input id="lirikIn" placeholder="Judul lagu..."><button style="background:#fff;color:#000" onclick="cariLirik()">🎵 Cari</button><div class="toolOut" id="lirikOut">Lirik...</div>'; }
+  else if(id=='password'){ h='<h3>🔑 Password</h3><label>Panjang: <span id="passLenTxt">16</span></label><input type="range" id="passLen" min="8" max="32" value="16" oninput="document.getElementById(\'passLenTxt\').innerText=this.value"><button style="background:#fff;color:#000" onclick="buatPassword()">🔑 Buat</button><div class="toolOut" id="passOut">Klik Buat...</div>'; }
+  else if(id=='removebg'){ h='<h3>✂️ Remove BG</h3><input type="file" accept="image/*" onchange="removeBG(event)"><div class="toolOut" id="bgOut">Pilih foto...</div>'; }
+  else if(id=='tts'){ h='<h3>🔊 TTS</h3><textarea id="ttsIn">Halo, aku Panduu dari Sidoarjo!</textarea><button style="background:#fff;color:#000" onclick="bicara()">🔊 Bacain</button><button style="background:#ff3b30;color:#fff" onclick="speechSynthesis.cancel()">⏹️ Berhenti</button>'; }
+  panel.innerHTML=h+'<button onclick="tutupTool()" style="background:#222;color:#fff;width:100%;margin-top:8px">✕ Tutup</button>';
+}
+function tutupTool(){ document.getElementById('toolPanel').classList.remove('show'); document.getElementById('toolPanel').innerHTML=''; }
+function salin(id){ navigator.clipboard.writeText(document.getElementById(id).innerText).then(()=>showToast('📋 Tersalin!')); }
+function doB64(m){ let inp=document.getElementById('b64In').value; try{ document.getElementById('b64Out').innerText= m=='enc'? btoa(unescape(encodeURIComponent(inp))) : decodeURIComponent(escape(atob(inp))); }catch(e){ document.getElementById('b64Out').innerText='❌ Gagal decode'; } }
+function updateBrat(){ let t=document.getElementById('bratIn').value||'panduu'; let el=document.getElementById('bratPrev'); el.innerText=t; el.style.fontSize=document.getElementById('bratSize').value+'px'; }
+function downloadBrat(){ let t=document.getElementById('bratIn').value||'panduu'; let c=document.createElement('canvas'); c.width=800; c.height=400; let ctx=c.getContext('2d'); ctx.fillStyle='#8ace00'; ctx.fillRect(0,0,800,400); ctx.fillStyle='#000'; ctx.font='900 70px Arial'; ctx.textAlign='center'; ctx.fillText(t,400,210,700); let a=document.createElement('a'); a.download='brat-'+t+'.png'; a.href=c.toDataURL(); a.click(); showToast('⬇️ Brat terunduh!'); }
+function buatBratAnime(){ document.getElementById('bratAnimeTxt').innerText=document.getElementById('bratAnimeIn').value||'Panduu'; }
+async function downloadBratAnimeCanvas(){ let teks=document.getElementById('bratAnimeIn').value||'Panduu'; let img=new Image(); img.crossOrigin='anonymous'; img.onload=()=>{ let c=document.createElement('canvas'); c.width=600; c.height=750; let ctx=c.getContext('2d'); ctx.drawImage(img,0,0,600,750); ctx.save(); ctx.translate(300,620); ctx.rotate(-0.05); ctx.fillStyle='#fff'; ctx.fillRect(-160,-35,320,70); ctx.fillStyle='#000'; ctx.font='bold 28px Arial'; ctx.textAlign='center'; ctx.fillText(teks,0,10,300); ctx.restore(); let a=document.createElement('a'); a.download='brat-anime-'+teks+'.png'; a.href=c.toDataURL(); a.click(); showToast('⬇️ Brat Anime terunduh!'); }; img.src=CONFIG.fotoAnos; }
+function updateWin(){ document.getElementById('winTxt').innerText=document.getElementById('winIn').value; }
+function downloadWin(){ let t=document.getElementById('winIn').value; let c=document.createElement('canvas'); c.width=600; c.height=300; let ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,600,300); ctx.fillStyle='#000099'; ctx.fillRect(0,0,600,40); ctx.fillStyle='#fff'; ctx.font='bold 18px Arial'; ctx.fillText('⚠️ Error',20,27); ctx.fillStyle='#000'; ctx.font='bold 20px Arial'; ctx.fillText('Windows Error',30,90); ctx.font='16px Arial'; ctx.fillText(t,30,130,540); let a=document.createElement('a'); a.download='fake-error.png'; a.href=c.toDataURL(); a.click(); showToast('⬇️ Fake Error terunduh!'); }
+async function cekIP(){ let ip=document.getElementById('ipIn').value.trim(); document.getElementById('ipOut').innerText='Mengecek...'; try{ let r=await fetch('https://ipapi.co/'+(ip||'json')+'/json/'); let d=await r.json(); document.getElementById('ipOut').innerText='IP: '+d.ip+'\nKota: '+d.city+'\nNegara: '+d.country_name+'\nProvider: '+d.org; }catch(e){ document.getElementById('ipOut').innerText='❌ Gagal'; } }
+async function tesSpeed(){ let out=document.getElementById('speedOut'); out.innerText='Mengukur...'; let t0=performance.now(); try{ await fetch('https://picsum.photos/200?'+Date.now(),{cache:'no-store'}); let ping=Math.round(performance.now()-t0); let t1=performance.now(); let r=await fetch('https://picsum.photos/1000?'+Date.now(),{cache:'no-store'}); let blob=await r.blob(); let detik=(performance.now()-t1)/1000; let speed=(blob.size/1024/1024*8/detik).toFixed(2); out.innerText='Ping: '+ping+' ms\nUnduh: ~'+speed+' Mbps'; }catch(e){ out.innerText='❌ Gagal, buka fast.com'; } }
+function cekPhising(){ let url=document.getElementById('phIn').value.trim(); if(!url){ document.getElementById('phOut').innerText='Paste link dulu!'; return; } let skor=0; if(url.includes('@')) skor+=2; if(url.startsWith('http://')) skor+=1; if(/bit\.ly|tinyurl/.test(url)) skor+=2; document.getElementById('phOut').innerText=(skor>=3?'🔴 BERBAHAYA':skor>=1?'🟡 HATI-HATI':'🟢 AMAN')+' Skor: '+skor; }
+function cekImgSize(e){ let f=e.target.files[0]; if(!f) return; let img=new Image(); img.onload=()=>{ document.getElementById('imgSizeOut').innerText='Nama: '+f.name+'\nFile: '+(f.size/1024).toFixed(1)+' KB\nResolusi: '+img.width+' x '+img.height+' px'; }; img.src=URL.createObjectURL(f); }
+async function cekWebsite(){ let d=document.getElementById('webIn').value.trim().replace('https://','').split('/')[0]; document.getElementById('webOut').innerText='Mengecek '+d+'...'; try{ let r=await fetch('https://rdap.org/domain/'+d); if(r.ok){ let j=await r.json(); document.getElementById('webOut').innerText='Domain: '+d+'\nDibuat: '+(j.events?.find(e=>e.eventAction=='registration')?.eventDate||'-').slice(0,10); return; } throw new Error('gagal'); }catch(e){ document.getElementById('webOut').innerText='Buka who.is/whois/'+d; } }
+function convertImg(){ let f=document.getElementById('convFile').files[0]; if(!f) return; let to=document.getElementById('convTo').value; let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); c.width=img.width; c.height=img.height; let ctx=c.getContext('2d'); if(to=='image/jpeg'){ ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height); } ctx.drawImage(img,0,0); let a=document.createElement('a'); a.download='convert.'+to.split('/')[1]; a.href=c.toDataURL(to,0.92); a.click(); document.getElementById('convOut').innerText='✅ Convert berhasil!'; }; img.src=URL.createObjectURL(f); }
+async function cekCuaca(){ let kota=document.getElementById('cuacaIn').value.trim()||'Sidoarjo'; document.getElementById('cuacaOut').innerText='Mengecek '+kota+'...'; try{ let g=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(kota)+'&count=1&language=id&format=json'); let gj=await g.json(); let loc=gj.results[0]; let r=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+loc.latitude+'&longitude='+loc.longitude+'&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=auto'); let d=await r.json(); document.getElementById('cuacaOut').innerText='Kota: '+loc.name+'\nSuhu: '+d.current.temperature_2m+'°C\nAngin: '+d.current.wind_speed_10m+' km/jam\nKelembapan: '+d.current.relative_humidity_2m+'%'; }catch(e){ document.getElementById('cuacaOut').innerText='❌ Kota gak ketemu'; } }
+async function convertCurr(){ let amt=parseFloat(document.getElementById('currAmt').value)||0; let from=document.getElementById('currFrom').value; let to=document.getElementById('currTo').value; try{ let r=await fetch('https://open.er-api.com/v6/latest/'+from); let d=await r.json(); document.getElementById('currOut').innerText=amt.toLocaleString('id-ID')+' '+from+' = '+(amt*d.rates[to]).toLocaleString('id-ID')+' '+to; }catch(e){ document.getElementById('currOut').innerText='❌ Gagal'; } }
+async function doDownload(){ let url=document.getElementById('dlIn').value.trim(); if(!url){ document.getElementById('dlOut').innerText='Paste link dulu!'; return; } document.getElementById('dlOut').innerText='Mencoba download...'; if(url.includes('tiktok')){ try{ let r=await fetch('https://api.tikwm.com/api/?url='+encodeURIComponent(url)); let d=await r.json(); if(d.data && d.data.play){ document.getElementById('dlOut').innerHTML='✅ Ketemu! @'+(d.data.author?.unique_id||'-')+'<br><a href="'+d.data.play+'" target="_blank" style="color:#1d9bf0">⬇️ Download Tanpa Watermark</a>'; return; } throw new Error('gagal'); }catch(e){ window.open('https://ssstik.io/en?url='+encodeURIComponent(url),'_blank'); document.getElementById('dlOut').innerText='Dibuka di ssstik.io'; } } else { window.open(url,'_blank'); document.getElementById('dlOut').innerText='Link dibuka.'; } }
+function buatQR(){ let t=document.getElementById('qrIn').value.trim(); let url='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data='+encodeURIComponent(t); document.getElementById('qrOut').innerHTML='<img src="'+url+'"><br><a href="'+url+'" download="qr.png" style="color:#1d9bf0">⬇️ Unduh QR</a>'; }
+async function getHTML(){ let url=document.getElementById('htmlIn').value.trim(); document.getElementById('htmlOut').innerText='Mengambil...'; try{ let r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url)); let txt=await r.text(); document.getElementById('htmlOut').innerText=txt.slice(0,5000); }catch(e){ document.getElementById('htmlOut').innerText='❌ Web block CORS'; } }
+function resizeImg(){ let f=document.getElementById('resizeFile').files[0]; if(!f) return; let w=parseInt(document.getElementById('resizeW').value)||500; let h=parseInt(document.getElementById('resizeH').value)||500; let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); let a=document.createElement('a'); a.download='resize-'+w+'x'+h+'.png'; a.href=c.toDataURL(); a.click(); document.getElementById('resizeOut').innerText='✅ Resize '+w+'x'+h+' berhasil!'; }; img.src=URL.createObjectURL(f); }
+function calcTekan(k){ let inp=document.getElementById('calcIn'); if(k=='C'){ inp.value=''; document.getElementById('calcOut').innerText='Hasil: -'; } else if(k=='='){ try{ let h=eval(inp.value); document.getElementById('calcOut').innerText='Hasil: '+h; inp.value=h; }catch(e){ document.getElementById('calcOut').innerText='❌ Rumus salah'; } } else inp.value+=k; }
+async function cariLirik(){ let q=document.getElementById('lirikIn').value.trim(); document.getElementById('lirikOut').innerText='Mencari...'; try{ let r=await fetch('https://lrclib.net/api/search?track_name='+encodeURIComponent(q)); let d=await r.json(); if(d && d.length>0 && d[0].plainLyrics){ document.getElementById('lirikOut').innerText=d[0].trackName+' - '+d[0].artistName+'\n\n'+d[0].plainLyrics.slice(0,4000); return; } throw new Error('gak ketemu'); }catch(e){ window.open('https://genius.com/search?q='+encodeURIComponent(q),'_blank'); document.getElementById('lirikOut').innerText='Dibuka di Genius.com'; } }
+function buatPassword(){ let len=parseInt(document.getElementById('passLen').value); let chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'; let out=''; let arr=new Uint32Array(len); crypto.getRandomValues(arr); for(let i=0;i<len;i++) out+=chars[arr[i]%chars.length]; document.getElementById('passOut').innerText=out; }
+function removeBG(e){ let f=e.target.files[0]; if(!f) return; let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); c.width=img.width; c.height=img.height; let ctx=c.getContext('2d'); ctx.drawImage(img,0,0); let data=ctx.getImageData(0,0,c.width,c.height); for(let i=0;i<data.data.length;i+=4){ if(data.data[i]>200 && data.data[i+1]>200 && data.data[i+2]>200) data.data[i+3]=0; } ctx.putImageData(data,0,0); let url=c.toDataURL(); document.getElementById('bgOut').innerHTML='✅ Latar putih dihapus!<br><img src="'+url+'"><br><a href="'+url+'" download="no-bg.png" style="color:#1d9bf0">⬇️ Unduh PNG</a>'; }; img.src=URL.createObjectURL(f); }
+function bicara(){ let u=new SpeechSynthesisUtterance(document.getElementById('ttsIn').value); u.lang='id-ID'; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+function cariPreset(){ let q=document.getElementById('amQ').value.trim(); if(!q) return; window.open('https://www.google.com/search?q=preset+alight+motion+'+encodeURIComponent(q),'_blank'); document.getElementById('amOut').innerText='Dibuka di Google: preset '+q; }
+let peer=null, conn=null, mabarMode=null, myRoomId=null, myRole=null, myGame='ttt';
+function getNamaMabar(){ try{ let u=JSON.parse(localStorage.getItem('panduu_user')||'{}'); return u.nama||'Pemain'; }catch(e){ return 'Pemain'; } }
+function updateMabarUI(connected, teks){
+  document.getElementById('mabarDot').className='statusDot'+(connected?' on':'');
+  document.getElementById('mabarStatus').innerText= connected ? '🟢 Nyambung - '+teks : 'Belum Nyambung';
+  document.getElementById('mabarInfo').innerHTML= connected ? '🟢 <b style="color:#22c55e">Udah nyambung sama '+teks+' (orang beneran)</b>' : 'HP 1: Buat Room → Salin Link → kirim ke temen lo.';
+  document.getElementById('giliranMabarTTT').style.display= connected ? 'block' : 'none';
+  document.getElementById('giliranMabarCatur').style.display= connected ? 'block' : 'none';
+}
+function buatPeer(id){ return new Promise((resolve)=>{ peer=new Peer(id); peer.on('open',(pid)=>{ myRoomId=pid; resolve(pid); }); peer.on('connection',(c)=>{ conn=c; setupConn(); }); }); }
+function setupConn(){ conn.on('open',()=>{ updateMabarUI(true, conn.peer.slice(0,12)); showToast('🟢 Temen lo udah masuk!'); conn.send({type:'hello', nama:getNamaMabar()}); resetTTT(); resetCatur(); }); conn.on('data',(data)=>{ terimaDataMabar(data); }); conn.on('close',()=>{ updateMabarUI(false,''); conn=null; }); }
+async function buatRoom(){ if(peer) peer.destroy(); let id='panduu-'+Math.random().toString(36).slice(2,8); document.getElementById('mabarStatus').innerText='Membuat room...'; await buatPeer(id); myRole='host'; mabarMode='mabar'; let link=location.origin+location.pathname+'?room='+id; if(location.protocol=='file:') link='Buka web ini di HP temen lo, lalu paste Kode: '+id; document.getElementById('linkBox').style.display='block'; document.getElementById('linkBox').innerText='🔗 LINK:\n'+link+'\n\nKODE: '+id; window._linkMabar=link; window._kodeMabar=id; showToast('✅ Room dibuat! Salin link & kirim'); resetTTT(); resetCatur(); }
+function salinLink(){ if(!window._linkMabar){ alert('Buat Room dulu!'); return; } navigator.clipboard.writeText(window._linkMabar+'\nKode: '+window._kodeMabar).then(()=>showToast('📋 Link tersalin!')); }
+function shareWA(){ if(!window._linkMabar){ alert('Buat Room dulu!'); return; } window.open('https://wa.me/?text='+encodeURIComponent('Mabar yuk! 🎮 '+window._linkMabar+' Kode: '+window._kodeMabar),'_blank'); }
+async function joinKode(){ let kode=document.getElementById('kodeJoin').value.trim() || new URLSearchParams(location.search).get('room'); if(!kode){ alert('Paste Kode Room dulu!'); return; } kode=kode.replace(/.*room=/,'').split('&')[0].split(' ')[0].trim(); if(peer) peer.destroy(); document.getElementById('mabarStatus').innerText='Masuk room...'; let myId='panduu-'+Math.random().toString(36).slice(2,8); await buatPeer(myId); myRole='guest'; mabarMode='mabar'; conn=peer.connect(kode); setupConn(); showToast('⏳ Lagi nyambung...'); }
+function putusMabar(){ if(conn) conn.close(); if(peer) peer.destroy(); peer=null; conn=null; mabarMode=null; myRole=null; updateMabarUI(false,''); resetTTT(); resetCatur(); }
+function resetMabar(){ resetTTT(); resetCatur(); kirimMabar({type:'reset'}); }
+function kirimMabar(data){ if(conn && conn.open) conn.send(data); }
+function terimaDataMabar(data){ if(!data) return; if(data.type=='hello'){ updateMabarUI(true, data.nama||'Temen'); } if(data.type=='ttt'){ tttBoard=data.board; tttOver=data.over; renderTTT(); document.getElementById('statusTTT').innerText=data.status; if(data.skor){ skor=data.skor; saveSkor(); } } if(data.type=='catur'){ caturBoard=data.board; caturGiliran=data.giliran; caturDimakan=data.dimakan||[]; renderCatur(); } if(data.type=='reset'){ resetTTT(); resetCatur(); } }
+let tttBoard=['','','','','','','','',''], tttOver=false, tttMode='hp', skor={x:0,o:0,seri:0,main:0,catur:0}; try{ let s=JSON.parse(localStorage.getItem('panduu_skor')||'{}'); skor={...skor,...s}; }catch(e){}
+function saveSkor(){ localStorage.setItem('panduu_skor',JSON.stringify(skor)); updateSkorUI(); }
+function updateSkorUI(){ document.getElementById('scoreX').innerText=skor.x; document.getElementById('scoreO').innerText=skor.o; document.getElementById('scoreSeri').innerText=skor.seri; document.getElementById('totalMenang').innerText=skor.x; document.getElementById('totalMain').innerText=skor.main; document.getElementById('totalCatur').innerText=skor.catur; document.getElementById('totalSeri2').innerText=skor.seri; let pm=document.getElementById('profilMenang'); if(pm){ pm.innerText=skor.x; document.getElementById('profilMain').innerText=skor.main; document.getElementById('profilCatur').innerText=skor.catur; } }
+function renderTTT(){ document.getElementById('tttBoard').innerHTML=tttBoard.map((v,i)=>'<button class="'+(v=='X'?'x':v=='O'?'o':'')+'" onclick="klikTTT('+i+')">'+v+'</button>').join(''); }
+function cekMenangTTT(b){ let win=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let w of win){ if(b[w[0]] && b[w[0]]==b[w[1]] && b[w[1]]==b[w[2]]) return b[w[0]]; } if(b.every(c=>c)) return 'Seri'; return null; }
+function klikTTT(i){ if(mabarMode=='mabar' && conn && conn.open){ let giliranKu=(myRole=='host' && tttBoard.filter(x=>x).length%2==0) || (myRole=='guest' && tttBoard.filter(x=>x).length%2==1); if(!giliranKu){ showToast('⏳ Bukan giliran lo!'); return; } if(tttOver||tttBoard[i]) return; tttBoard[i]= myRole=='host'?'X':'O'; renderTTT(); let h=cekMenangTTT(tttBoard); if(h) selesaiTTT(h); else document.getElementById('statusTTT').innerText='Giliran '+(tttBoard.filter(x=>x).length%2==0?'X':'O'); kirimMabar({type:'ttt', board:tttBoard, over:tttOver, status:document.getElementById('statusTTT').innerText, skor:skor}); return; } if(tttOver||tttBoard[i]) return; tttBoard[i]='X'; renderTTT(); let h=cekMenangTTT(tttBoard); if(h){ selesaiTTT(h); return; } document.getElementById('statusTTT').innerText='Giliran O...'; if(tttMode=='hp'){ setTimeout(()=>{ let kosong=tttBoard.map((v,idx)=>v?null:idx).filter(v=>v!==null); if(!kosong.length) return; tttBoard[kosong[Math.floor(Math.random()*kosong.length)]]='O'; renderTTT(); let h2=cekMenangTTT(tttBoard); if(h2) selesaiTTT(h2); else document.getElementById('statusTTT').innerText='Giliran Kamu (X)'; },400); } }
+function selesaiTTT(h){ tttOver=true; skor.main++; if(h=='X'){ skor.x++; document.getElementById('statusTTT').innerText='🎉 X MENANG!'; } else if(h=='O'){ skor.o++; document.getElementById('statusTTT').innerText='🎉 O MENANG!'; } else { skor.seri++; document.getElementById('statusTTT').innerText='🤝 SERI!'; } saveSkor(); if(mabarMode=='mabar') kirimMabar({type:'ttt', board:tttBoard, over:true, status:document.getElementById('statusTTT').innerText, skor:skor}); }
+function resetTTT(){ tttBoard=['','','','','','','','','']; tttOver=false; document.getElementById('statusTTT').innerText= mabarMode=='mabar' ? 'Mabar: Host (X) jalan dulu!' : 'Giliran Kamu (X)'; renderTTT(); }
+function gantiModeTTT(){ if(mabarMode=='mabar'){ alert('Lagi mabar, keluar room dulu kalau mau solo.'); return; } tttMode=tttMode=='hp'?'teman':'hp'; document.getElementById('modeTTT').innerText=tttMode=='hp'?'Lawan HP':'2 Pemain'; resetTTT(); }
+function pilihGameTab(tab){ myGame=tab; document.querySelectorAll('.gameTabs button').forEach(b=>b.classList.remove('active')); document.getElementById('tab-'+tab).classList.add('active'); document.querySelectorAll('.gamePanel').forEach(p=>p.style.display='none'); document.getElementById('panel-'+tab).style.display='block'; }
+let caturBoard=[], caturGiliran='putih', caturSelected=null, caturMoves=[], caturHistory=[], caturDimakan=[];
+function initCatur(){ let back=['R','N','B','Q','K','B','N','R']; caturBoard=[]; for(let r=0;r<8;r++){ let row=[]; for(let c=0;c<8;c++){ let p=''; if(r==0) p=back[c].toLowerCase(); if(r==1) p='p'; if(r==6) p='P'; if(r==7) p=back[c]; row.push(p); } caturBoard.push(row); } caturGiliran='putih'; caturSelected=null; caturMoves=[]; caturHistory=[]; caturDimakan=[]; renderCatur(); }
+function simbolCatur(p){ let m={P:'♙',p:'♟',R:'♖',r:'♜',N:'♘',n:'♞',B:'♗',b:'♝',Q:'♕',q:'♛',K:'♔',k:'♚'}; return m[p]||''; }
+function warnaBidak(p){ if(!p) return null; return p==p.toUpperCase()?'putih':'hitam'; }
+function gerakBoleh(r1,c1,r2,c2){ let p=caturBoard[r1][c1]; if(!p) return false; let target=caturBoard[r2][c2]; if(target && warnaBidak(target)==warnaBidak(p)) return false; let dr=r2-r1, dc=c2-c1; let jenis=p.toUpperCase(); let arah=warnaBidak(p)=='putih'?-1:1; if(jenis=='P'){ if(dc==0 && dr==arah && !target) return true; if(dc==0 && dr==2*arah && ((warnaBidak(p)=='putih'&&r1==6)||(warnaBidak(p)=='hitam'&&r1==1)) && !target && !caturBoard[r1+arah][c1]) return true; if(Math.abs(dc)==1 && dr==arah && target) return true; return false; } if(jenis=='R'){ if(dr!=0&&dc!=0) return false; return jalurBersih(r1,c1,r2,c2); } if(jenis=='B'){ if(Math.abs(dr)!=Math.abs(dc)) return false; return jalurBersih(r1,c1,r2,c2); } if(jenis=='Q'){ if(dr==0||dc==0||Math.abs(dr)==Math.abs(dc)) return jalurBersih(r1,c1,r2,c2); return false; } if(jenis=='N'){ return (Math.abs(dr)==2&&Math.abs(dc)==1)||(Math.abs(dr)==1&&Math.abs(dc)==2); } if(jenis=='K'){ return Math.abs(dr)<=1&&Math.abs(dc)<=1; } return false; }
+function jalurBersih(r1,c1,r2,c2){ let sr=Math.sign(r2-r1), sc=Math.sign(c2-c1); let r=r1+sr, c=c1+sc; while(r!=r2||c!=c2){ if(caturBoard[r][c]) return false; r+=sr; c+=sc; } return true; }
+function renderCatur(){ let el=document.getElementById('chessBoard'); el.innerHTML=''; for(let r=0;r<8;r++) for(let c=0;c<8;c++){ let d=document.createElement('div'); d.className='chessCell '+((r+c)%2==0?'light':'dark'); if(caturSelected && caturSelected.r==r && caturSelected.c==c) d.classList.add('selected'); if(caturMoves.some(m=>m.r==r&&m.c==c)) d.classList.add('canMove'); d.innerText=simbolCatur(caturBoard[r][c]); d.onclick=()=>klikCatur(r,c); el.appendChild(d); } document.getElementById('giliranCatur').innerText='Giliran '+(caturGiliran=='putih'?'Putih ♔':'Hitam ♚'); document.getElementById('dimakanCatur').innerText='Dimakan: '+(caturDimakan.length?caturDimakan.map(simbolCatur).join(' '):'-'); }
+function klikCatur(r,c){ if(mabarMode=='mabar' && conn && conn.open){ let warnaKu=myRole=='host'?'putih':'hitam'; if(caturGiliran!=warnaKu){ showToast('⏳ Bukan giliran lo!'); return; } } let p=caturBoard[r][c]; if(caturSelected){ let bisa=caturMoves.some(m=>m.r==r&&m.c==c); if(bisa){ caturHistory.push(JSON.parse(JSON.stringify(caturBoard))); if(p) caturDimakan.push(p); caturBoard[r][c]=caturBoard[caturSelected.r][caturSelected.c]; caturBoard[caturSelected.r][caturSelected.c]=''; if(caturBoard[r][c]=='P'&&r==0) caturBoard[r][c]='Q'; if(caturBoard[r][c]=='p'&&r==7) caturBoard[r][c]='q'; caturGiliran=caturGiliran=='putih'?'hitam':'putih'; caturSelected=null; caturMoves=[]; if(mabarMode=='mabar') kirimMabar({type:'catur', board:caturBoard, giliran:caturGiliran, dimakan:caturDimakan}); if(p && p.toUpperCase()=='K'){ showToast('🏆 Raja dimakan!'); skor.catur++; skor.main++; saveSkor(); } renderCatur(); return; } } if(p && warnaBidak(p)==caturGiliran){ if(mabarMode=='mabar'){ let warnaKu=myRole=='host'?'putih':'hitam'; if(warnaBidak(p)!=warnaKu){ showToast('Itu bidak temen lo!'); return; } } caturSelected={r,c}; caturMoves=[]; for(let rr=0;rr<8;rr++) for(let cc=0;cc<8;cc++) if(gerakBoleh(r,c,rr,cc)) caturMoves.push({r:rr,c:cc}); document.getElementById('infoCatur').innerText='Bidak dipilih. Klik titik biru.'; } else { caturSelected=null; caturMoves=[]; } renderCatur(); }
+function resetCatur(){ initCatur(); document.getElementById('statusCatur').innerText='Main!'; }
+function undoCatur(){ if(mabarMode=='mabar'){ showToast('Mabar gak bisa undo'); return; } if(!caturHistory.length) return; caturBoard=caturHistory.pop(); caturGiliran=caturGiliran=='putih'?'hitam':'putih'; caturSelected=null; caturMoves=[]; renderCatur(); }
+function tambahChat(t,me){ let box=document.getElementById('chatBox'); let d=document.createElement('div'); d.className='msg '+(me?'me':'bot'); d.innerText=t; box.appendChild(d); box.scrollTop=box.scrollHeight; }
+function quickChat(t){ document.getElementById('chatInput').value=t; kirimChat(); }
+function kirimChat(){ let inp=document.getElementById('chatInput'); let teks=inp.value.trim(); if(!teks){ alert('Ketik pesan dulu!'); return; } tambahChat(teks,true); inp.value=''; setTimeout(()=>{ tambahChat('Oke, aku terima: "'+teks+'". Langsung aku buka WA ya...',false); setTimeout(()=>{ bukaWA(teks); },800); },600); }
+function bukaWA(pesanTambahan){ let nama=document.getElementById('namaPesan').value||'Teman'; let pesan=document.getElementById('chatInput').value||pesanTambahan||'Halo Panduu!'; window.open(CONFIG.whatsapp+'?text='+encodeURIComponent('Halo Panduu, aku '+nama+'. '+pesan),'_blank'); }
+document.getElementById('chatInput').addEventListener('keypress',e=>{ if(e.key=='Enter') kirimChat(); });
+async function loginOwner(){
+  const email=document.getElementById('ownerEmail').value.trim();
+  const password=document.getElementById('ownerPassword').value;
+  const status=document.getElementById('ownerLoginStatus');
+  if(!fbAuth){ status.innerText='Firebase belum siap. Periksa konfigurasi Firebase.'; return; }
+  if(!email||!password){ status.innerText='Isi email dan password owner.'; return; }
+  try{ await fbAuth.signInWithEmailAndPassword(email,password); status.innerText='Memeriksa hak akses owner...'; }
+  catch(e){ status.innerText='Login gagal: '+(e.message||'Periksa akun Firebase.'); }
+}
+async function logoutOwner(){ if(fbAuth){ try{await fbAuth.signOut();}catch(e){showToast('Gagal logout owner');} } }
+async function refreshOwnerPanel(){
+  if(!ownerUser || ownerUser.uid!==OWNER_UID || !fbDB) return;
+  try{
+    const [membersSnap,onlineSnap]=await Promise.all([fbDB.ref('panduu_members').once('value'),fbDB.ref('panduu_online').once('value')]);
+    const members=membersSnap.val()||{}, online=onlineSnap.val()||{};
+    const memberEntries=Object.entries(members), onlineEntries=Object.entries(online);
+    document.getElementById('ownerTotalMember').innerText=memberEntries.length;
+    document.getElementById('ownerOnlineNow').innerText=onlineEntries.length;
+    document.getElementById('ownerMemberList').innerHTML=memberEntries.length?memberEntries.map(([id,m])=>'<div>👤 <b>'+escapeOwnerText(m.nama||id)+'</b> • @'+escapeOwnerText(id)+' • '+escapeOwnerText(m.kota||'-')+'<br><small>Login: '+(m.lastLogin?new Date(m.lastLogin).toLocaleString('id-ID'):'-')+'</small></div><hr style="border-color:#333;margin:5px 0">').join(''):'Belum ada member.';
+    document.getElementById('ownerOnlineList').innerHTML=onlineEntries.length?onlineEntries.map(([id,m])=>'<div>🟢 <b>'+escapeOwnerText(m.nama||'Tamu')+'</b> • @'+escapeOwnerText(m.username||'tamu')+' • '+escapeOwnerText(m.kota||'-')+'</div>').join(''):'Tidak ada member online.';
+  }catch(e){ document.getElementById('ownerMemberList').innerText='Tidak bisa membaca database. Periksa Firebase Database Rules.'; }
+}
+function escapeOwnerText(value){ return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+function cekLogin(){ let user=localStorage.getItem('panduu_user'); if(user){ let u=JSON.parse(user); document.getElementById('loginBox').style.display='none'; document.getElementById('profilBox').style.display='block'; document.getElementById('profilNama').innerText=u.nama; document.getElementById('profilUser').innerText='@'+u.username; document.getElementById('profilKota').innerText=u.kota; if(u.foto) document.getElementById('profilFoto').src=u.foto; document.getElementById('profilLogin').innerText=localStorage.getItem('panduu_login_count')||'1'; updateSkorUI(); } else { document.getElementById('loginBox').style.display='block'; document.getElementById('profilBox').style.display='none'; } }
+function doLogin(){ let nama=document.getElementById('loginNama').value.trim(); let user=document.getElementById('loginUser').value.trim().replace('@',''); let kota=document.getElementById('loginKota').value.trim()||'Indonesia'; let pass=document.getElementById('loginPass').value.trim(); if(!nama||!user){ alert('Isi Nama & Username dulu!'); return; } if(!pass){ alert('Isi Password dulu!'); return; } localStorage.setItem('panduu_user',JSON.stringify({nama:nama,username:user,kota:kota,foto:CONFIG.fotoAnos})); localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1)); showToast('✅ Selamat datang, '+nama+'!'); cekLogin(); if(fbConnected && fbDB){ fbDB.ref('panduu_members/'+user).set({nama:nama, kota:kota, lastLogin:Date.now()}); if(window._fbUpdateOnline) window._fbUpdateOnline(); } }
+function doLogout(){ if(confirm('Logout?')){ localStorage.removeItem('panduu_user'); if(fbOnlineRef) fbOnlineRef.set({nama:'Tamu', username:'tamu', kota:'Indonesia', time:Date.now()}); showToast('👋 Sampai jumpa lagi!'); cekLogin(); } }
+function showToast(t){ let el=document.getElementById('toast'); el.innerText=t; el.style.display='block'; setTimeout(()=>el.style.display='none',2200); }
+window.addEventListener('load',()=>{ let room=new URLSearchParams(location.search).get('room'); if(room){ setTimeout(()=>{ goSlide('game'); document.getElementById('kodeJoin').value=room; showToast('🔗 Link undangan terdeteksi! Pencet Gabung'); },800); } });
+renderTools(); renderTTT(); initCatur(); updateSkorUI(); cekLogin(); ambilBerita('viral');
+</script>
+</body>
+</html>
