@@ -82,20 +82,44 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:12px}.stat{background:#111;border:1px solid #222;padding:8px;border-radius:11px;text-align:center}.stat b{font-size:13px}.stat small{color:#888;font-size:9px}
 .links{display:flex;flex-direction:column;gap:8px;margin-top:10px}.link{display:flex;align-items:center;gap:10px;background:#111;border:1px solid #222;padding:11px;border-radius:11px;color:#fff;text-decoration:none}.link .ic{width:30px;height:30px;border-radius:8px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:14px}.link b{font-size:12px}.link small{color:#777;font-size:10px}.link span{margin-left:auto;color:#444}
 .bottomNav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;z-index:99;padding:6px 0}.navInner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}.navBtn{background:none;border:none;color:#777;cursor:pointer;padding:4px 0;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:9px;font-weight:700}.navBtn .ic{font-size:18px}.navBtn.active{color:#fff}.navBtn .dot{width:4px;height:4px;background:#1d9bf0;border-radius:50%;display:none}.navBtn.active .dot{display:block}
+.ownerPanel button{background:#ffaa00;color:#000;border:0;border-radius:9px;padding:9px 12px;font-weight:800;font-size:11px;margin:4px 3px 0 0;cursor:pointer}
+.ownerPanel details{background:#0c0a05;border:1px solid #5a4300;border-radius:11px;padding:9px;margin-top:12px}.ownerPanel summary{font-size:13px;font-weight:800;cursor:pointer;color:#ffaa00}
+.ownerPanel details input[type=text],.ownerPanel details input[type=url],.ownerPanel details textarea{width:100%;background:#080808;color:#fff;border:1px solid #444;border-radius:8px;padding:9px;margin:3px 0;font-size:11px;outline:none}.ownerPanel details textarea{min-height:64px;resize:vertical}
+.ownerPanel details label{display:block;font-size:10px;font-weight:700;color:#ffaa00;margin-top:9px}.ownerPanel details .hint{font-size:9px;color:#888;margin:2px 0 0;line-height:1.4}.ownerPanel details .chk{display:flex;gap:7px;align-items:center;font-size:11px;color:#fff;font-weight:600;margin-top:7px}.ownerPanel details .grp{font-size:11px;font-weight:800;color:#fff;margin-top:14px;padding-top:10px;border-top:1px solid #2a2a2a}
+.customBlock{background:#111;border:1px solid #333;border-radius:12px;padding:12px}.customBlock img{width:100%;border-radius:9px;margin-bottom:8px;display:block}.customBlock h2{font-size:14px}.customBlock p{color:#bbb;font-size:11px;line-height:1.6;margin-top:5px}
+@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulseAv{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes glowAv{from{box-shadow:0 0 8px var(--fxc,#a78bfa)}to{box-shadow:0 0 26px var(--fxc,#a78bfa)}}
+@keyframes spinAv{to{transform:rotate(360deg)}}
+@keyframes rainbow{to{background-position:300% 0}}
+@keyframes marq{to{transform:translateX(-100%)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+#siteMarquee{overflow:hidden;white-space:nowrap;background:#111;border:1px solid #333;border-radius:20px;padding:6px 0;margin:6px 0;font-size:11px}#siteMarquee span{display:inline-block;padding-left:100%;animation:marq 14s linear infinite}
+.ownerPanel details select{width:100%;background:#080808;color:#fff;border:1px solid #444;border-radius:8px;padding:9px;margin:3px 0;font-size:11px}.ownerPanel details .presets button{margin:3px 3px 0 0;padding:7px 10px}
+@media (prefers-reduced-motion:reduce){body,.avatar,.avatar img,.logo,#siteMarquee span{animation:none!important}}
+.gameTabs{overflow-x:auto}.gameTabs button{flex:1 0 auto;white-space:nowrap;padding:9px 12px}
+.c4{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:#1d4ed8;padding:8px;border-radius:12px;max-width:330px;margin:0 auto}.c4 button{aspect-ratio:1;border-radius:50%;border:0;background:#0b1020;cursor:pointer}.c4 button.r{background:#ef4444}.c4 button.y{background:#facc15}.c4 button.win{box-shadow:0 0 0 3px #fff;animation:blink 1s infinite}
+.lbRow{display:flex;gap:8px;align-items:center;background:#111;border:1px solid #222;border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:11px}.lbRow b:last-child{margin-left:auto;color:#22c55e}
 #toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:8px 14px;border-radius:20px;font-weight:700;display:none;z-index:100;font-size:11px}
 </style>
 </head>
 <body>
+<canvas id="fxCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:none"></canvas>
 <div class="wrap">
-<div class="top"><div class="logo">panduu<span> ✓</span></div><div class="live">● <span id="firebaseStatus">MENGHUBUNG...</span> • <span id="topJam">00:00</span></div></div>
+<div class="top"><div class="logo"><b id="siteLogoText" style="font:inherit">panduu</b><span> ✓</span></div><div class="live">● <span id="firebaseStatus">MENGHUBUNG...</span> • <span id="topJam">00:00</span></div></div>
 
+<div id="maintenanceNotice" style="display:none;background:#3b1d00;border:1px solid #ffaa00;border-radius:10px;padding:10px;margin:8px 0;font-size:11px"></div>
+<div id="siteMarquee" style="display:none"><span></span></div>
+<div id="publicAnnouncement" style="display:none;background:#10243b;border:1px solid #1d9bf0;border-radius:10px;padding:10px;margin:8px 0;font-size:11px"></div>
 <div id="slide-home" class="slide active">
-  <div class="hero"><div class="avatar"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"></div>
-  <h1>Panduu<span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h1>
-  <div class="typing" id="typing"></div><p>Wellcome to Panduu.web.id<br>Developer & Creator dari <b style="color:#fff">SIDOARJO</b>.</p>
+  <div class="hero"><div class="avatar"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"></div>
+  <h1><b id="siteNama" style="font:inherit">Panduu</b><span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h1>
+  <div class="typing" id="typing"></div><p id="siteBio">Wellcome to Panduu.web.id<br>Developer & Creator dari <b style="color:#fff">SIDOARJO</b>.</p>
   <div class="btnRow"><button class="btn btnW" onclick="goSlide('search')">🛠️ AM Tools</button><button class="btn btnB" onclick="goSlide('game')">🎮 Mabar 2 HP</button><button class="btn btnG" onclick="goSlide('chat')">💬 Chat</button></div></div>
 
-  <div class="dashLive">
+  <div class="dashLive" id="secDash">
     <h3>📊 Dashboard Live <span style="font-size:9px;background:#22c55e;color:#000;padding:3px 7px;border-radius:20px" id="dashBadge">● FIREBASE panduu-ad0a6</span></h3>
     <p style="font-size:10px;color:#888;margin-top:4px"><span id="dashTanggal">...</span> • <span id="dashCuacaMini">Sidoarjo: --°C</span></p>
     <div class="dashGrid">
@@ -105,15 +129,16 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
       <div class="dashCard live"><span class="liveDot"></span><div class="ic">👥</div><b id="onlineLive" style="color:#22c55e">1 Online</b><small>Member Online - Global Firebase</small><small id="onlineInfo">Cuma kamu yang online</small></div>
       <div class="dashCard"><div class="ic">📈</div><b id="memberTotal">1</b><small>Total Member - Yang Beneran Login</small><small id="memberHariIni">Belum ada yang lain login</small></div>
       <div class="dashCard"><div class="ic">🌤️</div><b id="cuacaLive">--°C</b><small>Cuaca Sidoarjo Live</small><small id="cuacaDetail">Angin: -- • Lembap: --%</small></div>
-      <div class="dashWide"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Siapa yang lagi online? (Global)</b><p id="memberOnlineText">Cuma kamu yang online sekarang. Kalau temen lo di kota lain buka web ini, nama nya langsung muncul di bawah, real-time.</p></div></div>
+      <div class="dashWide"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Siapa yang lagi online? (Global)</b><p id="memberOnlineText">Cuma kamu yang online sekarang. Kalau temen lo di kota lain buka web ini, nama nya langsung muncul di bawah, real-time.</p></div></div>
     </div>
     <div class="memberList" id="memberList"><div class="memberItem me"><span class="dot"></span><span id="memberKamu">Kamu • Online</span></div></div>
     <div class="firebaseBox" id="firebaseBox" style="display:none">⚠️ Firebase belum nyambung. Cek Rules di Firebase Console → Realtime Database → Rules → harus <b>"read": true, "write": true</b>. Database: <b>panduu-ad0a6-default-rtdb.firebaseio.com</b></div>
     <div class="jujurBox">✅ <b>Firebase Global, No Bot:</b><br>• Database: <b>panduu-ad0a6-default-rtdb.firebaseio.com</b><br>• Waktu = jam HP lo beneran<br>• Baterai = sisa baterai HP lo beneran<br>• IP = IP lo beneran<br>• Online = semua HP di dunia yang buka web ini, nama beneran dari login. Tutup web = langsung hilang (onDisconnect).<br>• Total Member = semua yang pernah login beneran, tersimpan di Firebase.</div>
   </div>
 
-  <div class="anos"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Anos Voldigoad <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><p>"Apakah kalian pikir aku akan kalah? Aku adalah Raja Iblis."<br><span style="color:#a78bfa">The Misfit of Demon King Academy • Sidoarjo</span></p></div></div>
-  <div class="section"><h2>📰 Berita Viral <span style="font-size:10px;background:#ff0000;padding:3px 7px;border-radius:20px">GESER ➜</span></h2><p class="sub">Geser kiri-kanan • <span id="viralCount">...</span> • <span id="viralStatus" style="color:#22c55e">● Terhubung</span></p>
+  <div class="anos" id="secAnos"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b>Anos Voldigoad <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><p><span id="anosQuote">"Apakah kalian pikir aku akan kalah? Aku adalah Raja Iblis."</span><br><span id="anosSub" style="color:#a78bfa">The Misfit of Demon King Academy • Sidoarjo</span></p></div></div>
+  <div id="customBlock" class="section" style="display:none"></div>
+  <div class="section" id="secBerita"><h2>📰 Berita Viral <span style="font-size:10px;background:#ff0000;padding:3px 7px;border-radius:20px">GESER ➜</span></h2><p class="sub">Geser kiri-kanan • <span id="viralCount">...</span> • <span id="viralStatus" style="color:#22c55e">● Terhubung</span></p>
   <div class="katRow" id="katViral"><div class="kat active" onclick="gantiViral('viral',this)">🔥 Viral</div><div class="kat" onclick="gantiViral('Sidoarjo',this)">📍 Sidoarjo</div><div class="kat" onclick="gantiViral('Teknologi',this)">💻 Teknologi</div><div class="kat" onclick="gantiViral('Anime',this)">Anime</div></div>
   <div id="loadingViral" class="loading"><div class="spin"></div>Mengambil Berita...</div>
   <div class="swipeHint" id="swipeHint" style="display:none">👈 Geser 👉 • <span id="swipePos">1 / 10</span></div>
@@ -138,15 +163,19 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
   <div id="linkBox" class="linkBox"></div>
   <div style="display:flex;gap:6px;margin-top:8px"><input id="kodeJoin" placeholder="Paste Kode Room..." style="flex:1;background:#000;border:1px solid #333;padding:9px 10px;border-radius:8px;color:#fff;outline:none;font-size:11px"><button onclick="joinKode()" style="background:#1d9bf0;color:#fff;border:none;padding:9px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:11px">Gabung</button></div>
   <div style="display:flex;gap:6px;margin-top:6px"><button onclick="putusMabar()" style="flex:1;background:#222;color:#fff;border:none;padding:8px;border-radius:8px;font-size:11px;cursor:pointer">🚪 Keluar</button><button onclick="resetMabar()" style="flex:1;background:#ff9500;color:#000;border:none;padding:8px;border-radius:8px;font-size:11px;cursor:pointer">🔄 Ulang Game</button></div></div>
-  <div class="gameTabs"><button id="tab-ttt" class="active" onclick="pilihGameTab('ttt')">❌ Tic Tac Toe • Mabar</button><button id="tab-catur" onclick="pilihGameTab('catur')">♟️ Catur • Mabar</button></div>
+  <div id="mbChat" class="mabarBox" style="display:none;background:#111;border-color:#333"><h3 style="font-size:11px">💬 Chat Room</h3><div id="mbLog" style="max-height:110px;overflow:auto;font-size:11px;line-height:1.5;margin:6px 0;color:#ddd"></div><div class="quickChat" style="margin:0 0 6px"><button onclick="mbEmo('😂')">😂</button><button onclick="mbEmo('🔥')">🔥</button><button onclick="mbEmo('👍')">👍</button><button onclick="mbEmo('😭')">😭</button></div><div class="chatInput"><input id="mbInput" placeholder="Ketik ke lawan..." maxlength="120"><button onclick="mbKirim()">Kirim</button></div></div>
+  <div class="gameTabs"><button id="tab-ttt" class="active" onclick="pilihGameTab('ttt')">❌ Tic Tac Toe • Mabar</button><button id="tab-catur" onclick="pilihGameTab('catur')">♟️ Catur • Mabar</button><button id="tab-suit" onclick="pilihGameTab('suit')">✊ Suit • Mabar</button><button id="tab-c4" onclick="pilihGameTab('c4')">🔴 4 Berbaris • Mabar</button></div>
   <div id="panel-ttt" class="gamePanel active" style="display:block"><div class="scoreBoard"><div><b id="scoreX">0</b><br><small>Kamu (X)</small></div><div><b id="scoreSeri">0</b><br><small>Seri</small></div><div><b id="scoreO">0</b><br><small>Lawan (O)</small></div></div><p style="text-align:center;font-size:11px;margin-bottom:8px" id="statusTTT">Mode Solo: Giliran Kamu (X)</p><p id="giliranMabarTTT" style="text-align:center;font-size:10px;color:#22c55e;margin-bottom:8px;display:none">🟢 Mabar: Kamu X</p><div class="ttt" id="tttBoard"></div><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btnW" style="flex:1" onclick="resetTTT()">🔄 Main Lagi</button><button class="btn btnB" style="flex:1" onclick="gantiModeTTT()">Mode: <span id="modeTTT">Lawan HP</span></button></div></div>
   <div id="panel-catur" class="gamePanel"><div class="scoreBoard"><div><b>♔ Putih</b><br><small id="giliranCatur">Giliran Putih</small></div><div><b id="statusCatur">Main!</b><br><small id="dimakanCatur">Dimakan: -</small></div><div><b>♚ Hitam</b><br><small>2 Pemain</small></div></div><p id="giliranMabarCatur" style="text-align:center;font-size:10px;color:#22c55e;margin-bottom:8px;display:none">🟢 Mabar: Kamu Putih</p><div class="chessBoard" id="chessBoard"></div><p style="text-align:center;font-size:10px;color:#888;margin:8px 0" id="infoCatur">Klik bidak → klik titik biru.</p><div style="display:flex;gap:6px"><button class="btn btnW" style="flex:1" onclick="resetCatur()">🔄 Ulang</button><button class="btn btnB" style="flex:1" onclick="undoCatur()">↩ Undo</button></div></div>
+  <div id="panel-suit" class="gamePanel"><div class="scoreBoard"><div><b id="suitMe">0</b><br><small>Kamu</small></div><div><b id="suitSeri">0</b><br><small>Seri</small></div><div><b id="suitOpp">0</b><br><small>Lawan</small></div></div><p id="suitStatus" style="text-align:center;font-size:11px;margin-bottom:6px">Pilih batu, gunting, atau kertas</p><div id="suitReveal" style="text-align:center;font-size:36px;min-height:50px;margin-bottom:8px"></div><div style="display:flex;gap:8px"><button class="btn btnW" style="flex:1;font-size:26px;padding:12px" onclick="pilihSuit('batu')">✊</button><button class="btn btnW" style="flex:1;font-size:26px;padding:12px" onclick="pilihSuit('gunting')">✌️</button><button class="btn btnW" style="flex:1;font-size:26px;padding:12px" onclick="pilihSuit('kertas')">✋</button></div><button class="btn btnG" style="width:100%;margin-top:10px" onclick="resetSuit()">🔄 Reset Skor</button></div>
+  <div id="panel-c4" class="gamePanel"><div class="scoreBoard"><div><b id="c4Me">0</b><br><small id="c4MeLbl">Kamu 🔴</small></div><div><b id="c4Seri">0</b><br><small>Seri</small></div><div><b id="c4Opp">0</b><br><small>Lawan</small></div></div><p id="c4Status" style="text-align:center;font-size:11px;margin-bottom:8px"></p><div class="c4" id="c4Board"></div><button class="btn btnW" style="width:100%;margin-top:10px" onclick="resetC4(true)">🔄 Main Lagi</button></div>
+  <div class="section"><h2>🥇 Papan Peringkat Global</h2><p class="sub">Menang di semua game dihitung. Login dulu supaya tercatat.</p><div id="lbList"><div class="loading">Memuat...</div></div></div>
   <div class="section"><h2>🏆 Skor Kamu</h2><div class="stats"><div class="stat"><b id="totalMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="totalMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="totalCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="totalSeri2">0</b><br><small>Seri</small></div></div></div>
 </div>
 
 <div id="slide-chat" class="slide">
   <h2 style="font-size:16px;font-weight:900">💬 Chat</h2><p style="color:#888;font-size:10px;margin:4px 0 10px">Chat ke Panduu, ke WA 088376846674</p>
-  <div class="chatHead"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b style="display:flex;gap:5px;align-items:center;font-size:12px">Panduu <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><small style="color:#22c55e;font-size:10px">● Online • Sidoarjo</small></div></div>
+  <div class="chatHead"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><div><b style="display:flex;gap:5px;align-items:center;font-size:12px">Panduu <span class="verified" style="width:16px;height:16px"><svg viewBox="0 0 24 24" fill="white" style="width:10px;height:10px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></b><small style="color:#22c55e;font-size:10px">● Online • Sidoarjo</small></div></div>
   <div class="chatBox" id="chatBox"><div class="msg bot">Halo! Aku Panduu ✓<br>Dari Sidoarjo. Mau tanya apa?</div><div class="msg bot">Ketik pesan di bawah, nanti kebuka WA aku 088376846674 📩</div></div>
   <div class="quickChat"><button onclick="quickChat('Bang, minta info Free Fire terbaru')">🔥 Free Fire?</button><button onclick="quickChat('Bang, buatin web dong')">💻 Buatin web</button><button onclick="quickChat('Bang, kapan mabar?')">🎮 Mabar?</button></div>
   <div class="chatInput"><input id="chatInput" placeholder="Ketik pesan ke Panduu..."><button onclick="kirimChat()">Kirim ➤</button></div>
@@ -155,15 +184,126 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
 </div>
 
 <div id="slide-profil" class="slide">
-  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Login dulu yuk! 🔐</h2><p>Masuk pake nama lo, biar kedetect online di Firebase panduu-ad0a6.</p><input id="loginNama" placeholder="Nama lo..."><input id="loginUser" placeholder="Username... @budi123"><input id="loginKota" placeholder="Kota lo... Sidoarjo"><input id="loginPass" type="password" placeholder="Password"><button onclick="doLogin()">✅ Masuk ke Web Panduu</button></div></div>
-  <div id="profilBox" style="display:none"><div class="profilCard"><img id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><h2><span id="profilNama">Nama Lo</span> <span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span style="color:#22c55e">● Login sebagai Pengunjung</span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
+  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Login dulu yuk! 🔐</h2><p>Masuk pake nama lo, biar kedetect online di Firebase panduu-ad0a6.</p><input id="loginNama" placeholder="Nama lo..."><input id="loginUser" placeholder="Username... @budi123"><input id="loginKota" placeholder="Kota lo... Sidoarjo"><input id="loginPass" type="password" placeholder="Password"><button onclick="doLogin()">✅ Masuk ke Web Panduu</button></div></div>
+  <div id="profilBox" style="display:none"><div class="profilCard"><img data-foto id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><h2><span id="profilNama">Nama Lo</span> <span class="verified"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span style="color:#22c55e">● Login sebagai Pengunjung</span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
   <div class="section"><h2>📊 Skor Lo</h2><div class="stats"><div class="stat"><b id="profilMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="profilMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="profilCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="profilLogin">1</b><br><small>Login</small></div></div></div>
   <div class="section"><h2>🔥 Link Panduu ✓</h2><div class="links" id="linksContainer"></div></div></div>
   <div class="ownerCard" id="ownerLoginCard"><h3>👑 Login Khusus Owner</h3><p>Login terpisah menggunakan akun Firebase Authentication owner. Akun pengunjung tidak bisa membuka panel ini.</p><input id="ownerEmail" type="email" autocomplete="username" placeholder="Email owner"><input id="ownerPassword" type="password" autocomplete="current-password" placeholder="Password owner"><button onclick="loginOwner()">🔐 Login Owner</button><p id="ownerLoginStatus">Panel hanya tersedia untuk UID owner yang diizinkan.</p></div>
-  <div class="ownerPanel" id="ownerPanel"><h3>👑 OWNER PANEL • PANDUU</h3><p id="ownerIdentity" style="color:#ffaa00"></p><div class="ownerStats"><div class="ownerStat"><b id="ownerTotalMember">-</b><small>Total Member</small></div><div class="ownerStat"><b id="ownerOnlineNow">-</b><small>Online Sekarang</small></div></div><button onclick="refreshOwnerPanel()">🔄 Refresh Data</button><button onclick="logoutOwner()" style="background:#ff5252;color:#fff">Keluar Owner</button><h3 style="margin-top:12px">👥 Daftar Member</h3><div id="ownerMemberList" class="ownerTable">Memuat data...</div><h3 style="margin-top:12px">🟢 Member Online</h3><div id="ownerOnlineList" class="ownerTable">Memuat data...</div></div>
+  <div class="ownerPanel" id="ownerPanel">
+    <h3>👑 OWNER PANEL • PANDUU</h3>
+    <p id="ownerIdentity" style="color:#ffaa00"></p>
+    <div class="ownerStats">
+      <div class="ownerStat"><b id="ownerTotalMember">-</b><small>Total Member</small></div>
+      <div class="ownerStat"><b id="ownerOnlineNow">-</b><small>Online Sekarang</small></div>
+      <div class="ownerStat"><b id="ownerBannedTotal">-</b><small>Member Diblokir</small></div>
+      <div class="ownerStat"><b id="ownerStatusWeb">Aktif</b><small>Status Website</small></div>
+    </div>
+    <button onclick="refreshOwnerPanel()">🔄 Refresh Data</button>
+    <button onclick="logoutOwner()" style="background:#ff5252;color:#fff">Keluar Owner</button>
+    <h3 style="margin-top:14px">🛠️ Kontrol Website</h3>
+    <button onclick="toggleMaintenance(true)">🔧 Aktifkan Maintenance</button>
+    <button onclick="toggleMaintenance(false)" style="background:#22c55e">✅ Buka Website</button>
+    <p style="margin-top:5px">Pengumuman untuk semua pengunjung:</p>
+    <input id="ownerAnnouncement" placeholder="Tulis pengumuman..." style="width:100%;padding:9px;background:#080808;color:#fff;border:1px solid #444;border-radius:8px">
+    <button onclick="saveAnnouncement()">📢 Kirim Pengumuman</button>
+    <button onclick="clearAnnouncement()" style="background:#555;color:#fff">Hapus Pengumuman</button>
+    <details class="siteEditor" open>
+      <summary>📡 Siaran & Kendali Live</summary>
+      <p class="hint" style="margin:6px 0 0">Kirim pesan yang langsung muncul di layar semua pengunjung yang sedang online.</p>
+      <label>Judul siaran</label><input type="text" id="bcTitle" placeholder="Event Mabar Malam Ini!">
+      <label>Isi pesan</label><textarea id="bcText"></textarea>
+      <button onclick="sendBroadcast()">📣 Kirim ke Semua yang Online</button>
+      <button onclick="forceReload()" style="background:#1d9bf0;color:#fff">🔄 Paksa Refresh Pengunjung</button>
+      <div class="grp">🥇 Papan Peringkat</div>
+      <button onclick="resetLeaderboard()" style="background:#ff5252;color:#fff">🗑️ Reset Peringkat</button>
+    </details>
+    <details class="siteEditor">
+      <summary>📈 Analitik & Log Aktivitas</summary>
+      <div class="ownerStats"><div class="ownerStat"><b id="ownerVisitTotal">-</b><small>Total Kunjungan</small></div><div class="ownerStat"><b id="ownerVisit7">-</b><small>Kunjungan 7 Hari</small></div></div>
+      <div id="ownerChart" style="display:flex;align-items:flex-end;height:110px;background:#080808;border:1px solid #333;border-radius:9px;padding:8px 4px 4px"></div>
+      <div class="grp">📜 Log Aktivitas Owner</div>
+      <div id="ownerLog" class="ownerTable">Memuat...</div>
+      <div class="grp">💾 Ekspor Data</div>
+      <button onclick="ownerExportCSV()" style="background:#333;color:#fff">📊 Member (CSV)</button><button onclick="ownerBackup()" style="background:#333;color:#fff">🗄️ Backup Lengkap (JSON)</button>
+    </details>
+    <details class="siteEditor" open>
+      <summary>✏️ Editor Website (tanpa coding)</summary>
+      <p class="hint" style="margin:6px 0 0">Ubah isi web lewat form ini lalu tekan Simpan. Perubahan langsung tampil ke semua pengunjung.</p>
+      <div class="grp">Beranda</div>
+      <label>Nama logo (pojok atas)</label><input type="text" id="sf_logo" placeholder="panduu">
+      <label>Nama di beranda</label><input type="text" id="sf_nama" placeholder="Panduu">
+      <label>Teks mengetik (satu baris = satu teks)</label><textarea id="sf_typing" placeholder="Game Developer&#10;Web Developer"></textarea>
+      <label>Deskripsi singkat</label><textarea id="sf_bio" placeholder="Baris baru = pindah baris. Pakai **teks** untuk menebalkan."></textarea>
+      <label>Foto profil (URL atau unggah dari galeri)</label><input type="text" id="sf_foto" placeholder="https://...">
+      <input type="file" accept="image/*" onchange="sfPickImg(this,'sf_foto',320)" style="font-size:10px;color:#aaa;margin-top:4px">
+      <label>Kutipan kartu karakter</label><input type="text" id="sf_anosQuote">
+      <label>Keterangan di bawah kutipan</label><input type="text" id="sf_anosSub">
+      <div class="grp">Kontak & Link</div>
+      <label>Nomor WhatsApp</label><input type="text" id="sf_wa" placeholder="088376846674">
+      <label>TikTok</label><input type="url" id="sf_tiktok" placeholder="https://tiktok.com/@...">
+      <label>Instagram</label><input type="url" id="sf_ig" placeholder="https://instagram.com/...">
+      <label>YouTube</label><input type="url" id="sf_yt" placeholder="https://youtube.com/@...">
+      <label>Link tambahan (satu baris: emoji | judul | keterangan | URL)</label>
+      <textarea id="sf_links" placeholder="🛒 | Toko Saya | Pesan di sini | https://contoh.com"></textarea>
+      <div class="grp">Blok Kustom di Beranda</div>
+      <label>Judul</label><input type="text" id="sf_cbTitle">
+      <label>Isi teks</label><textarea id="sf_cbText"></textarea>
+      <label>Gambar (URL atau unggah)</label><input type="text" id="sf_cbImg" placeholder="https://...">
+      <input type="file" accept="image/*" onchange="sfPickImg(this,'sf_cbImg',640)" style="font-size:10px;color:#aaa;margin-top:4px">
+      <label>Teks tombol (opsional)</label><input type="text" id="sf_cbBtn">
+      <label>Link tombol</label><input type="url" id="sf_cbLink" placeholder="https://...">
+      <div class="grp">🎨 Warna & Tema</div>
+      <div class="presets"><span class="hint">Tema cepat:</span><br>
+        <button onclick="sfPreset('default')" style="background:#555;color:#fff">Bawaan</button><button onclick="sfPreset('neon')" style="background:#ff2bd6;color:#fff">Neon</button><button onclick="sfPreset('sakura')" style="background:#ff7eb6">Sakura</button><button onclick="sfPreset('ocean')" style="background:#22d3ee">Ocean</button><button onclick="sfPreset('matrix')" style="background:#22c55e">Matrix</button><button onclick="sfPreset('sunset')" style="background:#ff8a3d">Sunset</button></div>
+      <div class="chk"><input type="checkbox" id="sf_accentOn"> Warna aksen <input type="color" id="sf_accent" value="#a78bfa" style="width:38px;height:26px;border:0;background:none"></div>
+      <div class="chk"><input type="checkbox" id="sf_bgOn"> Warna latar <input type="color" id="sf_bg" value="#000000" style="width:38px;height:26px;border:0;background:none"></div>
+      <div class="chk"><input type="checkbox" id="sf_cardOn"> Warna kartu <input type="color" id="sf_card" value="#111111" style="width:38px;height:26px;border:0;background:none"></div>
+      <div class="chk"><input type="checkbox" id="sf_textOn"> Warna teks <input type="color" id="sf_text" value="#ffffff" style="width:38px;height:26px;border:0;background:none"></div>
+      <label>Jenis huruf</label><select id="sf_font"><option value="">Bawaan (Inter)</option><option value="Poppins">Poppins</option><option value="Nunito">Nunito</option><option value="Space Grotesk">Space Grotesk</option><option value="Orbitron">Orbitron (futuristik)</option><option value="Merriweather">Merriweather (serif)</option></select>
+      <label>Bentuk sudut kartu</label><select id="sf_radius"><option value="">Bawaan</option><option value="sharp">Tajam</option><option value="round">Sangat bulat</option></select>
+      <div class="grp">✨ Animasi</div>
+      <label>Efek latar</label><select id="sf_bgFx"><option value="">Tidak ada</option><option value="gradient">Gradasi bergerak</option><option value="stars">Bintang berkelip</option><option value="snow">Salju</option><option value="rain">Hujan</option></select>
+      <label>Efek foto profil</label><select id="sf_avatarFx"><option value="">Tidak ada</option><option value="float">Melayang</option><option value="pulse">Berdenyut</option><option value="glow">Bercahaya</option><option value="spin">Berputar</option></select>
+      <label>Efek ganti halaman</label><select id="sf_entrance"><option value="">Memudar (bawaan)</option><option value="slide">Naik dari bawah</option><option value="zoom">Zoom</option><option value="none">Tanpa animasi</option></select>
+      <label>Efek logo</label><select id="sf_logoFx"><option value="">Tidak ada</option><option value="rainbow">Pelangi</option><option value="glow">Bercahaya</option></select>
+      <label>Kecepatan teks mengetik</label><select id="sf_typeSpeed"><option value="">Normal</option><option value="fast">Cepat</option><option value="slow">Lambat</option></select>
+      <div class="grp">🧩 Fitur Tambahan</div>
+      <label>Teks berjalan di atas halaman (kosongkan untuk mematikan)</label><input type="text" id="sf_marquee" placeholder="Promo hari ini diskon 50%!">
+      <label>Pop-up sambutan: judul</label><input type="text" id="sf_popTitle">
+      <label>Pop-up sambutan: isi</label><textarea id="sf_popText"></textarea>
+      <div class="chk"><input type="checkbox" id="sf_popEvery"> Tampilkan pop-up setiap kunjungan (bukan sekali saja)</div>
+      <label>Teks footer</label><input type="text" id="sf_footer" placeholder="© 2026 Panduu">
+      <div class="chk"><input type="checkbox" id="sf_showVisits"> Tampilkan jumlah kunjungan</div>
+      <div class="chk"><input type="checkbox" id="sf_floatWA"> Tombol WhatsApp melayang</div>
+      <div class="grp">📑 Bagian & Menu</div>
+      <div class="chk"><input type="checkbox" id="sf_showDash" checked> Tampilkan Dashboard Live</div>
+      <div class="chk"><input type="checkbox" id="sf_showAnos" checked> Tampilkan kartu karakter</div>
+      <div class="chk"><input type="checkbox" id="sf_showBerita" checked> Tampilkan Berita Viral</div>
+      <div class="chk"><input type="checkbox" id="sf_navSearch" checked> Menu Search / Tools</div>
+      <div class="chk"><input type="checkbox" id="sf_navGame" checked> Menu Game</div>
+      <div class="chk"><input type="checkbox" id="sf_navChat" checked> Menu Chat</div>
+      <div class="grp">💾 Cadangan</div>
+      <button onclick="sfExport()" style="background:#333;color:#fff">📤 Salin Pengaturan</button><button onclick="sfImport()" style="background:#333;color:#fff">📥 Tempel Pengaturan</button>
+      <div style="margin-top:10px">
+        <button onclick="saveSite()" style="background:#22c55e">💾 Simpan & Terbitkan</button>
+        <button onclick="previewSite()" style="background:#1d9bf0;color:#fff">👁️ Pratinjau</button>
+        <button onclick="resetSite()" style="background:#555;color:#fff">↩ Kembalikan Bawaan</button>
+      </div>
+    </details>
+    <h3 style="margin-top:14px">👥 Daftar Member</h3>
+    <div id="ownerMemberList" class="ownerTable">Memuat data...</div>
+    <h3 style="margin-top:14px">🟢 Member Online • Kick / Ban</h3>
+    <div id="ownerOnlineList" class="ownerTable">Memuat data...</div>
+    <h3 style="margin-top:14px">⛔ Daftar Blokir</h3>
+    <div id="ownerBanList" class="ownerTable">Belum ada member diblokir.</div>
+  </div>
 </div>
 </div>
 
+<div id="siteFooter" style="display:none;max-width:480px;margin:0 auto;padding:6px 10px 14px;text-align:center;font-size:10px;color:#777;line-height:1.7"><div id="footText"></div><div id="visitText"></div></div>
+<a id="floatWA" target="_blank" rel="noopener" style="display:none;position:fixed;right:12px;bottom:86px;z-index:98;width:48px;height:48px;border-radius:50%;background:#25D366;color:#fff;align-items:center;justify-content:center;font-size:22px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.5)">💬</a>
+<div id="bcPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:201;align-items:center;justify-content:center;padding:20px"><div style="background:#15120a;border:1px solid #ffaa00;border-radius:16px;padding:18px;max-width:340px;width:100%;text-align:center"><div style="font-size:10px;color:#ffaa00;font-weight:800">📣 PESAN DARI OWNER</div><h3 id="bcT" style="font-size:15px;margin-top:6px"></h3><p id="bcB" style="color:#ddd;font-size:12px;line-height:1.6;margin:8px 0 12px"></p><button class="btn btnW" onclick="document.getElementById('bcPopup').style.display='none'">Tutup</button></div></div>
+<div id="sitePopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:20px"><div style="background:#111;border:1px solid #333;border-radius:16px;padding:18px;max-width:340px;width:100%;text-align:center"><h3 id="popT" style="font-size:15px"></h3><p id="popB" style="color:#bbb;font-size:12px;line-height:1.6;margin:8px 0 12px"></p><button class="btn btnW" onclick="closePopup()">Oke, mengerti</button></div></div>
 <div class="bottomNav"><div class="navInner">
 <button class="navBtn active" id="nav-home" onclick="goSlide('home')"><span class="ic">🏠</span>Home<span class="dot"></span></button>
 <button class="navBtn" id="nav-search" onclick="goSlide('search')"><span class="ic">🔍</span>Search<span class="dot"></span></button>
@@ -193,7 +333,13 @@ const FIREBASE_CONFIG = {
 const OWNER_UID = "z5emv0knpdcdLT5OEQpxaji9oVL2";
 let fbAuth=null, ownerUser=null;
 const CONFIG={nama:"Panduu",username:"panduuxpungki",kota:"SIDOARJO",fotoAnos:"https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg",typingTexts:["Game Developer","Web Developer","Anos Voldigoad Mode ON","Sidoarjo Pride","Firebase panduu-ad0a6"],tiktok:"https://tiktok.com/@panduuxpungki",instagram:"https://instagram.com/panduuxpungki",youtube:"https://youtube.com/@panduuxpungki",whatsapp:"https://wa.me/6288376846674"};
-document.getElementById('linksContainer').innerHTML=[{icon:'🎵',judul:'TikTok Panduu',sub:'@panduuxpungki',link:CONFIG.tiktok},{icon:'💬',judul:'WhatsApp Panduu',sub:'088376846674',link:CONFIG.whatsapp},{icon:'📸',judul:'Instagram Panduu',sub:'@panduuxpungki',link:CONFIG.instagram},{icon:'▶️',judul:'YouTube Panduu',sub:'Panduu Channel',link:CONFIG.youtube}].map(l=>'<a class="link" href="'+l.link+'" target="_blank"><div class="ic">'+l.icon+'</div><div><b>'+l.judul+'</b><br><small>'+l.sub+'</small></div><span>↗</span></a>').join('');
+let siteExtraLinks=[];
+function renderLinks(){
+  const base=[{icon:'🎵',judul:'TikTok Panduu',sub:'@panduuxpungki',link:CONFIG.tiktok},{icon:'💬',judul:'WhatsApp Panduu',sub:'088376846674',link:CONFIG.whatsapp},{icon:'📸',judul:'Instagram Panduu',sub:'@panduuxpungki',link:CONFIG.instagram},{icon:'▶️',judul:'YouTube Panduu',sub:'Panduu Channel',link:CONFIG.youtube}].concat(siteExtraLinks);
+  const box=document.getElementById('linksContainer'); box.innerHTML='';
+  base.forEach(l=>{ const a=document.createElement('a'); a.className='link'; a.href=l.link; a.target='_blank'; a.rel='noopener'; const ic=document.createElement('div'); ic.className='ic'; ic.textContent=l.icon; const w=document.createElement('div'); const b=document.createElement('b'); b.textContent=l.judul; const sm=document.createElement('small'); sm.textContent=l.sub; w.appendChild(b); w.appendChild(document.createElement('br')); w.appendChild(sm); const ar=document.createElement('span'); ar.textContent='↗'; a.appendChild(ic); a.appendChild(w); a.appendChild(ar); box.appendChild(a); });
+}
+renderLinks();
 function goSlide(nama){ document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active')); document.getElementById('slide-'+nama).classList.add('active'); document.querySelectorAll('.navBtn').forEach(b=>b.classList.remove('active')); document.getElementById('nav-'+nama).classList.add('active'); window.scrollTo({top:0}); if(nama=='home' && !window._homeLoaded){ window._homeLoaded=true; ambilBerita('viral'); } if(nama=='game') updateSkorUI(); if(nama=='profil') cekLogin(); }
 
 // ===== FIREBASE GLOBAL - panduu-ad0a6 =====
@@ -206,6 +352,33 @@ function initFirebase(){
     fbApp=firebase.initializeApp(FIREBASE_CONFIG);
     fbDB=firebase.database();
     fbAuth=firebase.auth();
+    fbDB.ref('panduu_control/maintenance').on('value', snap => {
+      const data=snap.val()||{};
+      const isOwner=!!(ownerUser && ownerUser.uid===OWNER_UID);
+      const banner=document.getElementById('maintenanceNotice');
+      if(data.enabled && !isOwner){
+        banner.style.display='block';
+        banner.innerText='🔧 Website sedang maintenance. Silakan coba lagi nanti.';
+        document.querySelectorAll('.bottomNav,.wrap > .slide').forEach(el=>{ if(!el.contains(document.getElementById('ownerPanel'))) el.style.pointerEvents='none'; });
+      } else {
+        banner.style.display='none';
+        document.querySelectorAll('.bottomNav,.wrap > .slide').forEach(el=>el.style.pointerEvents='');
+      }
+      const status=document.getElementById('ownerStatusWeb');
+      if(status) status.innerText=data.enabled?'Maintenance':'Aktif';
+    });
+    fbDB.ref('panduu_control/announcement').on('value', snap => {
+      const box=document.getElementById('publicAnnouncement'), msg=snap.val();
+      if(msg && msg.text){ box.style.display='block'; box.innerText='📢 '+msg.text; }
+      else box.style.display='none';
+    });
+    fbDB.ref('panduu_site/content').on('value', snap => { siteData=snap.val()||{}; applySite(siteData); fillSiteForm(siteData); });
+    fbDB.ref('panduu_leaderboard').on('value',snap=>renderLB(snap.val()));
+    let bcFirst=true, rlFirst=true;
+    fbDB.ref('panduu_control/broadcast').on('value',snap=>{ const b=snap.val(); if(bcFirst){ bcFirst=false; return; } if(!b||!b.id) return; try{ if(sessionStorage.getItem('panduu_bc')===String(b.id)) return; sessionStorage.setItem('panduu_bc',String(b.id)); }catch(e){} showBroadcast(b); });
+    fbDB.ref('panduu_control/reload').on('value',snap=>{ const r=snap.val(); if(rlFirst){ rlFirst=false; return; } if(!r||!r.id||(ownerUser&&ownerUser.uid===OWNER_UID)) return; try{ if(sessionStorage.getItem('panduu_rl')===String(r.id)) return; sessionStorage.setItem('panduu_rl',String(r.id)); }catch(e){} location.reload(); });
+    fbDB.ref('panduu_stats/visits').on('value',snap=>{ siteVisits=snap.val()||0; renderFooter(); });
+    try{ if(!sessionStorage.getItem('panduu_visit')){ sessionStorage.setItem('panduu_visit','1'); fbDB.ref('panduu_stats/visits').transaction(n=>(n||0)+1).catch(()=>{}); fbDB.ref('panduu_stats/daily/'+dayKey(new Date())).transaction(n=>(n||0)+1).catch(()=>{}); } }catch(e){}
     fbAuth.onAuthStateChanged(user=>{
       ownerUser=user||null;
       const isOwner=!!(user && OWNER_UID && OWNER_UID!="ISI_UID_OWNER_DARI_FIREBASE_AUTH" && user.uid===OWNER_UID);
@@ -307,7 +480,7 @@ async function updateCuaca(){
 }
 updateCuaca();
 initFirebase();
-let texts=CONFIG.typingTexts, ti=0, ci=0, del=false; function typing(){ let el=document.getElementById('typing'), cur=texts[ti]; if(!del){ ci++; el.innerText=cur.slice(0,ci)+'|'; if(ci>=cur.length){ del=true; setTimeout(typing,1200); return } } else { ci--; el.innerText=cur.slice(0,ci)+'|'; if(ci==0){ del=false; ti=(ti+1)%texts.length } } setTimeout(typing, del?40:90) } typing();
+let texts=CONFIG.typingTexts, ti=0, ci=0, del=false; function typing(){ let el=document.getElementById('typing'), cur=texts[ti]; if(!del){ ci++; el.innerText=cur.slice(0,ci)+'|'; if(ci>=cur.length){ del=true; setTimeout(typing,1200); return } } else { ci--; el.innerText=cur.slice(0,ci)+'|'; if(ci==0){ del=false; ti=(ti+1)%texts.length } } setTimeout(typing,(del?40:90)*(window.typeMul||1)) } typing();
 function bersihinJudul(j){ let p=j.split(' - '); let k=p.length>1?p.pop():'Google News'; return {judul:p.join(' - '),koran:k} }
 function waktuRelatif(t){ try{ let d=new Date(t), n=new Date(), diff=(n-d)/1000; if(diff<60) return 'Baru saja'; if(diff<3600) return Math.floor(diff/60)+' menit lalu'; if(diff<86400) return Math.floor(diff/3600)+' jam lalu'; return Math.floor(diff/86400)+' hari lalu' }catch(e){ return 'Hari ini' } }
 function ambilFotoBerita(item,i){ let img=''; if(item.thumbnail) img=item.thumbnail; if(!img && item.enclosure && item.enclosure.link) img=item.enclosure.link; if(!img){ let h=(item.content||'')+' '+(item.description||''); let m=h.match(/https?:\/\/[^"'\s<>]+\.(jpg|jpeg|png|webp)/i); if(m) img=m[0] } if(!img){ img='https://picsum.photos/seed/berita-'+encodeURIComponent(item.title||'')+'-'+i+'/800/450' } return img; }
@@ -329,7 +502,7 @@ function bukaTool(id){ let panel=document.getElementById('toolPanel'); panel.cla
   if(id=='am'){ h='<h3>🎬 AM Premium & Preset</h3><input id="amQ" placeholder="Cari preset..."><button style="background:#fff;color:#000" onclick="cariPreset()">🔍 Cari di Google</button><div class="toolOut" id="amOut">Ketik preset → kebuka Google.</div>'; }
   else if(id=='base64'){ h='<h3><> Base64</h3><textarea id="b64In">Halo Panduu</textarea><button style="background:#fff;color:#000" onclick="doB64(\'enc\')">Encode →</button><button style="background:#1d9bf0;color:#fff" onclick="doB64(\'dec\')">← Decode</button><div class="toolOut" id="b64Out">Hasil...</div>'; }
   else if(id=='brat'){ h='<h3>🟩 Brat Generator</h3><input id="bratIn" value="panduu"><input type="range" id="bratSize" min="20" max="100" value="48" oninput="updateBrat()"><button style="background:#fff;color:#000" onclick="updateBrat()">🎨 Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadBrat()">⬇️ Unduh PNG</button><div class="bratPreview" id="bratPrev" style="margin-top:8px">panduu</div>'; }
-  else if(id=='bratAnime'){ h='<h3>📝 Brat Anime</h3><input id="bratAnimeIn" value="Panduu"><button style="background:#fff;color:#000" onclick="buatBratAnime()">✏️ Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadBratAnimeCanvas()">⬇️ Unduh PNG</button><div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden"><img src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:100%;display:block"><div id="bratAnimeTxt" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%) rotate(-3deg);background:#fff;color:#000;padding:8px 12px;font-weight:800;font-size:12px;box-shadow:0 4px 10px rgba(0,0,0,.4);max-width:80%;text-align:center">Panduu</div></div>'; }
+  else if(id=='bratAnime'){ h='<h3>📝 Brat Anime</h3><input id="bratAnimeIn" value="Panduu"><button style="background:#fff;color:#000" onclick="buatBratAnime()">✏️ Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadBratAnimeCanvas()">⬇️ Unduh PNG</button><div style="position:relative;margin-top:8px;border-radius:10px;overflow:hidden"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:100%;display:block"><div id="bratAnimeTxt" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%) rotate(-3deg);background:#fff;color:#000;padding:8px 12px;font-weight:800;font-size:12px;box-shadow:0 4px 10px rgba(0,0,0,.4);max-width:80%;text-align:center">Panduu</div></div>'; }
   else if(id=='bratWin'){ h='<h3>🪟 Fake Error</h3><input id="winIn" value="Panduu ganteng banget"><button style="background:#fff;color:#000" onclick="updateWin()">🪟 Buat</button><button style="background:#1d9bf0;color:#fff" onclick="downloadWin()">⬇️ Unduh PNG</button><div style="margin-top:8px"><div class="fakeWin"><div class="bar"><span>⚠️ Error</span><span>✕</span></div><div class="body"><b>⚠️ Windows Error</b><p id="winTxt" style="margin-top:6px">Panduu ganteng banget</p></div></div></div>'; }
   else if(id=='ip'){ h='<h3>🌍 Cek IP</h3><input id="ipIn" placeholder="Kosongin = IP lo"><button style="background:#fff;color:#000" onclick="cekIP()">🔍 Cek IP</button><div class="toolOut" id="ipOut">Klik Cek IP...</div>'; }
   else if(id=='speed'){ h='<h3>⚡ Speed Test</h3><button style="background:#fff;color:#000" onclick="tesSpeed()">⚡ Tes</button><div class="toolOut" id="speedOut">Klik Tes...</div>'; }
@@ -387,22 +560,22 @@ function updateMabarUI(connected, teks){
   document.getElementById('giliranMabarCatur').style.display= connected ? 'block' : 'none';
 }
 function buatPeer(id){ return new Promise((resolve)=>{ peer=new Peer(id); peer.on('open',(pid)=>{ myRoomId=pid; resolve(pid); }); peer.on('connection',(c)=>{ conn=c; setupConn(); }); }); }
-function setupConn(){ conn.on('open',()=>{ updateMabarUI(true, conn.peer.slice(0,12)); showToast('🟢 Temen lo udah masuk!'); conn.send({type:'hello', nama:getNamaMabar()}); resetTTT(); resetCatur(); }); conn.on('data',(data)=>{ terimaDataMabar(data); }); conn.on('close',()=>{ updateMabarUI(false,''); conn=null; }); }
-async function buatRoom(){ if(peer) peer.destroy(); let id='panduu-'+Math.random().toString(36).slice(2,8); document.getElementById('mabarStatus').innerText='Membuat room...'; await buatPeer(id); myRole='host'; mabarMode='mabar'; let link=location.origin+location.pathname+'?room='+id; if(location.protocol=='file:') link='Buka web ini di HP temen lo, lalu paste Kode: '+id; document.getElementById('linkBox').style.display='block'; document.getElementById('linkBox').innerText='🔗 LINK:\n'+link+'\n\nKODE: '+id; window._linkMabar=link; window._kodeMabar=id; showToast('✅ Room dibuat! Salin link & kirim'); resetTTT(); resetCatur(); }
+function setupConn(){ conn.on('open',()=>{ updateMabarUI(true, conn.peer.slice(0,12)); showToast('🟢 Temen lo udah masuk!'); conn.send({type:'hello', nama:getNamaMabar()}); resetTTT(); resetCatur(); resetSuit(); resetC4(); }); conn.on('data',(data)=>{ terimaDataMabar(data); }); conn.on('close',()=>{ updateMabarUI(false,''); conn=null; }); }
+async function buatRoom(){ if(peer) peer.destroy(); let id='panduu-'+Math.random().toString(36).slice(2,8); document.getElementById('mabarStatus').innerText='Membuat room...'; await buatPeer(id); myRole='host'; mabarMode='mabar'; let link=location.origin+location.pathname+'?room='+id; if(location.protocol=='file:') link='Buka web ini di HP temen lo, lalu paste Kode: '+id; document.getElementById('linkBox').style.display='block'; document.getElementById('linkBox').innerText='🔗 LINK:\n'+link+'\n\nKODE: '+id; window._linkMabar=link; window._kodeMabar=id; showToast('✅ Room dibuat! Salin link & kirim'); resetTTT(); resetCatur(); resetSuit(); resetC4(); }
 function salinLink(){ if(!window._linkMabar){ alert('Buat Room dulu!'); return; } navigator.clipboard.writeText(window._linkMabar+'\nKode: '+window._kodeMabar).then(()=>showToast('📋 Link tersalin!')); }
 function shareWA(){ if(!window._linkMabar){ alert('Buat Room dulu!'); return; } window.open('https://wa.me/?text='+encodeURIComponent('Mabar yuk! 🎮 '+window._linkMabar+' Kode: '+window._kodeMabar),'_blank'); }
 async function joinKode(){ let kode=document.getElementById('kodeJoin').value.trim() || new URLSearchParams(location.search).get('room'); if(!kode){ alert('Paste Kode Room dulu!'); return; } kode=kode.replace(/.*room=/,'').split('&')[0].split(' ')[0].trim(); if(peer) peer.destroy(); document.getElementById('mabarStatus').innerText='Masuk room...'; let myId='panduu-'+Math.random().toString(36).slice(2,8); await buatPeer(myId); myRole='guest'; mabarMode='mabar'; conn=peer.connect(kode); setupConn(); showToast('⏳ Lagi nyambung...'); }
-function putusMabar(){ if(conn) conn.close(); if(peer) peer.destroy(); peer=null; conn=null; mabarMode=null; myRole=null; updateMabarUI(false,''); resetTTT(); resetCatur(); }
-function resetMabar(){ resetTTT(); resetCatur(); kirimMabar({type:'reset'}); }
+function putusMabar(){ if(conn) conn.close(); if(peer) peer.destroy(); peer=null; conn=null; mabarMode=null; myRole=null; updateMabarUI(false,''); resetTTT(); resetCatur(); resetSuit(); resetC4(); }
+function resetMabar(){ resetTTT(); resetCatur(); resetSuit(); resetC4(); kirimMabar({type:'reset'}); }
 function kirimMabar(data){ if(conn && conn.open) conn.send(data); }
-function terimaDataMabar(data){ if(!data) return; if(data.type=='hello'){ updateMabarUI(true, data.nama||'Temen'); } if(data.type=='ttt'){ tttBoard=data.board; tttOver=data.over; renderTTT(); document.getElementById('statusTTT').innerText=data.status; if(data.skor){ skor=data.skor; saveSkor(); } } if(data.type=='catur'){ caturBoard=data.board; caturGiliran=data.giliran; caturDimakan=data.dimakan||[]; renderCatur(); } if(data.type=='reset'){ resetTTT(); resetCatur(); } }
+function terimaDataMabar(data){ if(!data) return; if(data.type=='hello'){ updateMabarUI(true, data.nama||'Temen'); } if(data.type=='ttt'){ tttBoard=data.board; tttOver=data.over; renderTTT(); document.getElementById('statusTTT').innerText=data.status; if(data.skor){ skor=data.skor; saveSkor(); } } if(data.type=='catur'){ caturBoard=data.board; caturGiliran=data.giliran; caturDimakan=data.dimakan||[]; renderCatur(); } if(data.type=='reset'){ resetTTT(); resetCatur(); resetSuit(); resetC4(); } }
 let tttBoard=['','','','','','','','',''], tttOver=false, tttMode='hp', skor={x:0,o:0,seri:0,main:0,catur:0}; try{ let s=JSON.parse(localStorage.getItem('panduu_skor')||'{}'); skor={...skor,...s}; }catch(e){}
 function saveSkor(){ localStorage.setItem('panduu_skor',JSON.stringify(skor)); updateSkorUI(); }
 function updateSkorUI(){ document.getElementById('scoreX').innerText=skor.x; document.getElementById('scoreO').innerText=skor.o; document.getElementById('scoreSeri').innerText=skor.seri; document.getElementById('totalMenang').innerText=skor.x; document.getElementById('totalMain').innerText=skor.main; document.getElementById('totalCatur').innerText=skor.catur; document.getElementById('totalSeri2').innerText=skor.seri; let pm=document.getElementById('profilMenang'); if(pm){ pm.innerText=skor.x; document.getElementById('profilMain').innerText=skor.main; document.getElementById('profilCatur').innerText=skor.catur; } }
 function renderTTT(){ document.getElementById('tttBoard').innerHTML=tttBoard.map((v,i)=>'<button class="'+(v=='X'?'x':v=='O'?'o':'')+'" onclick="klikTTT('+i+')">'+v+'</button>').join(''); }
 function cekMenangTTT(b){ let win=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let w of win){ if(b[w[0]] && b[w[0]]==b[w[1]] && b[w[1]]==b[w[2]]) return b[w[0]]; } if(b.every(c=>c)) return 'Seri'; return null; }
 function klikTTT(i){ if(mabarMode=='mabar' && conn && conn.open){ let giliranKu=(myRole=='host' && tttBoard.filter(x=>x).length%2==0) || (myRole=='guest' && tttBoard.filter(x=>x).length%2==1); if(!giliranKu){ showToast('⏳ Bukan giliran lo!'); return; } if(tttOver||tttBoard[i]) return; tttBoard[i]= myRole=='host'?'X':'O'; renderTTT(); let h=cekMenangTTT(tttBoard); if(h) selesaiTTT(h); else document.getElementById('statusTTT').innerText='Giliran '+(tttBoard.filter(x=>x).length%2==0?'X':'O'); kirimMabar({type:'ttt', board:tttBoard, over:tttOver, status:document.getElementById('statusTTT').innerText, skor:skor}); return; } if(tttOver||tttBoard[i]) return; tttBoard[i]='X'; renderTTT(); let h=cekMenangTTT(tttBoard); if(h){ selesaiTTT(h); return; } document.getElementById('statusTTT').innerText='Giliran O...'; if(tttMode=='hp'){ setTimeout(()=>{ let kosong=tttBoard.map((v,idx)=>v?null:idx).filter(v=>v!==null); if(!kosong.length) return; tttBoard[kosong[Math.floor(Math.random()*kosong.length)]]='O'; renderTTT(); let h2=cekMenangTTT(tttBoard); if(h2) selesaiTTT(h2); else document.getElementById('statusTTT').innerText='Giliran Kamu (X)'; },400); } }
-function selesaiTTT(h){ tttOver=true; skor.main++; if(h=='X'){ skor.x++; document.getElementById('statusTTT').innerText='🎉 X MENANG!'; } else if(h=='O'){ skor.o++; document.getElementById('statusTTT').innerText='🎉 O MENANG!'; } else { skor.seri++; document.getElementById('statusTTT').innerText='🤝 SERI!'; } saveSkor(); if(mabarMode=='mabar') kirimMabar({type:'ttt', board:tttBoard, over:true, status:document.getElementById('statusTTT').innerText, skor:skor}); }
+function selesaiTTT(h){ tttOver=true; skor.main++; if(h!='Seri' && (mabarMode=='mabar' || h=='X')) lbWin('ttt'); if(h=='X'){ skor.x++; document.getElementById('statusTTT').innerText='🎉 X MENANG!'; } else if(h=='O'){ skor.o++; document.getElementById('statusTTT').innerText='🎉 O MENANG!'; } else { skor.seri++; document.getElementById('statusTTT').innerText='🤝 SERI!'; } saveSkor(); if(mabarMode=='mabar') kirimMabar({type:'ttt', board:tttBoard, over:true, status:document.getElementById('statusTTT').innerText, skor:skor}); }
 function resetTTT(){ tttBoard=['','','','','','','','','']; tttOver=false; document.getElementById('statusTTT').innerText= mabarMode=='mabar' ? 'Mabar: Host (X) jalan dulu!' : 'Giliran Kamu (X)'; renderTTT(); }
 function gantiModeTTT(){ if(mabarMode=='mabar'){ alert('Lagi mabar, keluar room dulu kalau mau solo.'); return; } tttMode=tttMode=='hp'?'teman':'hp'; document.getElementById('modeTTT').innerText=tttMode=='hp'?'Lawan HP':'2 Pemain'; resetTTT(); }
 function pilihGameTab(tab){ myGame=tab; document.querySelectorAll('.gameTabs button').forEach(b=>b.classList.remove('active')); document.getElementById('tab-'+tab).classList.add('active'); document.querySelectorAll('.gamePanel').forEach(p=>p.style.display='none'); document.getElementById('panel-'+tab).style.display='block'; }
@@ -413,14 +586,377 @@ function warnaBidak(p){ if(!p) return null; return p==p.toUpperCase()?'putih':'h
 function gerakBoleh(r1,c1,r2,c2){ let p=caturBoard[r1][c1]; if(!p) return false; let target=caturBoard[r2][c2]; if(target && warnaBidak(target)==warnaBidak(p)) return false; let dr=r2-r1, dc=c2-c1; let jenis=p.toUpperCase(); let arah=warnaBidak(p)=='putih'?-1:1; if(jenis=='P'){ if(dc==0 && dr==arah && !target) return true; if(dc==0 && dr==2*arah && ((warnaBidak(p)=='putih'&&r1==6)||(warnaBidak(p)=='hitam'&&r1==1)) && !target && !caturBoard[r1+arah][c1]) return true; if(Math.abs(dc)==1 && dr==arah && target) return true; return false; } if(jenis=='R'){ if(dr!=0&&dc!=0) return false; return jalurBersih(r1,c1,r2,c2); } if(jenis=='B'){ if(Math.abs(dr)!=Math.abs(dc)) return false; return jalurBersih(r1,c1,r2,c2); } if(jenis=='Q'){ if(dr==0||dc==0||Math.abs(dr)==Math.abs(dc)) return jalurBersih(r1,c1,r2,c2); return false; } if(jenis=='N'){ return (Math.abs(dr)==2&&Math.abs(dc)==1)||(Math.abs(dr)==1&&Math.abs(dc)==2); } if(jenis=='K'){ return Math.abs(dr)<=1&&Math.abs(dc)<=1; } return false; }
 function jalurBersih(r1,c1,r2,c2){ let sr=Math.sign(r2-r1), sc=Math.sign(c2-c1); let r=r1+sr, c=c1+sc; while(r!=r2||c!=c2){ if(caturBoard[r][c]) return false; r+=sr; c+=sc; } return true; }
 function renderCatur(){ let el=document.getElementById('chessBoard'); el.innerHTML=''; for(let r=0;r<8;r++) for(let c=0;c<8;c++){ let d=document.createElement('div'); d.className='chessCell '+((r+c)%2==0?'light':'dark'); if(caturSelected && caturSelected.r==r && caturSelected.c==c) d.classList.add('selected'); if(caturMoves.some(m=>m.r==r&&m.c==c)) d.classList.add('canMove'); d.innerText=simbolCatur(caturBoard[r][c]); d.onclick=()=>klikCatur(r,c); el.appendChild(d); } document.getElementById('giliranCatur').innerText='Giliran '+(caturGiliran=='putih'?'Putih ♔':'Hitam ♚'); document.getElementById('dimakanCatur').innerText='Dimakan: '+(caturDimakan.length?caturDimakan.map(simbolCatur).join(' '):'-'); }
-function klikCatur(r,c){ if(mabarMode=='mabar' && conn && conn.open){ let warnaKu=myRole=='host'?'putih':'hitam'; if(caturGiliran!=warnaKu){ showToast('⏳ Bukan giliran lo!'); return; } } let p=caturBoard[r][c]; if(caturSelected){ let bisa=caturMoves.some(m=>m.r==r&&m.c==c); if(bisa){ caturHistory.push(JSON.parse(JSON.stringify(caturBoard))); if(p) caturDimakan.push(p); caturBoard[r][c]=caturBoard[caturSelected.r][caturSelected.c]; caturBoard[caturSelected.r][caturSelected.c]=''; if(caturBoard[r][c]=='P'&&r==0) caturBoard[r][c]='Q'; if(caturBoard[r][c]=='p'&&r==7) caturBoard[r][c]='q'; caturGiliran=caturGiliran=='putih'?'hitam':'putih'; caturSelected=null; caturMoves=[]; if(mabarMode=='mabar') kirimMabar({type:'catur', board:caturBoard, giliran:caturGiliran, dimakan:caturDimakan}); if(p && p.toUpperCase()=='K'){ showToast('🏆 Raja dimakan!'); skor.catur++; skor.main++; saveSkor(); } renderCatur(); return; } } if(p && warnaBidak(p)==caturGiliran){ if(mabarMode=='mabar'){ let warnaKu=myRole=='host'?'putih':'hitam'; if(warnaBidak(p)!=warnaKu){ showToast('Itu bidak temen lo!'); return; } } caturSelected={r,c}; caturMoves=[]; for(let rr=0;rr<8;rr++) for(let cc=0;cc<8;cc++) if(gerakBoleh(r,c,rr,cc)) caturMoves.push({r:rr,c:cc}); document.getElementById('infoCatur').innerText='Bidak dipilih. Klik titik biru.'; } else { caturSelected=null; caturMoves=[]; } renderCatur(); }
+function klikCatur(r,c){ if(mabarMode=='mabar' && conn && conn.open){ let warnaKu=myRole=='host'?'putih':'hitam'; if(caturGiliran!=warnaKu){ showToast('⏳ Bukan giliran lo!'); return; } } let p=caturBoard[r][c]; if(caturSelected){ let bisa=caturMoves.some(m=>m.r==r&&m.c==c); if(bisa){ caturHistory.push(JSON.parse(JSON.stringify(caturBoard))); if(p) caturDimakan.push(p); caturBoard[r][c]=caturBoard[caturSelected.r][caturSelected.c]; caturBoard[caturSelected.r][caturSelected.c]=''; if(caturBoard[r][c]=='P'&&r==0) caturBoard[r][c]='Q'; if(caturBoard[r][c]=='p'&&r==7) caturBoard[r][c]='q'; caturGiliran=caturGiliran=='putih'?'hitam':'putih'; caturSelected=null; caturMoves=[]; if(mabarMode=='mabar') kirimMabar({type:'catur', board:caturBoard, giliran:caturGiliran, dimakan:caturDimakan}); if(p && p.toUpperCase()=='K'){ showToast('🏆 Raja dimakan!'); skor.catur++; skor.main++; saveSkor(); lbWin('catur'); } renderCatur(); return; } } if(p && warnaBidak(p)==caturGiliran){ if(mabarMode=='mabar'){ let warnaKu=myRole=='host'?'putih':'hitam'; if(warnaBidak(p)!=warnaKu){ showToast('Itu bidak temen lo!'); return; } } caturSelected={r,c}; caturMoves=[]; for(let rr=0;rr<8;rr++) for(let cc=0;cc<8;cc++) if(gerakBoleh(r,c,rr,cc)) caturMoves.push({r:rr,c:cc}); document.getElementById('infoCatur').innerText='Bidak dipilih. Klik titik biru.'; } else { caturSelected=null; caturMoves=[]; } renderCatur(); }
 function resetCatur(){ initCatur(); document.getElementById('statusCatur').innerText='Main!'; }
 function undoCatur(){ if(mabarMode=='mabar'){ showToast('Mabar gak bisa undo'); return; } if(!caturHistory.length) return; caturBoard=caturHistory.pop(); caturGiliran=caturGiliran=='putih'?'hitam':'putih'; caturSelected=null; caturMoves=[]; renderCatur(); }
+
+// ===== MABAR: SUIT, 4 BERBARIS, CHAT ROOM =====
+skor.suit=skor.suit||0; skor.c4=skor.c4||0;
+const SUIT_E={batu:'✊',gunting:'✌️',kertas:'✋'};
+let suitMine=null,suitTheirs=null,suitQueued=null,suitLock=false,suitSc={me:0,seri:0,opp:0};
+const isMabar=()=>mabarMode=='mabar'&&conn&&conn.open;
+const $id=i=>document.getElementById(i);
+function suitUI(){ $id('suitMe').innerText=suitSc.me; $id('suitSeri').innerText=suitSc.seri; $id('suitOpp').innerText=suitSc.opp; }
+function resetSuit(){ suitMine=suitTheirs=suitQueued=null; suitLock=false; suitSc={me:0,seri:0,opp:0}; $id('suitReveal').innerText=''; $id('suitStatus').innerText='Pilih batu, gunting, atau kertas'; suitUI(); }
+function pilihSuit(p){
+  if(suitLock||suitMine||!SUIT_E[p]) return;
+  suitMine=p; $id('suitReveal').innerText=SUIT_E[p]+' vs ❔';
+  if(isMabar()){ kirimMabar({type:'suit',pick:p}); $id('suitStatus').innerText='Menunggu lawan memilih...'; }
+  else suitTheirs=['batu','gunting','kertas'][Math.floor(Math.random()*3)];
+  suitCheck();
+}
+function suitCheck(){
+  if(!suitMine||!suitTheirs) return;
+  suitLock=true; const a=suitMine,b=suitTheirs; let msg;
+  const win=(x,y)=>(x=='batu'&&y=='gunting')||(x=='gunting'&&y=='kertas')||(x=='kertas'&&y=='batu');
+  skor.main++;
+  if(a==b){ suitSc.seri++; msg='🤝 Seri!'; }
+  else if(win(a,b)){ suitSc.me++; skor.suit++; msg='🎉 Kamu menang!'; lbWin('suit'); }
+  else { suitSc.opp++; msg='😵 Lawan menang'; }
+  saveSkor(); $id('suitReveal').innerText=SUIT_E[a]+' vs '+SUIT_E[b]; $id('suitStatus').innerText=msg; suitUI();
+  setTimeout(()=>{ suitMine=null; suitTheirs=suitQueued; suitQueued=null; suitLock=false; $id('suitReveal').innerText=''; $id('suitStatus').innerText=suitTheirs?'Lawan sudah memilih!':'Ronde baru: pilih lagi'; },2200);
+}
+let c4b=[],c4Turn=1,c4Over=false,c4Win=[],c4Winner=0,c4Sc={me:0,seri:0,opp:0};
+const c4Num=()=>isMabar()&&myRole=='guest'?2:1;
+function resetC4(manual){
+  c4b=Array.from({length:6},()=>Array(7).fill(0)); c4Turn=1; c4Over=false; c4Win=[]; c4Winner=0;
+  if(manual&&isMabar()) kirimMabar({type:'c4reset'}); renderC4();
+}
+function renderC4(){
+  const box=$id('c4Board'); box.innerHTML='';
+  c4b.forEach((row,r)=>row.forEach((v,c)=>{ const b=document.createElement('button'); b.className=(v==1?'r':v==2?'y':'')+(c4Win.some(w=>w[0]==r&&w[1]==c)?' win':''); b.onclick=()=>klikC4(c); box.appendChild(b); }));
+  $id('c4Me').innerText=c4Sc.me; $id('c4Seri').innerText=c4Sc.seri; $id('c4Opp').innerText=c4Sc.opp;
+  const me=c4Num(), ic=n=>n==1?'🔴':'🟡';
+  $id('c4MeLbl').innerText='Kamu '+ic(me);
+  $id('c4Status').innerText=c4Over?(c4Winner==0?'🤝 Seri!':c4Winner==me?'🎉 Kamu menang!':(isMabar()?'😵 Lawan menang':'😵 HP menang')):(c4Turn==me?'Giliran kamu '+ic(me):'Giliran '+(isMabar()?'lawan ':'HP ')+ic(c4Turn));
+}
+function c4Place(col,p){ for(let r=5;r>=0;r--) if(!c4b[r][col]){ c4b[r][col]=p; return true; } return false; }
+function c4Check(p){
+  for(let r=0;r<6;r++) for(let c=0;c<7;c++){ if(c4b[r][c]!==p) continue;
+    for(const [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){ const cells=[[r,c]];
+      for(let k=1;k<4;k++){ const rr=r+dr*k,cc=c+dc*k; if(rr<0||rr>5||cc<0||cc>6||c4b[rr][cc]!==p) break; cells.push([rr,cc]); }
+      if(cells.length==4) return cells; } }
+  return null;
+}
+function c4Score(w){
+  skor.main++;
+  if(w==0) c4Sc.seri++; else if(w==c4Num()){ c4Sc.me++; skor.c4++; lbWin('c4'); } else c4Sc.opp++;
+  saveSkor();
+}
+function c4After(mine){
+  const w=c4Check(c4Turn);
+  if(w){ c4Over=true; c4Win=w; c4Winner=c4Turn; } else if(c4b[0].every(x=>x)){ c4Over=true; c4Winner=0; } else c4Turn=c4Turn==1?2:1;
+  if(c4Over) c4Score(c4Winner);
+  renderC4();
+  if(mine&&isMabar()) kirimMabar({type:'c4',board:c4b,turn:c4Turn,over:c4Over,win:c4Win,winner:c4Winner});
+}
+function c4AI(){
+  const cols=[0,1,2,3,4,5,6].filter(c=>!c4b[0][c]);
+  const can=(c,p)=>{ for(let r=5;r>=0;r--) if(!c4b[r][c]){ c4b[r][c]=p; const w=!!c4Check(p); c4b[r][c]=0; return w; } return false; };
+  for(const p of [2,1]) for(const c of cols) if(can(c,p)) return c;
+  return cols.map(c=>[c,Math.abs(3-c)+Math.random()*1.5]).sort((a,b)=>a[1]-b[1])[0][0];
+}
+function klikC4(col){
+  if(c4Over) return;
+  if(c4Turn!==c4Num()){ if(isMabar()) showToast('⏳ Bukan giliran lo!'); return; }
+  if(!c4Place(col,c4Turn)) return;
+  c4After(true);
+  if(!isMabar()&&!c4Over) setTimeout(()=>{ if(c4Over) return; c4Place(c4AI(),2); c4After(false); },450);
+}
+// chat room
+function mbAdd(t){ const l=$id('mbLog'), d=document.createElement('div'); d.textContent=t; l.appendChild(d); while(l.children.length>50) l.removeChild(l.firstChild); l.scrollTop=l.scrollHeight; }
+function mbKirim(){ const i=$id('mbInput'), t=i.value.trim().slice(0,120); if(!t||!isMabar()) return; mbAdd('Kamu: '+t); kirimMabar({type:'chat',nama:getNamaMabar().slice(0,20),text:t}); i.value=''; }
+function mbEmo(e){ if(!isMabar()) return; showToast('Kamu: '+e); kirimMabar({type:'emo',nama:getNamaMabar().slice(0,20),e:e}); }
+$id('mbInput').addEventListener('keypress',e=>{ if(e.key=='Enter') mbKirim(); });
+function mabarExtra(d){
+  if(!d||typeof d!=='object') return;
+  if(d.type=='suit'&&SUIT_E[d.pick]){ if(suitLock) suitQueued=d.pick; else { suitTheirs=d.pick; if(!suitMine) $id('suitStatus').innerText='Lawan sudah memilih!'; suitCheck(); } }
+  if(d.type=='c4reset') resetC4();
+  if(d.type=='c4'&&Array.isArray(d.board)&&d.board.length==6&&d.board.every(r=>Array.isArray(r)&&r.length==7)){
+    const was=c4Over; c4b=d.board.map(r=>r.map(x=>(Number(x)|0)%3)); c4Turn=d.turn==2?2:1; c4Over=!!d.over; c4Win=Array.isArray(d.win)?d.win.slice(0,4).map(w=>[Number(w[0])|0,Number(w[1])|0]):[]; c4Winner=Number(d.winner)|0;
+    if(c4Over&&!was) c4Score(c4Winner); renderC4();
+  }
+  if(d.type=='chat') mbAdd(String(d.nama||'Lawan').slice(0,20)+': '+String(d.text||'').slice(0,120));
+  if(d.type=='emo'&&['😂','🔥','👍','😭'].includes(d.e)) showToast(String(d.nama||'Lawan').slice(0,20)+': '+d.e);
+}
+const _tdm=terimaDataMabar; terimaDataMabar=function(d){ _tdm(d); mabarExtra(d); };
+let _lastConn=false; const _umu=updateMabarUI;
+updateMabarUI=function(c,t){ _umu(c,t); $id('mbChat').style.display=c?'block':'none'; if(!!c!==_lastConn){ _lastConn=!!c; resetSuit(); c4Sc={me:0,seri:0,opp:0}; resetC4(); if(!c) $id('mbLog').innerHTML=''; } };
+resetSuit(); resetC4();
+
+// ===== LEADERBOARD =====
+function lbWin(){
+  try{ const u=getUserAsli(); if(!fbDB||!u.username) return; const r=fbDB.ref('panduu_leaderboard/'+u.username); r.child('nama').set(String(u.nama||u.username).slice(0,40)).catch(()=>{}); r.child('wins').transaction(n=>(n||0)+1).catch(()=>{}); }catch(e){}
+}
+function renderLB(o){
+  const box=$id('lbList'); box.innerHTML='';
+  const rows=Object.entries(o||{}).map(([k,v])=>({u:k,n:(v&&v.nama)||k,w:Number(v&&v.wins)||0})).filter(x=>x.w>0).sort((a,b)=>b.w-a.w).slice(0,10);
+  if(!rows.length){ box.innerHTML='<div class="loading">Belum ada pemenang. Jadi yang pertama!</div>'; return; }
+  rows.forEach((x,i)=>{ const d=document.createElement('div'); d.className='lbRow'; const a=document.createElement('span'); a.textContent=['🥇','🥈','🥉'][i]||(i+1)+'.'; const b=document.createElement('b'); b.textContent=x.n; const c=document.createElement('small'); c.style.color='#888'; c.textContent='@'+x.u; const e=document.createElement('b'); e.textContent=x.w+' menang'; d.append(a,b,c,e); box.appendChild(d); });
+}
+
+// ===== OWNER: SIARAN, ANALITIK, LOG, EKSPOR =====
+const dayKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+async function ownerLog(text){ try{ if(!ownerUser||!fbDB) return; await fbDB.ref('panduu_ownerlog').push({text:String(text).slice(0,120),at:firebase.database.ServerValue.TIMESTAMP,by:ownerUser.email||ownerUser.uid}); }catch(e){} }
+function showBroadcast(b){ $id('bcT').textContent=b.title||''; $id('bcB').textContent=b.text||''; $id('bcPopup').style.display='flex'; }
+async function sendBroadcast(){
+  if(!await ownerActionReady()) return;
+  const t=$id('bcTitle').value.trim(), x=$id('bcText').value.trim();
+  if(!t&&!x){ showToast('Isi judul atau pesan'); return; }
+  try{ await fbDB.ref('panduu_control/broadcast').set({id:Date.now(),title:t.slice(0,80),text:x.slice(0,500),at:firebase.database.ServerValue.TIMESTAMP,by:ownerUser.uid}); ownerLog('Siaran: '+(t||x)); showToast('📣 Siaran terkirim'); }
+  catch(e){ showToast('Gagal mengirim siaran'); }
+}
+async function forceReload(){
+  if(!await ownerActionReady()) return;
+  if(!confirm('Muat ulang halaman semua pengunjung yang sedang online?')) return;
+  try{ await fbDB.ref('panduu_control/reload').set({id:Date.now(),by:ownerUser.uid}); ownerLog('Paksa refresh pengunjung'); showToast('🔄 Perintah refresh dikirim'); }
+  catch(e){ showToast('Gagal mengirim perintah'); }
+}
+async function resetLeaderboard(){
+  if(!await ownerActionReady()) return;
+  if(!confirm('Hapus seluruh Papan Peringkat?')) return;
+  try{ await fbDB.ref('panduu_leaderboard').remove(); ownerLog('Reset papan peringkat'); showToast('Peringkat direset'); }
+  catch(e){ showToast('Gagal reset peringkat'); }
+}
+async function refreshOwnerExtras(){
+  try{
+    const [d,v,l]=await Promise.all([fbDB.ref('panduu_stats/daily').once('value'),fbDB.ref('panduu_stats/visits').once('value'),fbDB.ref('panduu_ownerlog').limitToLast(15).once('value')]);
+    const daily=d.val()||{}, days=[];
+    for(let i=6;i>=0;i--){ const t=new Date(Date.now()-i*864e5); days.push({l:t.getDate()+'/'+(t.getMonth()+1),v:Number(daily[dayKey(t)])||0}); }
+    const mx=Math.max(1,...days.map(x=>x.v));
+    $id('ownerChart').innerHTML=days.map(x=>'<div style="flex:1;text-align:center"><div style="font-size:9px;color:#ffaa00">'+x.v+'</div><div style="height:'+Math.max(3,Math.round(x.v/mx*70))+'px;background:linear-gradient(#ffaa00,#a16207);border-radius:5px 5px 0 0;margin:2px 3px 0"></div><div style="font-size:8px;color:#888;margin-top:2px">'+x.l+'</div></div>').join('');
+    $id('ownerVisitTotal').innerText=(v.val()||0).toLocaleString('id-ID'); $id('ownerVisit7').innerText=days.reduce((a,x)=>a+x.v,0);
+    const logs=Object.values(l.val()||{}).reverse();
+    $id('ownerLog').innerHTML=logs.length?logs.map(x=>'<div>🕘 '+escapeOwnerText(x.at?new Date(x.at).toLocaleString('id-ID'):'-')+'<br>'+escapeOwnerText(x.text||'')+'</div><hr style="border-color:#333;margin:5px 0">').join(''):'Belum ada aktivitas.';
+  }catch(e){ $id('ownerLog').innerText='Gagal membaca data. Periksa Database Rules.'; }
+}
+function dlFile(name,text,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type:type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); }
+async function ownerExportCSV(){
+  if(!await ownerActionReady()) return;
+  try{
+    const m=(await fbDB.ref('panduu_members').once('value')).val()||{};
+    const q=v=>{ v=String(v==null?'':v); if(/^[=+\-@]/.test(v)) v="'"+v; return '"'+v.replace(/"/g,'""')+'"'; };
+    const rows=[['username','nama','kota','login_terakhir']].concat(Object.entries(m).map(([k,x])=>[k,x.nama,x.kota,x.lastLogin?new Date(x.lastLogin).toISOString():'']));
+    dlFile('member-panduu.csv',rows.map(r=>r.map(q).join(',')).join('\n'),'text/csv'); ownerLog('Ekspor member CSV'); showToast('CSV diunduh');
+  }catch(e){ showToast('Gagal ekspor data'); }
+}
+async function ownerBackup(){
+  if(!await ownerActionReady()) return;
+  try{
+    const out={at:new Date().toISOString()};
+    for(const n of ['panduu_members','panduu_bans','panduu_site','panduu_leaderboard','panduu_stats']) out[n]=(await fbDB.ref(n).once('value')).val();
+    dlFile('backup-panduu-'+dayKey(new Date())+'.json',JSON.stringify(out,null,2),'application/json'); ownerLog('Backup lengkap'); showToast('Backup diunduh');
+  }catch(e){ showToast('Gagal backup data'); }
+}
 function tambahChat(t,me){ let box=document.getElementById('chatBox'); let d=document.createElement('div'); d.className='msg '+(me?'me':'bot'); d.innerText=t; box.appendChild(d); box.scrollTop=box.scrollHeight; }
 function quickChat(t){ document.getElementById('chatInput').value=t; kirimChat(); }
 function kirimChat(){ let inp=document.getElementById('chatInput'); let teks=inp.value.trim(); if(!teks){ alert('Ketik pesan dulu!'); return; } tambahChat(teks,true); inp.value=''; setTimeout(()=>{ tambahChat('Oke, aku terima: "'+teks+'". Langsung aku buka WA ya...',false); setTimeout(()=>{ bukaWA(teks); },800); },600); }
 function bukaWA(pesanTambahan){ let nama=document.getElementById('namaPesan').value||'Teman'; let pesan=document.getElementById('chatInput').value||pesanTambahan||'Halo Panduu!'; window.open(CONFIG.whatsapp+'?text='+encodeURIComponent('Halo Panduu, aku '+nama+'. '+pesan),'_blank'); }
 document.getElementById('chatInput').addEventListener('keypress',e=>{ if(e.key=='Enter') kirimChat(); });
+
+// ===== EDITOR WEBSITE (OWNER) =====
+let siteData={};
+const SITE_DEFAULT_TEXTS=CONFIG.typingTexts.slice();
+const SITE_DEFAULT_LINKS={wa:CONFIG.whatsapp,tiktok:CONFIG.tiktok,instagram:CONFIG.instagram,youtube:CONFIG.youtube};
+function safeLink(u){ u=String(u||'').trim(); return /^https?:\/\/[^\s]+$/i.test(u)?u:''; }
+function safeImg(u){ u=String(u||'').trim(); return (/^https?:\/\/[^\s]+$/i.test(u)||/^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u))?u:''; }
+function waLink(n){ let d=String(n||'').replace(/\D/g,''); if(!d) return ''; if(d.startsWith('0')) d='62'+d.slice(1); return 'https://wa.me/'+d; }
+function richText(el,text){
+  el.textContent='';
+  String(text).split('\n').forEach((line,i)=>{
+    if(i) el.appendChild(document.createElement('br'));
+    line.split('**').forEach((part,j)=>{
+      if(!part) return;
+      if(j%2){ const b=document.createElement('b'); b.style.color='#fff'; b.textContent=part; el.appendChild(b); }
+      else el.appendChild(document.createTextNode(part));
+    });
+  });
+}
+function applySite(c,preview){
+  c=c||{};
+  const $=id=>document.getElementById(id);
+  $('siteLogoText').textContent=c.logo||'panduu';
+  $('siteNama').textContent=c.nama||'Panduu';
+  document.title=(c.nama||'Panduu')+' ✓';
+  if(c.bio) richText($('siteBio'),c.bio);
+  else richText($('siteBio'),'Wellcome to Panduu.web.id\nDeveloper & Creator dari **SIDOARJO**.');
+  if(c.anosQuote) $('anosQuote').textContent=c.anosQuote;
+  if(c.anosSub) $('anosSub').textContent=c.anosSub;
+  const tx=(c.typing||'').split('\n').map(t=>t.trim()).filter(Boolean);
+  texts=tx.length?tx:SITE_DEFAULT_TEXTS; ti=0; ci=0; del=false;
+  const foto=safeImg(c.foto);
+  if(foto){ CONFIG.fotoAnos=foto; document.querySelectorAll('img[data-foto]').forEach(i=>i.src=foto); }
+  CONFIG.whatsapp=waLink(c.wa)||SITE_DEFAULT_LINKS.wa;
+  CONFIG.tiktok=safeLink(c.tiktok)||SITE_DEFAULT_LINKS.tiktok;
+  CONFIG.instagram=safeLink(c.instagram)||SITE_DEFAULT_LINKS.instagram;
+  CONFIG.youtube=safeLink(c.youtube)||SITE_DEFAULT_LINKS.youtube;
+  siteExtraLinks=String(c.links||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(a=>a.length>=4&&safeLink(a[3])).map(a=>({icon:a[0]||'🔗',judul:a[1]||'Link',sub:a[2],link:safeLink(a[3])}));
+  renderLinks();
+  $('secDash').style.display=c.showDash===false?'none':'';
+  $('secAnos').style.display=c.showAnos===false?'none':'';
+  $('secBerita').style.display=c.showBerita===false?'none':'';
+  applyTheme(c); applyExtras(c,preview);
+  const cb=$('customBlock');
+  if(c.cbTitle||c.cbText||c.cbImg){
+    cb.style.display=''; cb.textContent='';
+    const box=document.createElement('div'); box.className='customBlock';
+    const im=safeImg(c.cbImg); if(im){ const i=document.createElement('img'); i.src=im; i.alt=''; box.appendChild(i); }
+    if(c.cbTitle){ const h=document.createElement('h2'); h.textContent=c.cbTitle; box.appendChild(h); }
+    if(c.cbText){ const p=document.createElement('p'); richText(p,c.cbText); box.appendChild(p); }
+    const bl=safeLink(c.cbLink);
+    if(c.cbBtn&&bl){ const a=document.createElement('a'); a.href=bl; a.target='_blank'; a.rel='noopener'; a.className='btn btnB'; a.style.cssText='display:inline-block;margin-top:9px;text-decoration:none'; a.textContent=c.cbBtn; box.appendChild(a); }
+    cb.appendChild(box);
+  } else { cb.style.display='none'; cb.textContent=''; }
+}
+let siteVisits=0, fxRAF=0, fxKey='';
+const SF_TEXT={sf_logo:'logo',sf_nama:'nama',sf_typing:'typing',sf_bio:'bio',sf_foto:'foto',sf_anosQuote:'anosQuote',sf_anosSub:'anosSub',sf_wa:'wa',sf_tiktok:'tiktok',sf_ig:'instagram',sf_yt:'youtube',sf_links:'links',sf_cbTitle:'cbTitle',sf_cbText:'cbText',sf_cbImg:'cbImg',sf_cbBtn:'cbBtn',sf_cbLink:'cbLink',sf_font:'font',sf_radius:'radius',sf_bgFx:'bgFx',sf_avatarFx:'avatarFx',sf_entrance:'entrance',sf_logoFx:'logoFx',sf_typeSpeed:'typeSpeed',sf_marquee:'marquee',sf_popTitle:'popTitle',sf_popText:'popText',sf_footer:'footer'};
+const SF_COLOR={sf_accent:['accent','sf_accentOn'],sf_bg:['bg','sf_bgOn'],sf_card:['card','sf_cardOn'],sf_text:['textColor','sf_textOn']};
+const SF_CHK={sf_showDash:['showDash',true],sf_showAnos:['showAnos',true],sf_showBerita:['showBerita',true],sf_navSearch:['navSearch',true],sf_navGame:['navGame',true],sf_navChat:['navChat',true],sf_floatWA:['floatWA',false],sf_showVisits:['showVisits',false],sf_popEvery:['popEvery',false]};
+const SF_FONTS={'Poppins':'wght@400;600;700;800','Nunito':'wght@400;600;700;800','Space Grotesk':'wght@400;600;700','Orbitron':'wght@400;600;700;800','Merriweather':'wght@400;700;900'};
+const SF_PRESETS={
+  neon:{bg:'#0a0014',card:'#150028',textColor:'#ffffff',accent:'#ff2bd6',bgFx:'stars'},
+  sakura:{bg:'#1a0b14',card:'#2a1220',textColor:'#fff0f6',accent:'#ff7eb6',bgFx:'snow'},
+  ocean:{bg:'#00131f',card:'#032033',textColor:'#e6f7ff',accent:'#22d3ee',bgFx:'gradient'},
+  matrix:{bg:'#000a00',card:'#041404',textColor:'#d1ffd6',accent:'#22c55e',bgFx:'rain'},
+  sunset:{bg:'#1a0a05',card:'#2b130a',textColor:'#fff4e6',accent:'#ff8a3d',bgFx:'gradient'},
+  default:{}
+};
+const hexOk=v=>/^#[0-9a-f]{6}$/i.test(v||'')?v:'';
+function applyTheme(c){
+  const ac=hexOk(c.accent), bg=hexOk(c.bg), cd=hexOk(c.card), tc=hexOk(c.textColor);
+  const A=ac||'#a78bfa', B=bg||'#000000', css=[];
+  if(ac) css.push('.hero h1 span,.typing,.logo span{color:'+ac+'}.avatar,.anos img,.profilCard img{border-color:'+ac+'}.btnB,.loginCard button{background:'+ac+'}.anos #anosSub{color:'+ac+'!important}');
+  css.push(':root{--fxc:'+A+'}');
+  if(c.bgFx==='gradient') css.push('body{background:linear-gradient(-45deg,'+B+',color-mix(in srgb,'+A+' 30%,'+B+'),'+B+',color-mix(in srgb,'+A+' 18%,'+B+'));background-size:400% 400%;animation:bgShift 14s ease infinite}');
+  else if(bg) css.push('body{background:'+bg+'}');
+  if(bg) css.push('.bottomNav{background:'+bg+'}');
+  if(cd) css.push('.newsCard,.toolCard,.stat,.link,.chatBox,.chatHead,.dashWide,.memberItem,.profilCard,.loginCard,.mabarBox,.scoreBoard,.kat,.customBlock,.toolPanel{background:'+cd+'}');
+  if(tc) css.push('body{color:'+tc+'}');
+  if(SF_FONTS[c.font]) css.push('*{font-family:\''+c.font+'\',sans-serif!important}');
+  const R={sharp:'4px',round:'22px'}[c.radius];
+  if(R) css.push('.newsCard,.toolCard,.stat,.link,.chatBox,.chatHead,.dashLive,.dashCard,.dashWide,.profilCard,.loginCard,.mabarBox,.scoreBoard,.customBlock,.anos,.toolPanel{border-radius:'+R+'}');
+  const av={float:'.avatar{animation:floaty 3s ease-in-out infinite}',pulse:'.avatar{animation:pulseAv 2s ease-in-out infinite}',glow:'.avatar{animation:glowAv 2s ease-in-out infinite alternate}',spin:'.avatar img{animation:spinAv 8s linear infinite}'}[c.avatarFx];
+  if(av) css.push(av);
+  const en={slide:'.slide.active{animation:slideUp .45s ease}',zoom:'.slide.active{animation:zoomIn .35s ease}',none:'.slide.active{animation:none}'}[c.entrance];
+  if(en) css.push(en);
+  if(c.logoFx==='rainbow') css.push('.logo{background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:rainbow 4s linear infinite}');
+  if(c.logoFx==='glow') css.push('.logo{text-shadow:0 0 10px '+A+',0 0 22px '+A+'}');
+  let st=document.getElementById('siteTheme'); if(!st){ st=document.createElement('style'); st.id='siteTheme'; document.head.appendChild(st); }
+  st.textContent=css.join('\n');
+  let fl=document.getElementById('siteFont');
+  if(SF_FONTS[c.font]){ if(!fl){ fl=document.createElement('link'); fl.id='siteFont'; fl.rel='stylesheet'; document.head.appendChild(fl); } fl.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(c.font).replace(/%20/g,'+')+':'+SF_FONTS[c.font]+'&display=swap'; }
+  else if(fl) fl.remove();
+  setFx(c.bgFx, ac||'');
+}
+function setFx(type,color){
+  const cv=document.getElementById('fxCanvas');
+  const on=['stars','snow','rain'].includes(type) && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const key=on?type+color+innerWidth+'x'+innerHeight:'';
+  if(key===fxKey) return; fxKey=key;
+  cancelAnimationFrame(fxRAF);
+  if(!on){ cv.style.display='none'; return; }
+  const ctx=cv.getContext('2d'), W=cv.width=innerWidth, H=cv.height=innerHeight;
+  const col=color||(type==='rain'?'#7dd3fc':'#ffffff');
+  const ps=Array.from({length:type==='rain'?90:60},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+.6,v:Math.random()+.4,t:Math.random()*6}));
+  cv.style.display='block'; ctx.fillStyle=col; ctx.strokeStyle=col;
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    ps.forEach(p=>{
+      if(type==='stars'){ p.t+=.03; ctx.globalAlpha=.3+.7*Math.abs(Math.sin(p.t)); ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.3); ctx.fill(); }
+      else if(type==='snow'){ p.y+=p.v; p.t+=.02; p.x+=Math.sin(p.t)*.5; if(p.y>H){ p.y=-5; p.x=Math.random()*W; } ctx.globalAlpha=.8; ctx.beginPath(); ctx.arc(p.x,p.y,p.r+.5,0,6.3); ctx.fill(); }
+      else { p.y+=p.v*9; if(p.y>H){ p.y=-20; p.x=Math.random()*W; } ctx.globalAlpha=.5; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-1,p.y+12); ctx.stroke(); }
+    });
+    fxRAF=requestAnimationFrame(loop);
+  })();
+}
+window.addEventListener('resize',()=>{ clearTimeout(window._fxT); window._fxT=setTimeout(()=>{ if(fxKey){ const t=siteLive&&siteLive.bgFx; fxKey=''; setFx(t,hexOk(siteLive&&siteLive.accent)); } },300); });
+let siteLive={};
+function renderFooter(){
+  const c=siteLive||{}, f=document.getElementById('siteFooter');
+  const showV=c.showVisits&&siteVisits>0;
+  document.getElementById('footText').textContent=c.footer||'';
+  document.getElementById('visitText').textContent=showV?'👁️ '+siteVisits.toLocaleString('id-ID')+' kunjungan':'';
+  f.style.display=(c.footer||showV)?'block':'none';
+}
+function applyExtras(c,preview){
+  siteLive=c;
+  const $=id=>document.getElementById(id);
+  const mq=$('siteMarquee'); if(c.marquee){ mq.style.display='block'; mq.firstElementChild.textContent=c.marquee; } else mq.style.display='none';
+  const wa=$('floatWA'); if(c.floatWA && CONFIG.whatsapp){ wa.href=CONFIG.whatsapp; wa.style.display='flex'; } else wa.style.display='none';
+  renderFooter();
+  window.typeMul={fast:.5,slow:1.8}[c.typeSpeed]||1;
+  let visible=0;
+  [['search','navSearch'],['game','navGame'],['chat','navChat']].forEach(([k,f])=>{
+    document.querySelectorAll('[onclick*="goSlide(\''+k+'\')"]').forEach(b=>b.style.display=c[f]===false?'none':'');
+  });
+  document.querySelectorAll('.navInner .navBtn').forEach(b=>{ if(b.style.display!=='none') visible++; });
+  document.querySelector('.navInner').style.gridTemplateColumns='repeat('+Math.max(visible,1)+',1fr)';
+  if(c.popTitle||c.popText){
+    const key=String(c.popTitle||'')+'|'+String(c.popText||'');
+    const store=c.popEvery?sessionStorage:localStorage;
+    let seen=''; try{ seen=store.getItem('panduu_pop_seen')||''; }catch(e){}
+    if(preview||seen!==key){ $('popT').textContent=c.popTitle||''; $('popB').textContent=c.popText||''; window._popKey=key; window._popStore=store; $('sitePopup').style.display='flex'; }
+  } else $('sitePopup').style.display='none';
+}
+function closePopup(){ document.getElementById('sitePopup').style.display='none'; try{ (window._popStore||localStorage).setItem('panduu_pop_seen',window._popKey||''); }catch(e){} }
+function collectSite(){
+  const d={};
+  Object.entries(SF_TEXT).forEach(([id,k])=>{ d[k]=document.getElementById(id).value.trim(); });
+  Object.entries(SF_COLOR).forEach(([id,[k,on]])=>{ d[k]=document.getElementById(on).checked?document.getElementById(id).value:''; });
+  Object.entries(SF_CHK).forEach(([id,[k]])=>{ d[k]=document.getElementById(id).checked; });
+  return d;
+}
+function fillSiteForm(c){
+  c=c||{};
+  Object.entries(SF_TEXT).forEach(([id,k])=>{ const el=document.getElementById(id); if(el) el.value=c[k]||''; });
+  Object.entries(SF_COLOR).forEach(([id,[k,on]])=>{ document.getElementById(on).checked=!!c[k]; if(c[k]) document.getElementById(id).value=c[k]; });
+  Object.entries(SF_CHK).forEach(([id,[k,def]])=>{ document.getElementById(id).checked=c[k]===undefined?def:!!c[k]; });
+}
+function previewSite(){ applySite(collectSite(),true); showToast('Pratinjau aktif • belum disimpan'); }
+function sfPreset(name){
+  const p=SF_PRESETS[name]||{};
+  Object.entries(SF_COLOR).forEach(([id,[k,on]])=>{ document.getElementById(on).checked=!!p[k]; if(p[k]) document.getElementById(id).value=p[k]; });
+  document.getElementById('sf_bgFx').value=p.bgFx||'';
+  previewSite();
+}
+async function sfExport(){
+  const txt=JSON.stringify(collectSite());
+  try{ await navigator.clipboard.writeText(txt); showToast('Pengaturan disalin'); }catch(e){ prompt('Salin teks ini:',txt); }
+}
+function sfImport(){
+  const t=prompt('Tempel pengaturan (JSON) di sini:'); if(!t) return;
+  try{ const o=JSON.parse(t); if(!o||typeof o!=='object') throw 0; fillSiteForm(o); previewSite(); showToast('Dimuat • klik Simpan & Terbitkan'); }
+  catch(e){ showToast('Format pengaturan tidak valid'); }
+}
+async function saveSite(){
+  if(!await ownerActionReady()) return;
+  const d=collectSite();
+  if(d.foto && !safeImg(d.foto)){ showToast('URL foto tidak valid'); return; }
+  if(d.cbImg && !safeImg(d.cbImg)){ showToast('URL gambar blok tidak valid'); return; }
+  const out={updatedAt:Date.now(), by:ownerUser.uid};
+  Object.entries(d).forEach(([k,val])=>{ if(typeof val==='boolean' || val) out[k]=val; });
+  try{ await fbDB.ref('panduu_site/content').set(out); ownerLog('Website diperbarui lewat editor'); showToast('✅ Website diperbarui'); }
+  catch(e){ showToast('Gagal menyimpan: periksa Database Rules'); }
+}
+async function resetSite(){
+  if(!await ownerActionReady()) return;
+  if(!confirm('Kembalikan semua tampilan ke bawaan?')) return;
+  try{ await fbDB.ref('panduu_site/content').remove(); showToast('Tampilan dikembalikan ke bawaan'); }
+  catch(e){ showToast('Gagal mengembalikan tampilan'); }
+}
+function sfPickImg(inp,targetId,max){
+  const f=inp.files&&inp.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ const img=new Image(); img.onload=()=>{
+    const sc=Math.min(1,max/Math.max(img.width,img.height));
+    const cv=document.createElement('canvas'); cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
+    cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+    document.getElementById(targetId).value=cv.toDataURL('image/jpeg',.82);
+    showToast('Gambar siap • klik Simpan & Terbitkan');
+  }; img.onerror=()=>showToast('File bukan gambar'); img.src=r.result; };
+  r.readAsDataURL(f);
+}
+
 async function loginOwner(){
   const email=document.getElementById('ownerEmail').value.trim();
   const password=document.getElementById('ownerPassword').value;
@@ -434,19 +970,111 @@ async function logoutOwner(){ if(fbAuth){ try{await fbAuth.signOut();}catch(e){s
 async function refreshOwnerPanel(){
   if(!ownerUser || ownerUser.uid!==OWNER_UID || !fbDB) return;
   try{
-    const [membersSnap,onlineSnap]=await Promise.all([fbDB.ref('panduu_members').once('value'),fbDB.ref('panduu_online').once('value')]);
-    const members=membersSnap.val()||{}, online=onlineSnap.val()||{};
-    const memberEntries=Object.entries(members), onlineEntries=Object.entries(online);
+    const [membersSnap,onlineSnap,bansSnap,maintenanceSnap]=await Promise.all([
+      fbDB.ref('panduu_members').once('value'),
+      fbDB.ref('panduu_online').once('value'),
+      fbDB.ref('panduu_bans').once('value'),
+      fbDB.ref('panduu_control/maintenance').once('value')
+    ]);
+    const members=membersSnap.val()||{}, online=onlineSnap.val()||{}, bans=bansSnap.val()||{};
+    const memberEntries=Object.entries(members), onlineEntries=Object.entries(online), banEntries=Object.entries(bans);
     document.getElementById('ownerTotalMember').innerText=memberEntries.length;
     document.getElementById('ownerOnlineNow').innerText=onlineEntries.length;
-    document.getElementById('ownerMemberList').innerHTML=memberEntries.length?memberEntries.map(([id,m])=>'<div>👤 <b>'+escapeOwnerText(m.nama||id)+'</b> • @'+escapeOwnerText(id)+' • '+escapeOwnerText(m.kota||'-')+'<br><small>Login: '+(m.lastLogin?new Date(m.lastLogin).toLocaleString('id-ID'):'-')+'</small></div><hr style="border-color:#333;margin:5px 0">').join(''):'Belum ada member.';
-    document.getElementById('ownerOnlineList').innerHTML=onlineEntries.length?onlineEntries.map(([id,m])=>'<div>🟢 <b>'+escapeOwnerText(m.nama||'Tamu')+'</b> • @'+escapeOwnerText(m.username||'tamu')+' • '+escapeOwnerText(m.kota||'-')+'</div>').join(''):'Tidak ada member online.';
-  }catch(e){ document.getElementById('ownerMemberList').innerText='Tidak bisa membaca database. Periksa Firebase Database Rules.'; }
+    document.getElementById('ownerBannedTotal').innerText=banEntries.length;
+    document.getElementById('ownerStatusWeb').innerText=(maintenanceSnap.val()||{}).enabled?'Maintenance':'Aktif';
+    document.getElementById('ownerMemberList').innerHTML=memberEntries.length?memberEntries.map(([id,m])=>
+      '<div>👤 <b>'+escapeOwnerText(m.nama||id)+'</b> • @'+escapeOwnerText(id)+' • '+escapeOwnerText(m.kota||'-')+
+      '<br><small>Login: '+(m.lastLogin?new Date(m.lastLogin).toLocaleString('id-ID'):'-')+'</small>'+
+      ' <button style="background:#ff5252;color:#fff" onclick="banMember(\''+encodeURIComponent(id)+'\')">⛔ Ban</button></div><hr style="border-color:#333;margin:5px 0">'
+    ).join(''):'Belum ada member.';
+    document.getElementById('ownerOnlineList').innerHTML=onlineEntries.length?onlineEntries.map(([id,m])=>
+      '<div>🟢 <b>'+escapeOwnerText(m.nama||'Tamu')+'</b> • @'+escapeOwnerText(m.username||'tamu')+' • '+escapeOwnerText(m.kota||'-')+
+      '<br><button style="background:#ff9500" onclick="kickMember(\''+encodeURIComponent(id)+'\')">👢 Kick dari online</button>'+
+      (m.username&&m.username!=='tamu'?' <button style="background:#ff5252;color:#fff" onclick="banMember(\''+encodeURIComponent(m.username)+'\')">⛔ Ban</button>':'')+
+      '</div><hr style="border-color:#333;margin:5px 0">'
+    ).join(''):'Tidak ada member online.';
+    document.getElementById('ownerBanList').innerHTML=banEntries.length?banEntries.map(([id,b])=>
+      '<div>⛔ @'+escapeOwnerText(id)+' '+(b.nama?' • '+escapeOwnerText(b.nama):'')+
+      ' <button style="background:#22c55e" onclick="unbanMember(\''+encodeURIComponent(id)+'\')">Buka blokir</button></div>'
+    ).join(''):'Belum ada member diblokir.';
+    refreshOwnerExtras();
+  }catch(e){ document.getElementById('ownerMemberList').innerText='Gagal membaca database. Periksa Firebase Database Rules.'; }
+}
+async function ownerActionReady(){
+  if(!ownerUser || ownerUser.uid!==OWNER_UID || !fbDB){ showToast('Akses owner ditolak'); return false; }
+  return true;
+}
+async function kickMember(encodedKey){
+  if(!await ownerActionReady()) return;
+  const key=decodeURIComponent(encodedKey);
+  if(!confirm('Kick sesi online ini? Member bisa login/buka web lagi.')) return;
+  try{ await fbDB.ref('panduu_online/'+key).remove(); ownerLog('Kick sesi online'); showToast('Member dikeluarkan dari daftar online'); refreshOwnerPanel(); }
+  catch(e){ showToast('Kick gagal: periksa Database Rules'); }
+}
+async function banMember(encodedUsername){
+  if(!await ownerActionReady()) return;
+  const username=decodeURIComponent(encodedUsername);
+  if(!username || username==='tamu') return;
+  if(!confirm('Blokir @'+username+'?')) return;
+  try{
+    const snap=await fbDB.ref('panduu_members/'+username).once('value');
+    const m=snap.val()||{};
+    await fbDB.ref('panduu_bans/'+username).set({nama:m.nama||username, at:Date.now(), by:ownerUser.uid});
+    const online=await fbDB.ref('panduu_online').once('value');
+    const data=online.val()||{};
+    await Promise.all(Object.entries(data).filter(([k,v])=>v.username===username).map(([k])=>fbDB.ref('panduu_online/'+k).remove()));
+    ownerLog('Blokir @'+username); showToast('@'+username+' berhasil diblokir');
+    refreshOwnerPanel();
+  }catch(e){ showToast('Ban gagal: periksa Database Rules'); }
+}
+async function unbanMember(encodedUsername){
+  if(!await ownerActionReady()) return;
+  const username=decodeURIComponent(encodedUsername);
+  if(!confirm('Buka blokir @'+username+'?')) return;
+  try{ await fbDB.ref('panduu_bans/'+username).remove(); ownerLog('Buka blokir @'+username); showToast('Blokir dibuka'); refreshOwnerPanel(); }
+  catch(e){ showToast('Gagal membuka blokir'); }
+}
+async function toggleMaintenance(enabled){
+  if(!await ownerActionReady()) return;
+  try{ await fbDB.ref('panduu_control/maintenance').set({enabled:enabled,updatedAt:Date.now(),by:ownerUser.uid}); ownerLog(enabled?'Maintenance ON':'Maintenance OFF'); showToast(enabled?'Maintenance diaktifkan':'Website dibuka kembali'); refreshOwnerPanel(); }
+  catch(e){ showToast('Gagal mengubah status website'); }
+}
+async function saveAnnouncement(){
+  if(!await ownerActionReady()) return;
+  const text=document.getElementById('ownerAnnouncement').value.trim();
+  if(!text){ showToast('Tulis pengumuman dulu'); return; }
+  try{ await fbDB.ref('panduu_control/announcement').set({text:text,updatedAt:Date.now(),by:ownerUser.uid}); ownerLog('Pengumuman: '+text); showToast('Pengumuman dikirim'); }
+  catch(e){ showToast('Gagal mengirim pengumuman'); }
+}
+async function clearAnnouncement(){
+  if(!await ownerActionReady()) return;
+  try{ await fbDB.ref('panduu_control/announcement').remove(); document.getElementById('ownerAnnouncement').value=''; showToast('Pengumuman dihapus'); }
+  catch(e){ showToast('Gagal menghapus pengumuman'); }
 }
 function escapeOwnerText(value){ return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 
 function cekLogin(){ let user=localStorage.getItem('panduu_user'); if(user){ let u=JSON.parse(user); document.getElementById('loginBox').style.display='none'; document.getElementById('profilBox').style.display='block'; document.getElementById('profilNama').innerText=u.nama; document.getElementById('profilUser').innerText='@'+u.username; document.getElementById('profilKota').innerText=u.kota; if(u.foto) document.getElementById('profilFoto').src=u.foto; document.getElementById('profilLogin').innerText=localStorage.getItem('panduu_login_count')||'1'; updateSkorUI(); } else { document.getElementById('loginBox').style.display='block'; document.getElementById('profilBox').style.display='none'; } }
-function doLogin(){ let nama=document.getElementById('loginNama').value.trim(); let user=document.getElementById('loginUser').value.trim().replace('@',''); let kota=document.getElementById('loginKota').value.trim()||'Indonesia'; let pass=document.getElementById('loginPass').value.trim(); if(!nama||!user){ alert('Isi Nama & Username dulu!'); return; } if(!pass){ alert('Isi Password dulu!'); return; } localStorage.setItem('panduu_user',JSON.stringify({nama:nama,username:user,kota:kota,foto:CONFIG.fotoAnos})); localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1)); showToast('✅ Selamat datang, '+nama+'!'); cekLogin(); if(fbConnected && fbDB){ fbDB.ref('panduu_members/'+user).set({nama:nama, kota:kota, lastLogin:Date.now()}); if(window._fbUpdateOnline) window._fbUpdateOnline(); } }
+async function doLogin(){
+  let nama=document.getElementById('loginNama').value.trim();
+  let user=document.getElementById('loginUser').value.trim().replace('@','').toLowerCase();
+  let kota=document.getElementById('loginKota').value.trim()||'Indonesia';
+  let pass=document.getElementById('loginPass').value.trim();
+  if(!nama||!user){ alert('Isi Nama & Username dulu!'); return; }
+  if(!pass){ alert('Isi Password dulu!'); return; }
+  if(fbDB){
+    try{
+      const banSnap=await fbDB.ref('panduu_bans/'+user).once('value');
+      if(banSnap.exists()){ alert('Akun/username ini diblokir oleh owner.'); return; }
+    }catch(e){ alert('Tidak bisa memeriksa status akun. Coba lagi.'); return; }
+  }
+  localStorage.setItem('panduu_user',JSON.stringify({nama:nama,username:user,kota:kota,foto:CONFIG.fotoAnos}));
+  localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1));
+  showToast('✅ Selamat datang, '+nama+'!'); cekLogin();
+  if(fbConnected && fbDB){
+    fbDB.ref('panduu_members/'+user).set({nama:nama,kota:kota,lastLogin:Date.now()});
+    if(window._fbUpdateOnline) window._fbUpdateOnline();
+  }
+}
 function doLogout(){ if(confirm('Logout?')){ localStorage.removeItem('panduu_user'); if(fbOnlineRef) fbOnlineRef.set({nama:'Tamu', username:'tamu', kota:'Indonesia', time:Date.now()}); showToast('👋 Sampai jumpa lagi!'); cekLogin(); } }
 function showToast(t){ let el=document.getElementById('toast'); el.innerText=t; el.style.display='block'; setTimeout(()=>el.style.display='none',2200); }
 window.addEventListener('load',()=>{ let room=new URLSearchParams(location.search).get('room'); if(room){ setTimeout(()=>{ goSlide('game'); document.getElementById('kodeJoin').value=room; showToast('🔗 Link undangan terdeteksi! Pencet Gabung'); },800); } });
