@@ -118,6 +118,73 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
 .jujurBox{display:none!important}
 @keyframes tk{to{transform:translateX(-100%)}}
 .dashCard b{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+
+.pfWrap{position:relative;width:72px;height:72px;margin:0 auto}
+.pfCam{position:absolute;right:-6px;bottom:-4px;width:28px;height:28px;border-radius:50%;background:#a78bfa;color:#000;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:2px solid #111}
+.pfReset{background:none;border:0;color:#888;font-size:10px;margin-top:6px;cursor:pointer;text-decoration:underline}
+.gIcoBtn:active{opacity:.85}
+.hmModal{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+.hmBox{background:#15120a;border:1px solid #ffaa00;border-radius:16px 16px 0 0;width:100%;max-width:480px;max-height:90vh;overflow:auto;padding:14px 14px 22px}
+.hmBox h3{font-size:14px;margin-bottom:8px}
+.hmBox label{display:block;font-size:10px;font-weight:700;color:#ffaa00;margin-top:10px}
+.hmBox input[type=text],.hmBox textarea{width:100%;background:#080808;color:#fff;border:1px solid #444;border-radius:8px;padding:9px;margin-top:3px;font-size:11px;outline:none}
+.hmBox textarea{min-height:64px;resize:vertical}
+.hmBox .hmPrev{display:flex;align-items:center;gap:10px;margin-top:6px}
+.hmBox .hmPrev img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa}
+.hmBox .hmAct{display:flex;gap:8px;margin-top:14px}
+.hmBox .hmAct button{flex:1;padding:10px;border-radius:10px;border:0;font-weight:800;font-size:11px;cursor:pointer}
+.lnkRow{background:#080808;border:1px solid #3a2f12;border-radius:10px;padding:8px;margin-top:7px}
+.lnkRow .lnkTop{display:flex;gap:6px;align-items:center}
+.lnkRow input{background:#111!important;margin:3px 0!important}
+.lnkRow .lnkIco{width:48px!important;flex:none;text-align:center}
+.lnkRow button.lnkDel{background:#ff5252;color:#fff;margin:0;padding:8px 10px;flex:none}
+.lnkEmpty{font-size:10px;color:#888;margin-top:6px}
+</style>
+<style>
+/* ===== Staff Command Center ===== */
+.scFab{position:fixed;right:12px;bottom:146px;z-index:98;width:48px;height:48px;border-radius:50%;border:0;font-size:21px;display:none;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:#0b0b10;box-shadow:0 4px 16px rgba(0,0,0,.6),0 0 0 2px var(--sc,#38bdf8)}
+.scFab i{position:absolute;top:-4px;right:-4px;background:#ff3b30;color:#fff;font:800 9px Inter;border-radius:10px;padding:2px 5px;font-style:normal}
+.scM{position:fixed;inset:0;z-index:310;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center}
+.scM.on{display:flex}
+.scBox{width:100%;max-width:480px;height:92vh;background:#0b0b10;border:1px solid var(--sc,#38bdf8);border-bottom:0;border-radius:18px 18px 0 0;display:flex;flex-direction:column;animation:fade .2s}
+.scHd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #1f1f28}
+.scHd b{font-size:14px;color:var(--sc,#38bdf8)}
+.scHd button,.scBox button{background:#1b1b24;color:#fff;border:1px solid #2b2b38;border-radius:9px;padding:7px 10px;font-weight:700;font-size:11px;cursor:pointer;margin:3px 3px 0 0}
+.scBox button:active{transform:scale(.96)}
+.scTabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;border-bottom:1px solid #1f1f28;scrollbar-width:none}
+.scTabs button{flex:none;margin:0;border-radius:20px;color:#999}
+.scTabs button.on{background:var(--sc,#38bdf8);color:#000;border-color:var(--sc,#38bdf8)}
+#scBody{flex:1;overflow-y:auto;padding:10px 10px calc(20px + env(safe-area-inset-bottom,0px))}
+.scGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scStat{background:#13131b;border:1px solid #23232e;border-radius:12px;padding:11px}
+.scStat b{font-size:20px;display:block}.scStat small{color:#888;font-size:10px}
+.scCard{background:#10101a;border:1px solid #22222e;border-radius:13px;padding:11px;margin-top:9px;font-size:11px;line-height:1.55}
+.scCard>b{font-size:12px}
+.scCard input,.scCard textarea,.scCard select{width:100%;background:#07070b;color:#fff;border:1px solid #2b2b38;border-radius:9px;padding:9px;font-size:11px;outline:none;margin-top:6px}
+.scCard textarea{min-height:56px;resize:vertical}
+.scRow{display:flex;gap:6px;align-items:center}.scRow input{flex:1}
+.scFeed{max-height:230px;overflow-y:auto;margin-top:6px}
+.scFeed>div{padding:6px 0;border-bottom:1px solid #1a1a24;word-break:break-word}
+.scBars{display:flex;align-items:flex-end;gap:5px;height:84px;margin-top:8px}
+.scBars div{flex:1;text-align:center;font-size:8px;color:#888;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.scBars i{display:block;background:linear-gradient(var(--sc,#38bdf8),transparent);border-radius:5px 5px 0 0;min-height:3px}
+.scChip{display:inline-block;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;background:#1b1b24;border:1px solid #2b2b38;margin:2px 3px 0 0}
+.scChip.ok{color:#22c55e;border-color:#22c55e55}.scChip.no{color:#555;text-decoration:line-through}.scChip.bad{color:#f87171;border-color:#f8717155}
+.scBox .scDanger{background:#3a0d0d;border-color:#f87171;color:#fecaca}
+.scBox .scGo{background:var(--sc,#38bdf8);color:#000;border-color:transparent}
+.scRx{margin-top:3px}.scRx button{background:#14141c;border:1px solid #262633;color:#ccc;border-radius:20px;padding:2px 7px;font-size:10px;margin:0 3px 0 0;cursor:pointer}
+.scRx button.me{border-color:#1d9bf0;color:#fff;background:#0a1a2a}
+.scRx .stf{border-color:#38bdf855}
+.scPbox{width:calc(100% - 24px);max-width:456px;margin-top:70px;background:#0b0b10;border:1px solid #a78bfa;border-radius:16px;padding:10px;animation:fade .15s}
+.scPbox input{width:100%;background:#000;border:1px solid #333;border-radius:10px;padding:11px;color:#fff;font-size:13px;outline:none}
+#scPl{max-height:52vh;overflow-y:auto;margin-top:6px}
+#scPl div{padding:10px;border-radius:9px;font-size:12px;cursor:pointer}#scPl div.on,#scPl div:active{background:#a78bfa2a}
+.scAch{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.scAch div{background:#111;border:1px solid #a78bfa66;border-radius:11px;padding:8px 2px;text-align:center;font-size:9px;line-height:1.3}
+.scAch div span{font-size:20px;display:block}.scAch div.lk{filter:grayscale(1);opacity:.35;border-color:#222}
+.scTop{display:flex;gap:6px;align-items:center}
+.scTop button{position:relative;background:#111;border:1px solid #2a2a2a;color:#fff;border-radius:20px;width:30px;height:26px;font-size:12px;cursor:pointer}
+.scTop button i{position:absolute;top:-5px;right:-4px;background:#ff3b30;font:800 8px Inter;border-radius:9px;padding:1px 4px;font-style:normal}
 </style>
 </head>
 <body>
@@ -132,7 +199,8 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
   <div class="hero"><div class="avatar"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"></div>
   <h1><b id="siteNama" style="font:inherit">Panduu</b><span class="verified" data-vf="home"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h1>
   <div class="typing" id="typing"></div><p id="siteBio">Wellcome to Panduu.web.id<br>Developer & Creator dari <b style="color:#fff">SIDOARJO</b>.</p>
-  <div class="btnRow"><button class="btn btnW" onclick="goSlide('search')">🛠️ AM Tools</button><button class="btn btnB" onclick="goSlide('game')">🎮 Mabar 2 HP</button><button class="btn btnG" onclick="goSlide('chat')">💬 Chat</button></div></div>
+  <div class="btnRow"><button class="btn btnW" onclick="goSlide('search')">🛠️ AM Tools</button><button class="btn btnB" onclick="goSlide('game')">🎮 Mabar 2 HP</button><button class="btn btnG" onclick="goSlide('chat')">💬 Chat</button></div>
+  <div class="btnRow"><button id="homeEditBtn" class="btn btnG" style="display:none" onclick="openHomeEdit()">✏️ Edit Profil Home</button></div></div>
 
   <div class="dashLive" id="secDash">
     <h3>📊 Dashboard Live <span style="font-size:9px;background:#22c55e;color:#000;padding:3px 7px;border-radius:20px" id="dashBadge">● FIREBASE panduu-ad0a6</span></h3>
@@ -217,8 +285,8 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
 </div>
 
 <div id="slide-profil" class="slide">
-  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Masuk ke Panduu 🔐</h2><p>Cukup username dan sandi.</p><div class="authTabs"><button id="tabMasuk" class="on" onclick="authTab('masuk')">Masuk</button><button id="tabDaftar" onclick="authTab('daftar')">Daftar</button></div><input id="loginUser" placeholder="Username" autocomplete="username" autocapitalize="none"><div style="position:relative"><input id="loginPass" type="password" placeholder="Sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><span onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer">👁️</span></div><button id="authBtn" onclick="doLogin()">🔐 Masuk</button><div style="text-align:center;color:#666;margin:8px 0;font-size:10px">— atau —</div><button id="googleBtn" onclick="loginGoogle()" style="background:#fff;color:#000;width:100%">🔵 Masuk dengan Google</button><p id="authStatus" style="color:#ffaa00"></p></div></div>
-  <div id="profilBox" style="display:none"><div class="profilCard"><img data-foto id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg"><h2><span id="profilNama">Nama Lo</span> <span class="verified" data-vf="profil" id="profilVf" style="display:none"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span id="roleBadge"></span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
+  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Masuk ke Panduu 🔐</h2><p>Cukup username dan sandi.</p><div class="authTabs"><button id="tabMasuk" class="on" onclick="authTab('masuk')">Masuk</button><button id="tabDaftar" onclick="authTab('daftar')">Daftar</button></div><input id="loginUser" placeholder="Username" autocomplete="username" autocapitalize="none"><div style="position:relative"><input id="loginPass" type="password" placeholder="Sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><span onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer">👁️</span></div><button id="authBtn" onclick="doLogin()">🔐 Masuk</button><div style="text-align:center;color:#666;margin:8px 0;font-size:10px">— atau —</div><button id="googleBtn" onclick="loginGoogle()" style="background:#fff;color:#1f1f1f;width:100%;display:flex;align-items:center;justify-content:center;gap:9px"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" style="flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Masuk dengan Google</span></button><p id="authStatus" style="color:#ffaa00"></p></div></div>
+  <div id="profilBox" style="display:none"><div class="profilCard"><div class="pfWrap"><img id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" alt="Foto profil"><label class="pfCam" title="Ganti foto profil">📷<input type="file" accept="image/*" onchange="pickMyFoto(this)" hidden></label></div><button id="pfReset" class="pfReset" onclick="resetMyFoto()" style="display:none">Hapus foto</button><h2><span id="profilNama">Nama Lo</span> <span class="verified" data-vf="profil" id="profilVf" style="display:none"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span id="roleBadge"></span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
   <div class="section"><h2>📊 Skor Lo</h2><div class="stats"><div class="stat"><b id="profilMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="profilMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="profilCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="profilLogin">1</b><br><small>Login</small></div></div></div>
   <div class="section" id="dailyRewardCard"><h2>🎁 Hadiah Harian</h2><p class="sub">Check-in setiap hari untuk mengumpulkan poin.</p><div class="stats"><div class="stat"><b id="dailyPoints">0</b><small>Total Poin</small></div><div class="stat"><b id="dailyStreak">0</b><small>Streak Hari</small></div></div><button class="btn btnB" style="width:100%" onclick="claimDailyReward()">🎁 Klaim 25 Poin Hari Ini</button><small id="dailyRewardStatus" style="display:block;color:#aaa;margin-top:6px"></small></div>
   <div class="section"><h2>⚔️ Pangkat</h2><div class="lvCard"><b id="lvName">Lv.1</b><small id="lvSub"></small><div class="battBar"><div class="battFill" id="lvBar" style="width:0"></div></div></div></div>
@@ -284,12 +352,10 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
       <label>Kutipan kartu karakter</label><input type="text" id="sf_anosQuote">
       <label>Keterangan di bawah kutipan</label><input type="text" id="sf_anosSub">
       <div class="grp">Kontak & Link</div>
-      <label>Nomor WhatsApp</label><input type="text" id="sf_wa" placeholder="088376846674">
-      <label>TikTok</label><input type="url" id="sf_tiktok" placeholder="https://tiktok.com/@...">
-      <label>Instagram</label><input type="url" id="sf_ig" placeholder="https://instagram.com/...">
-      <label>YouTube</label><input type="url" id="sf_yt" placeholder="https://youtube.com/@...">
-      <label>Link tambahan (satu baris: emoji | judul | keterangan | URL)</label>
-      <textarea id="sf_links" placeholder="🛒 | Toko Saya | Pesan di sini | https://contoh.com"></textarea>
+      <label>Link & sosial media (ubah, hapus, atau tambah)</label>
+      <div id="sfLinkList"></div>
+      <button type="button" onclick="sfLinkAdd()">➕ Tambah Link</button><button type="button" onclick="sfLinksSave()" style="background:#22c55e;color:#000">💾 Simpan Link</button>
+      <p class="hint">Isi URL lengkap (https://...). Untuk WhatsApp boleh isi nomor saja, contoh 0881234567. Tombol 🗑️ menghapus link dari halaman Profil.</p>
       <div class="grp">Blok Kustom di Beranda</div>
       <label>Judul</label><input type="text" id="sf_cbTitle">
       <label>Isi teks</label><textarea id="sf_cbText"></textarea>
@@ -337,7 +403,7 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
     </details>
     <details class="siteEditor" id="staffManager"><summary>🛡️ Manajemen Role Staff</summary><p class="hint">Owner menetapkan role lewat username member.</p><label>Username</label><input id="staffUid" type="text" placeholder="username member"><label>Role</label><select id="staffRole"><option value="admin">Admin</option><option value="moderator">Moderator</option><option value="remove">Cabut role</option></select><button onclick="saveStaffRole()">Simpan Role</button><div class="grp">Daftar staff</div><div id="staffList" class="ownerTable"></div></details>
     <details class="siteEditor"><summary>⌨️ Terminal Owner</summary><div id="termOut" class="ownerTable" style="max-height:150px;overflow:auto;font-family:monospace">ketik <b>help</b></div><input id="termIn" type="text" placeholder="&gt; perintah" autocapitalize="none" onkeydown="if(event.key==='Enter')runCmd()"></details>
-    <details class="siteEditor"><summary>🎵 Radio &amp; Lagu (Owner)</summary><p class="hint">Pakai link mp3 langsung (https://...mp3). Semua member yang menyalakan radio mendengar lagu yang sama.</p><input id="rdJudul" type="text" placeholder="Judul lagu"><input id="rdUrl" type="text" placeholder="Link mp3 langsung"><button onclick="radioAdd()">➕ Tambah Lagu</button><button onclick="radioNext()">⏭️ Berikut</button><button onclick="radioStop()" style="background:#ff5252;color:#fff">⏹️ Stop</button><div id="radioAdmin" class="ownerTable">Belum ada lagu.</div></details>
+    <details class="siteEditor"><summary>🎵 Radio &amp; Lagu (Owner)</summary><p class="hint">Ambil lagu dari file di HP (maks 4 MB) atau pakai link mp3 langsung. Semua member yang menyalakan radio mendengar lagu yang sama.</p><input id="rdJudul" type="text" placeholder="Judul lagu"><label>Ambil dari file</label><input id="rdFile" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.opus" onchange="radioPick(this)" style="font-size:10px;color:#aaa;margin-top:4px"><small id="rdFileInfo" class="hint" style="display:block"></small><label>atau link mp3</label><input id="rdUrl" type="text" placeholder="https://...mp3"><button onclick="radioAdd()">➕ Tambah Lagu</button><button onclick="radioNext()">⏭️ Berikut</button><button onclick="radioStop()" style="background:#ff5252;color:#fff">⏹️ Stop</button><div id="radioAdmin" class="ownerTable">Belum ada lagu.</div></details>
     <details class="siteEditor"><summary>🚩 Laporan Member</summary><div id="reportList" class="ownerTable">Belum ada laporan.</div></details>
     <details class="siteEditor"><summary>✓ Edit Centang Verified</summary><p class="hint">Ubah warna dan bentuk centang di semua halaman, seperti centang biru WhatsApp.</p><label>Lokasi centang (diedit terpisah)</label><select id="vfLoc" onchange="vfLoad()"></select><label>Warna</label><input id="vfColor" type="color" value="#1d9bf0" style="width:100%;height:36px" oninput="vfPrev()"><label>Bentuk</label><select id="vfShape" onchange="vfPrev()"><option value="seal">Segel bergerigi (gaya WhatsApp)</option><option value="circle">Lingkaran</option><option value="star">Bintang</option></select><label>Ukuran: <span id="vfSizeTxt">30</span>px</label><input id="vfSize" type="range" min="16" max="80" value="30" oninput="vfPrev()"><label class="chk"><input id="vfGlow" type="checkbox" checked onchange="vfPrev()"> Efek bersinar</label><div class="presets"><button onclick="vfPreset('#1d9bf0')">🔵 Biru WA</button><button onclick="vfPreset('#fbbf24')">🟡 Emas</button><button onclick="vfPreset('#22c55e')">🟢 Hijau</button><button onclick="vfPreset('#f472b6')">🌸 Pink</button></div><div style="margin:8px 0">Pratinjau: <span id="vfPrev" style="display:inline-block;width:30px;height:30px;vertical-align:middle"></span></div><button onclick="vfAllSet()">📋 Terapkan ke semua lokasi</button><button onclick="vfSave()">💾 Simpan Centang</button></details>
     <details class="siteEditor" ontoggle="if(this.open)uiRender()"><summary>🖊️ Editor Tampilan (tanpa coding)</summary><p class="hint">Pilih halaman, ketik teks baru, dan matikan bagian yang tidak mau ditampilkan. Perubahan langsung terlihat, klik Simpan supaya semua pengunjung ikut berubah.</p><label>Halaman</label><select id="uiPage" onchange="uiRender()"></select><div id="uiEdList"></div><button onclick="uiSave()">💾 Simpan Tampilan</button><button onclick="uiReset()" style="background:#ff5252;color:#fff">♻️ Kembalikan Bawaan</button></details>
@@ -397,10 +463,14 @@ const OWNER_UID = "z5emv0knpdcdLT5OEQpxaji9oVL2";
 let fbAuth=null, ownerUser=null, activeStaffRole="guest";
 const CONFIG={nama:"Panduu",username:"panduuxpungki",kota:"SIDOARJO",fotoAnos:"https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg",typingTexts:["Game Developer","Web Developer","Anos Voldigoad Mode ON","Sidoarjo Pride","Firebase panduu-ad0a6"],tiktok:"https://tiktok.com/@panduuxpungki",instagram:"https://instagram.com/panduuxpungki",youtube:"https://youtube.com/@panduuxpungki",whatsapp:"https://wa.me/6288376846674"};
 let siteExtraLinks=[];
+const BASE_LINKS=[{id:'tiktok',icon:'🎵',judul:'TikTok Panduu',sub:'@panduuxpungki'},{id:'wa',icon:'💬',judul:'WhatsApp Panduu',sub:'088376846674'},{id:'ig',icon:'📸',judul:'Instagram Panduu',sub:'@panduuxpungki'},{id:'yt',icon:'▶️',judul:'YouTube Panduu',sub:'Panduu Channel'}];
+const LINK_DEF={wa:CONFIG.whatsapp,tiktok:CONFIG.tiktok,instagram:CONFIG.instagram,youtube:CONFIG.youtube};
+let siteLinks=null;
 function renderLinks(){
-  const base=[{icon:'🎵',judul:'TikTok Panduu',sub:'@panduuxpungki',link:CONFIG.tiktok},{icon:'💬',judul:'WhatsApp Panduu',sub:'088376846674',link:CONFIG.whatsapp},{icon:'📸',judul:'Instagram Panduu',sub:'@panduuxpungki',link:CONFIG.instagram},{icon:'▶️',judul:'YouTube Panduu',sub:'Panduu Channel',link:CONFIG.youtube}].concat(siteExtraLinks);
-  const box=document.getElementById('linksContainer'); box.innerHTML='';
-  base.forEach(l=>{ const a=document.createElement('a'); a.className='link'; a.href=l.link; a.target='_blank'; a.rel='noopener'; const ic=document.createElement('div'); ic.className='ic'; ic.textContent=l.icon; const w=document.createElement('div'); const b=document.createElement('b'); b.textContent=l.judul; const sm=document.createElement('small'); sm.textContent=l.sub; w.appendChild(b); w.appendChild(document.createElement('br')); w.appendChild(sm); const ar=document.createElement('span'); ar.textContent='↗'; a.appendChild(ic); a.appendChild(w); a.appendChild(ar); box.appendChild(a); });
+  const box=document.getElementById('linksContainer'); if(!box) return; box.innerHTML='';
+  const list=(siteLinks||legacyLinks({})).map(l=>({...l,href:normLink(l.url)})).filter(l=>l.href);
+  if(!list.length){ const e=document.createElement('small'); e.style.color='#888'; e.textContent='Belum ada link.'; box.appendChild(e); return; }
+  list.forEach(l=>{ const a=document.createElement('a'); a.className='link'; a.href=l.href; a.target='_blank'; a.rel='noopener'; const ic=document.createElement('div'); ic.className='ic'; ic.textContent=l.icon||'🔗'; const w=document.createElement('div'); const b=document.createElement('b'); b.textContent=l.judul; const sm=document.createElement('small'); sm.textContent=l.sub||''; w.appendChild(b); w.appendChild(document.createElement('br')); w.appendChild(sm); const ar=document.createElement('span'); ar.textContent='↗'; a.appendChild(ic); a.appendChild(w); a.appendChild(ar); box.appendChild(a); });
 }
 renderLinks();
 function goSlide(nama){ document.querySelectorAll('.slide').forEach(s=>s.classList.remove('active')); document.getElementById('slide-'+nama).classList.add('active'); document.querySelectorAll('.navBtn').forEach(b=>b.classList.remove('active')); document.getElementById('nav-'+nama).classList.add('active'); window.scrollTo({top:0}); if(nama=='home' && !window._homeLoaded){ window._homeLoaded=true; ambilBerita('viral'); } if(nama=='game') updateSkorUI(); if(nama=='profil') cekLogin(); }
@@ -963,11 +1033,13 @@ function applySite(c,preview){
   texts=tx.length?tx:SITE_DEFAULT_TEXTS; ti=0; ci=0; del=false;
   const foto=safeImg(c.foto);
   if(foto){ CONFIG.fotoAnos=foto; document.querySelectorAll('img[data-foto]').forEach(i=>i.src=foto); }
-  CONFIG.whatsapp=waLink(c.wa)||SITE_DEFAULT_LINKS.wa;
-  CONFIG.tiktok=safeLink(c.tiktok)||SITE_DEFAULT_LINKS.tiktok;
-  CONFIG.instagram=safeLink(c.instagram)||SITE_DEFAULT_LINKS.instagram;
-  CONFIG.youtube=safeLink(c.youtube)||SITE_DEFAULT_LINKS.youtube;
-  siteExtraLinks=String(c.links||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(a=>a.length>=4&&safeLink(a[3])).map(a=>({icon:a[0]||'🔗',judul:a[1]||'Link',sub:a[2],link:safeLink(a[3])}));
+  setProfilFoto();
+  siteLinks=getLinks(c);
+  const _u=id=>{const l=siteLinks.find(x=>x.id===id);return l?normLink(l.url):''};
+  CONFIG.whatsapp=_u('wa')||SITE_DEFAULT_LINKS.wa;
+  CONFIG.tiktok=_u('tiktok')||SITE_DEFAULT_LINKS.tiktok;
+  CONFIG.instagram=_u('ig')||SITE_DEFAULT_LINKS.instagram;
+  CONFIG.youtube=_u('yt')||SITE_DEFAULT_LINKS.youtube;
   renderLinks();
   $('secDash').style.display=c.showDash===false?'none':'';
   $('secAnos').style.display=c.showAnos===false?'none':'';
@@ -986,7 +1058,7 @@ function applySite(c,preview){
   } else { cb.style.display='none'; cb.textContent=''; }
 }
 let siteVisits=0, fxRAF=0, fxKey='';
-const SF_TEXT={sf_logo:'logo',sf_nama:'nama',sf_typing:'typing',sf_bio:'bio',sf_foto:'foto',sf_anosQuote:'anosQuote',sf_anosSub:'anosSub',sf_wa:'wa',sf_tiktok:'tiktok',sf_ig:'instagram',sf_yt:'youtube',sf_links:'links',sf_cbTitle:'cbTitle',sf_cbText:'cbText',sf_cbImg:'cbImg',sf_cbBtn:'cbBtn',sf_cbLink:'cbLink',sf_font:'font',sf_radius:'radius',sf_bgFx:'bgFx',sf_avatarFx:'avatarFx',sf_entrance:'entrance',sf_logoFx:'logoFx',sf_typeSpeed:'typeSpeed',sf_marquee:'marquee',sf_popTitle:'popTitle',sf_popText:'popText',sf_footer:'footer'};
+const SF_TEXT={sf_logo:'logo',sf_nama:'nama',sf_typing:'typing',sf_bio:'bio',sf_foto:'foto',sf_anosQuote:'anosQuote',sf_anosSub:'anosSub',sf_cbTitle:'cbTitle',sf_cbText:'cbText',sf_cbImg:'cbImg',sf_cbBtn:'cbBtn',sf_cbLink:'cbLink',sf_font:'font',sf_radius:'radius',sf_bgFx:'bgFx',sf_avatarFx:'avatarFx',sf_entrance:'entrance',sf_logoFx:'logoFx',sf_typeSpeed:'typeSpeed',sf_marquee:'marquee',sf_popTitle:'popTitle',sf_popText:'popText',sf_footer:'footer'};
 const SF_COLOR={sf_accent:['accent','sf_accentOn'],sf_bg:['bg','sf_bgOn'],sf_card:['card','sf_cardOn'],sf_text:['textColor','sf_textOn']};
 const SF_CHK={sf_showDash:['showDash',true],sf_showAnos:['showAnos',true],sf_showBerita:['showBerita',true],sf_navSearch:['navSearch',true],sf_navGame:['navGame',true],sf_navChat:['navChat',true],sf_floatWA:['floatWA',false],sf_showVisits:['showVisits',false],sf_popEvery:['popEvery',false]};
 const SF_FONTS={'Poppins':'wght@400;600;700;800','Nunito':'wght@400;600;700;800','Space Grotesk':'wght@400;600;700','Orbitron':'wght@400;600;700;800','Merriweather':'wght@400;700;900'};
@@ -1093,6 +1165,7 @@ function collectSite(){
   Object.entries(SF_TEXT).forEach(([id,k])=>{ d[k]=document.getElementById(id).value.trim(); });
   Object.entries(SF_COLOR).forEach(([id,[k,on]])=>{ d[k]=document.getElementById(on).checked?document.getElementById(id).value:''; });
   Object.entries(SF_CHK).forEach(([id,[k]])=>{ d[k]=document.getElementById(id).checked; });
+  if(sfLinks) d.linkJson=JSON.stringify(sfLinksClean().filter(l=>l.url));
   return d;
 }
 function fillSiteForm(c){
@@ -1100,6 +1173,7 @@ function fillSiteForm(c){
   Object.entries(SF_TEXT).forEach(([id,k])=>{ const el=document.getElementById(id); if(el) el.value=c[k]||''; });
   Object.entries(SF_COLOR).forEach(([id,[k,on]])=>{ document.getElementById(on).checked=!!c[k]; if(c[k]) document.getElementById(id).value=c[k]; });
   Object.entries(SF_CHK).forEach(([id,[k,def]])=>{ document.getElementById(id).checked=c[k]===undefined?def:!!c[k]; });
+  sfLinks=getLinks(c); sfLinkRender();
 }
 function previewSite(){ applySite(collectSite(),true); showToast('Pratinjau aktif • belum disimpan'); }
 function sfPreset(name){
@@ -1243,7 +1317,7 @@ function escapeOwnerText(value){ return String(value).replace(/[&<>"']/g,ch=>({'
 function rewardDayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 async function loadDailyReward(){const u=getUserAsli(),name=(u.username||'').toLowerCase();if(!name||!fbDB)return;try{const snap=await fbDB.ref('panduu_rewards/'+name).once('value'),v=snap.val()||{};const today=rewardDayKey();document.getElementById('dailyPoints').textContent=v.points||0;renderLevel(v.points||0);renderShop(v.points||0,v);window._rew=v;renderXtra();document.getElementById('dailyStreak').textContent=v.streak||0;document.getElementById('dailyRewardStatus').textContent=v.lastDay===today?'✅ Hadiah hari ini sudah diklaim.':'Klaim sekarang dan kumpulkan poinmu!';}catch(e){}}
 async function claimDailyReward(){const u=getUserAsli(),name=(u.username||'').toLowerCase();if(!name||!fbDB){showToast('Login dulu untuk klaim hadiah');return;}const today=rewardDayKey();try{const ref=fbDB.ref('panduu_rewards/'+name);const result=await ref.transaction(v=>{v=v||{points:0,streak:0};if(v.lastDay===today)return;const yesterday=new Date(Date.now()-86400000),y=yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');v.streak=v.lastDay===y?(v.streak||0)+1:1;v.points=(v.points||0)+25;v.lastDay=today;v.updatedAt=Date.now();return v;});if(result.committed){showToast('🎉 +25 poin berhasil diklaim!');confetti();}else showToast('Hadiah hari ini sudah kamu klaim');await loadDailyReward();}catch(e){showToast('Gagal klaim hadiah. Periksa Firebase Rules.');}}
-function cekLogin(){ let user=localStorage.getItem('panduu_user'); if(user){ let u=JSON.parse(user); document.getElementById('loginBox').style.display='none'; document.getElementById('profilBox').style.display='block'; document.getElementById('profilNama').innerText=u.nama; document.getElementById('profilUser').innerText='@'+u.username; document.getElementById('profilKota').innerText=u.kota; if(u.foto) document.getElementById('profilFoto').src=u.foto; document.getElementById('profilLogin').innerText=localStorage.getItem('panduu_login_count')||'1'; updateSkorUI(); loadDailyReward(); } else { document.getElementById('loginBox').style.display='block'; document.getElementById('profilBox').style.display='none'; } }
+function cekLogin(){ let user=localStorage.getItem('panduu_user'); if(user){ let u=JSON.parse(user); document.getElementById('loginBox').style.display='none'; document.getElementById('profilBox').style.display='block'; document.getElementById('profilNama').innerText=u.nama; document.getElementById('profilUser').innerText='@'+u.username; document.getElementById('profilKota').innerText=u.kota; setProfilFoto(); document.getElementById('profilLogin').innerText=localStorage.getItem('panduu_login_count')||'1'; updateSkorUI(); loadDailyReward(); } else { document.getElementById('loginBox').style.display='block'; document.getElementById('profilBox').style.display='none'; } }
 
 const AUTH_DOMAIN='@panduu.app';
 let staffMap={},myUsername='',authMode='masuk',gcRef=null,gcLast=0;
@@ -1269,17 +1343,17 @@ async function doLogin(){
 async function doLogout(){if(confirm('Logout?')){try{await fbAuth.signOut();}catch(e){}showToast('👋 Sampai jumpa lagi!');}}
 async function onAuth(user){
   ownerUser=user||null;activeStaffRole='guest';
-  if(!user){localStorage.removeItem('panduu_user');myUsername='';chatStop();document.getElementById('ownerPanel').style.display='none';renderStaff();cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();return;}
+  if(!user){localStorage.removeItem('panduu_user');myUsername='';chatStop();try{scOff();}catch(e){}document.getElementById('ownerPanel').style.display='none';renderStaff();renderHomeEdit();cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();return;}
   let un=(user.email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g,'')||('u'+user.uid.slice(0,6).toLowerCase()),prof={nama:un,kota:'Indonesia'};
   try{
     const um=await fbDB.ref('panduu_usernames/'+un).once('value');
     if(um.exists()&&um.val()!==user.uid)un='u'+user.uid.slice(0,8).toLowerCase();
     if((await fbDB.ref('panduu_bans/'+un).once('value')).exists()){await fbAuth.signOut();alert('Akun ini diblokir oleh owner.');return;}
     const m=(await fbDB.ref('panduu_members/'+un).once('value')).val()||{};
-    prof={nama:m.nama||user.displayName||un,kota:m.kota||'Indonesia',color:m.color||'',guild:m.guild||''};
-    await fbDB.ref().update({['panduu_usernames/'+un]:user.uid,['panduu_members/'+un]:{nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',uid:user.uid,lastLogin:Date.now(),createdAt:m.createdAt||Date.now()}});
+    prof={nama:m.nama||user.displayName||un,kota:m.kota||'Indonesia',color:m.color||'',guild:m.guild||'',foto:safeImg(m.foto)||''};
+    await fbDB.ref().update({['panduu_usernames/'+un]:user.uid,['panduu_members/'+un]:{nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',...(prof.foto?{foto:prof.foto}:{}),uid:user.uid,lastLogin:Date.now(),createdAt:m.createdAt||Date.now()}});
   }catch(e){console.log('profil',e);}
-  localStorage.setItem('panduu_user',JSON.stringify({nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',username:un,uid:user.uid,foto:CONFIG.fotoAnos}));
+  localStorage.setItem('panduu_user',JSON.stringify({nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',username:un,uid:user.uid,foto:prof.foto||''}));
   localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1));
   myUsername=un;
   if(user.uid===OWNER_UID){activeStaffRole='owner';fbDB.ref('panduu_staff/'+un).set('owner').catch(()=>{});}
@@ -1289,17 +1363,18 @@ async function onAuth(user){
   $id('ownerPanel').style.display=staff?'block':'none';
   if(staff){$id('ownerIdentity').innerText='@'+un+' • ROLE '+activeStaffRole.toUpperCase();const sm=$id('staffManager');if(sm)sm.style.display=activeStaffRole==='owner'?'block':'none';const tm=$id('termIn');if(tm)tm.closest('details').style.display=activeStaffRole==='owner'?'block':'none';refreshOwnerPanel();}
   $id('editNama').value=prof.nama;$id('editKota').value=prof.kota;$id('myUid').innerText='UID: '+user.uid+' (tap untuk salin)';
-  xUser(un);if(staff)reportsListen();cekLogin();renderStaff();chatStart();if(window._fbUpdateOnline)window._fbUpdateOnline();
+  xUser(un);if(staff)reportsListen();cekLogin();renderStaff();renderHomeEdit();chatStart();if(window._fbUpdateOnline)window._fbUpdateOnline();
+  try{scAfterAuth();}catch(e){console.log('sc',e);}
 }
 function renderStaff(){const b=$id('roleBadge'),pv=$id('profilVf');if(pv)pv.style.display=activeStaffRole==='owner'?'inline-flex':'none';if(!b)return;const r=activeStaffRole!=='guest'?activeStaffRole:staffMap[myUsername];b.innerHTML=myUsername?(badgeR(r)||'<span style="color:#22c55e">● Member</span>'):'';}
 function renderLevel(p){const T=[[0,'Rakyat Biasa'],[50,'Prajurit'],[150,'Ksatria'],[300,'Penyihir'],[600,'Iblis'],[1000,'Raja Iblis'],[2000,'Anos Voldigoad']];let i=0;T.forEach((t,k)=>{if(p>=t[0])i=k;});const n=T[i+1];$id('lvName').innerText='Lv.'+(i+1)+' • '+T[i][1];$id('lvSub').innerText=n?(n[0]-p)+' poin lagi menuju '+n[1]:'Pangkat tertinggi! 👑';$id('lvBar').style.width=(n?Math.round((p-T[i][0])/(n[0]-T[i][0])*100):100)+'%';}
 function confetti(){const c=document.createElement('canvas');c.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:999';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);const x=c.getContext('2d'),P=Array.from({length:90},()=>({x:Math.random()*c.width,y:-20,vx:Math.random()*4-2,vy:Math.random()*4+2,s:Math.random()*6+3,c:'hsl('+Math.random()*360+',90%,60%)'}));let f=0;(function a(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s);});if(++f<140)requestAnimationFrame(a);else c.remove();})();}
 async function saveProfil(){const u=getUserAsli();if(!ownerUser||!u.username)return;const nama=$id('editNama').value.trim().slice(0,30)||u.nama,kota=$id('editKota').value.trim().slice(0,30)||u.kota;try{await fbDB.ref('panduu_members/'+u.username).update({nama,kota});localStorage.setItem('panduu_user',JSON.stringify({...u,nama,kota}));cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();showToast('✅ Profil disimpan');}catch(e){showToast('Gagal menyimpan profil');}}
 async function gantiSandi(){const p=$id('newPass').value;if(p.length<6){showToast('Sandi minimal 6 karakter');return;}try{await ownerUser.updatePassword(p);$id('newPass').value='';showToast('🔑 Sandi diganti');}catch(e){showToast(e.code==='auth/requires-recent-login'?'Login ulang dulu, lalu coba lagi':'Gagal ganti sandi');}}
-function chatStart(){if(gcRef||!fbDB)return;gcRef=fbDB.ref('panduu_chat').limitToLast(40);gcRef.on('child_added',s=>gcAdd(s.key,s.val()));gcRef.on('child_removed',s=>{const e=$id('gc-'+s.key);if(e)e.remove();});}
+function chatStart(){if(gcRef||!fbDB)return;gcRef=fbDB.ref('panduu_chat').limitToLast(40);gcRef.on('child_added',s=>gcAdd(s.key,s.val()));gcRef.on('child_removed',s=>{const e=$id('gc-'+s.key);if(e)e.remove();});gcRef.on('child_changed',s=>{const e=document.querySelector('#gc-'+s.key+' .scRx');if(e)scRx(e,(s.val()||{}).r||{});});}
 function chatStop(){if(gcRef){gcRef.off();gcRef=null;}const b=$id('chatMsgs');if(b)b.innerHTML='';}
-function gcAdd(k,m){const b=$id('chatMsgs');if(!b||!m)return;const d=document.createElement('div');d.id='gc-'+k;d.className='gcm';const del=['owner','admin','moderator'].includes(activeStaffRole);d.innerHTML=badge(m.user)+'<b style="color:'+(/^#[0-9a-f]{6}$/i.test(m.color)?m.color:'#fff')+'">'+escapeOwnerText(m.nama||m.user||'?')+'</b> <small>@'+escapeOwnerText(m.user||'')+' • '+new Date(m.at||Date.now()).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+'</small><br>'+escapeOwnerText(m.text||'')+(m.user!==myUsername?' <a onclick="report(\''+escapeOwnerText(m.user||'')+'\')">🚩</a>':'')+(del?' <a onclick="gcDel(\''+k+'\')">🗑️</a>':'');b.appendChild(d);b.scrollTop=b.scrollHeight;}
-async function gcSend(){const u=getUserAsli(),i=$id('gcInput'),t=i.value.trim();if(!u.username||!ownerUser){showToast('Login dulu');return;}if(!t)return;if(chatLocked&&activeStaffRole==='guest'){showToast('🔒 Chat dikunci owner');return;}if(Date.now()-gcLast<2000){showToast('Pelan-pelan ya ⏳');return;}gcLast=Date.now();i.value='';try{await fbDB.ref('panduu_chat').push({user:u.username,nama:u.nama,color:u.color||'',text:t.slice(0,200),at:firebase.database.ServerValue.TIMESTAMP,uid:ownerUser.uid});misInc('chat');}catch(e){showToast('Gagal kirim chat');}}
+function gcAdd(k,m){const b=$id('chatMsgs');if(!b||!m)return;const d=document.createElement('div');d.id='gc-'+k;d.className='gcm';const del=['owner','admin','moderator'].includes(activeStaffRole);d.innerHTML=badge(m.user)+'<b style="color:'+(/^#[0-9a-f]{6}$/i.test(m.color)?m.color:'#fff')+'">'+escapeOwnerText(m.nama||m.user||'?')+'</b> <small>@'+escapeOwnerText(m.user||'')+' • '+new Date(m.at||Date.now()).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+'</small><br>'+escapeOwnerText(m.text||'')+(m.user!==myUsername?' <a onclick="report(\''+escapeOwnerText(m.user||'')+'\')">🚩</a>':'')+(del?' <a onclick="gcDel(\''+k+'\')">🗑️</a>':'');try{scDecorate(d,k,m);}catch(e){}b.appendChild(d);b.scrollTop=b.scrollHeight;}
+async function gcSend(){const u=getUserAsli(),i=$id('gcInput'),t=i.value.trim();if(!u.username||!ownerUser){showToast('Login dulu');return;}if(!t)return;if(chatLocked&&activeStaffRole==='guest'){showToast('🔒 Chat dikunci owner');return;}if(window.scChatGuard&&!scChatGuard(t))return;if(Date.now()-gcLast<2000){showToast('Pelan-pelan ya ⏳');return;}gcLast=Date.now();i.value='';try{await fbDB.ref('panduu_chat').push({user:u.username,nama:u.nama,color:u.color||'',text:t.slice(0,200),at:firebase.database.ServerValue.TIMESTAMP,uid:ownerUser.uid});misInc('chat');}catch(e){showToast('Gagal kirim chat');}}
 async function gcDel(k){if(!await ownerActionReady('moderate'))return;try{await fbDB.ref('panduu_chat/'+k).remove();ownerLog('Hapus pesan chat');}catch(e){showToast('Gagal hapus');}}
 async function setRole(un,role){
   if(!await ownerActionReady('owner'))return false;
@@ -1396,7 +1471,8 @@ async function loginGoogle(){
 let radio={list:{},now:null},aud=null,srvOff=0,poll=null,memes={},guilds={},friends={},reps={},fbFr=null;
 function xInit(){
   fbDB.ref('.info/serverTimeOffset').on('value',x=>{srvOff=x.val()||0;});
-  fbDB.ref('panduu_radio').on('value',x=>{const v=x.val()||{};radio.list=v.list||{};radio.now=v.now||null;radioSync();renderRadioAdmin();renderXtra();});
+  fbDB.ref('panduu_radio/list').on('value',x=>{radio.list=x.val()||{};radioSync();renderRadioAdmin();renderXtra();});
+  fbDB.ref('panduu_radio/now').on('value',x=>{radio.now=x.val()||null;radioSync();renderRadioAdmin();renderXtra();});
   fbDB.ref('panduu_poll').on('value',x=>{poll=x.val();renderXtra();});
   fbDB.ref('panduu_memes').limitToLast(9).on('value',x=>{memes=x.val()||{};renderXtra();});
   fbDB.ref('panduu_guilds').on('value',x=>{guilds=x.val()||{};renderXtra();});
@@ -1432,14 +1508,56 @@ async function memeFire(k){const u=getUserAsli();if(!u.username)return;try{await
 async function memeDel(k){if(!await ownerActionReady('moderate'))return;try{await fbDB.ref('panduu_memes/'+k).remove();}catch(e){}}
 async function report(t){const u=getUserAsli();if(!u.username)return;const a=prompt('Alasan laporan untuk @'+t+':');if(!a)return;try{await fbDB.ref('panduu_reports').push({by:u.username,target:t,alasan:a.slice(0,120),at:Date.now()});showToast('🚩 Laporan terkirim');}catch(e){showToast('Gagal lapor');}}
 function reportsListen(){fbDB.ref('panduu_reports').limitToLast(30).on('value',x=>{reps=x.val()||{};const e=Object.entries(reps).reverse(),b=$id('reportList');if(b)b.innerHTML=e.length?e.map(([k,r])=>'<div>🚩 <b>@'+escapeOwnerText(r.target)+'</b> oleh @'+escapeOwnerText(r.by)+'<br><small>'+escapeOwnerText(r.alasan)+'</small><br><button style="background:#ff5252;color:#fff" onclick="banMember(\''+encodeURIComponent(r.target)+'\')">⛔ Ban</button><button style="background:#333;color:#fff" onclick="fbDB.ref(\'panduu_reports/'+k+'\').remove()">Hapus</button></div><hr style="border-color:#333">').join(''):'Belum ada laporan.';});}
-function radioSync(){if(!aud)return;const n=radio.now,t=n&&radio.list[n.id];if(!t){aud.pause();return;}if(aud.dataset.id!==n.id){aud.dataset.id=n.id;aud.src=t.url;aud.onloadedmetadata=()=>{const p=(Date.now()+srvOff-n.at)/1000;aud.currentTime=aud.duration&&p<aud.duration?Math.max(0,p):0;aud.play().catch(()=>{});};aud.load();}}
+const radioCache={};let radioPickData=null;
+function radioSrc(id,t){
+  if(t.url) return Promise.resolve(t.url);
+  if(radioCache[id]) return Promise.resolve(radioCache[id]);
+  return fbDB.ref('panduu_radio/files/'+id).once('value').then(x=>(radioCache[id]=x.val()||''));
+}
+function radioSync(){
+  if(!aud) return;
+  const n=radio.now,t=n&&radio.list[n.id];
+  if(!t){ aud.pause(); return; }
+  if(aud.dataset.id!==n.id){
+    aud.dataset.id=n.id; const cur=aud;
+    radioSrc(n.id,t).then(src=>{
+      if(aud!==cur||cur.dataset.id!==n.id) return;
+      if(!src){ showToast('File lagu tidak ditemukan'); return; }
+      cur.src=src;
+      cur.onloadedmetadata=()=>{ const p=(Date.now()+srvOff-n.at)/1000; cur.currentTime=cur.duration&&p<cur.duration?Math.max(0,p):0; cur.play().catch(()=>{}); };
+      cur.load();
+    }).catch(()=>showToast('Gagal memuat lagu'));
+  }
+}
+function radioPick(inp){
+  const f=inp.files&&inp.files[0],info=document.getElementById('rdFileInfo'); radioPickData=null;
+  if(!f){ if(info) info.textContent=''; return; }
+  if(!/^audio\//.test(f.type)&&!/\.(mp3|m4a|aac|wav|ogg|opus|flac)$/i.test(f.name)){ showToast('File bukan audio'); inp.value=''; if(info) info.textContent=''; return; }
+  if(f.size>4*1024*1024){ showToast('File terlalu besar (maks 4 MB). Kompres dulu.'); inp.value=''; if(info) info.textContent=''; return; }
+  const r=new FileReader();
+  r.onerror=()=>showToast('Gagal membaca file');
+  r.onload=()=>{ let d=r.result; if(!/^data:audio\//.test(d)) d=d.replace(/^data:[^;,]*/,'data:audio/mpeg'); radioPickData=d; if(info) info.textContent='✔ '+f.name+' ('+(f.size/1048576).toFixed(1)+' MB) siap ditambahkan'; const j=document.getElementById('rdJudul'); if(!j.value.trim()) j.value=f.name.replace(/\.[^.]+$/,'').slice(0,60); };
+  r.readAsDataURL(f);
+}
 function radioToggle(){if(aud){aud.pause();aud=null;}else{aud=new Audio();aud.onended=()=>{if(activeStaffRole==='owner')radioNext();};radioSync();if(radio.now)aud.play().catch(()=>{});}renderXtra();}
-async function radioAdd(){const j=$id('rdJudul').value.trim(),u=$id('rdUrl').value.trim();if(!j||!/^https?:\/\//.test(u)){showToast('Isi judul & link mp3 (https)');return;}if(!await ownerActionReady('owner'))return;try{await fbDB.ref('panduu_radio/list').push({judul:j.slice(0,60),url:u,at:Date.now()});$id('rdJudul').value=$id('rdUrl').value='';ownerLog('Tambah lagu: '+j);showToast('🎵 Lagu ditambahkan');}catch(e){showToast('Gagal. Cek Rules');}}
+async function radioAdd(){
+  const j=$id('rdJudul').value.trim(),u=$id('rdUrl').value.trim();
+  if(!j){ showToast('Isi judul lagu'); return; }
+  if(!radioPickData&&!/^https?:\/\//.test(u)){ showToast('Pilih file audio atau isi link mp3 (https)'); return; }
+  if(!await ownerActionReady('owner')) return;
+  const ref=fbDB.ref('panduu_radio/list').push(),key=ref.key;
+  try{
+    if(radioPickData){ await fbDB.ref('panduu_radio/files/'+key).set(radioPickData); await ref.set({judul:j.slice(0,60),file:1,at:Date.now()}); }
+    else await ref.set({judul:j.slice(0,60),url:u,at:Date.now()});
+    $id('rdJudul').value=$id('rdUrl').value=''; const rf=$id('rdFile'); if(rf) rf.value=''; const ri=$id('rdFileInfo'); if(ri) ri.textContent=''; radioPickData=null;
+    ownerLog('Tambah lagu: '+j); showToast('🎵 Lagu ditambahkan');
+  }catch(e){ try{ await fbDB.ref('panduu_radio/files/'+key).remove(); }catch(_){} showToast('Gagal. Cek Rules (panduu_radio/files) atau file terlalu besar'); }
+}
 async function radioPlay(id){if(!await ownerActionReady('owner'))return;try{await fbDB.ref('panduu_radio/now').set({id,at:firebase.database.ServerValue.TIMESTAMP});}catch(e){showToast('Gagal');}}
 async function radioNext(){const ids=Object.keys(radio.list);if(!ids.length)return;const i=ids.indexOf((radio.now||{}).id);radioPlay(ids[(i+1)%ids.length]);}
 async function radioStop(){if(!await ownerActionReady('owner'))return;await fbDB.ref('panduu_radio/now').remove();}
-async function radioDel(id){if(!await ownerActionReady('owner'))return;if(!confirm('Hapus lagu ini?'))return;const up={};up['panduu_radio/list/'+id]=null;if((radio.now||{}).id===id)up['panduu_radio/now']=null;await fbDB.ref().update(up);}
-function renderRadioAdmin(){const b=$id('radioAdmin');if(!b)return;const e=Object.entries(radio.list);b.innerHTML=e.length?e.map(([k,t])=>'<div>'+((radio.now||{}).id===k?'▶️ ':'🎵 ')+'<b>'+escapeOwnerText(t.judul)+'</b><br><button onclick="radioPlay(\''+k+'\')">▶️ Putar</button><button style="background:#ff5252;color:#fff" onclick="radioDel(\''+k+'\')">🗑️</button></div><hr style="border-color:#333">').join(''):'Belum ada lagu.';}
+async function radioDel(id){if(!await ownerActionReady('owner'))return;if(!confirm('Hapus lagu ini?'))return;const up={};up['panduu_radio/list/'+id]=null;up['panduu_radio/files/'+id]=null;delete radioCache[id];if((radio.now||{}).id===id)up['panduu_radio/now']=null;await fbDB.ref().update(up);}
+function renderRadioAdmin(){const b=$id('radioAdmin');if(!b)return;const e=Object.entries(radio.list);b.innerHTML=e.length?e.map(([k,t])=>'<div>'+((radio.now||{}).id===k?'▶️ ':(t.file?'📁 ':'🎵 '))+'<b>'+escapeOwnerText(t.judul)+'</b>'+(t.file?' <small>(file)</small>':'')+'<br><button onclick="radioPlay(\''+k+'\')">▶️ Putar</button><button style="background:#ff5252;color:#fff" onclick="radioDel(\''+k+'\')">🗑️</button></div><hr style="border-color:#333">').join(''):'Belum ada lagu.';}
 function renderXtra(){
   const b=$id('xtra');if(!b)return;const u=getUserAsli(),m=misi(),rw=window._rew||{},px=rw.pet||0,E=escapeOwnerText;let st=0;PX.forEach((x,i)=>{if(px>=x)st=i;});
   const t=radio.list[(radio.now||{}).id],on=Object.values(fbOnlineData||{}).map(o=>o.username);
@@ -1521,9 +1639,332 @@ function vfPrev(q){const g=vfGet(),p=$id('vfPrev');$id('vfSizeTxt').innerText=g.
 function vfAllSet(){vfNorm();const g=vfGet();Object.keys(VFL).forEach(k=>vfAll[k]={...g});applyVerified(vfAll);showToast('Diterapkan ke semua lokasi (belum disimpan)');}
 function vfInline(){const c=vfC('chat');return '<span style="display:inline-block;width:'+c.size+'px;height:'+c.size+'px;vertical-align:middle">'+badgeSvg(c)+'</span>';}
 async function vfSave(){if(!await ownerActionReady('owner'))return;vfNorm();try{await fbDB.ref('panduu_control/verified').set(vfAll);ownerLog('Edit centang verified');showToast('✓ Centang disimpan untuk semua orang');}catch(e){showToast('Gagal menyimpan. Cek Firebase Rules');}}
+
+// ===== LINK MANAGER (OWNER) =====
+let sfLinks=null;
+function normLink(u){u=String(u||'').trim();if(!u)return'';const x=safeLink(u);if(x)return x;if(/^\+?[\d\s-]{6,}$/.test(u))return waLink(u);return'';}
+function legacyLinks(c){
+  c=c||{};
+  const urls={tiktok:c.tiktok||LINK_DEF.tiktok,wa:c.wa?waLink(c.wa):LINK_DEF.wa,ig:c.instagram||LINK_DEF.instagram,yt:c.youtube||LINK_DEF.youtube};
+  const out=BASE_LINKS.map(b=>({...b,url:urls[b.id]}));
+  String(c.links||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(a=>a.length>=4&&safeLink(a[3])).forEach((a,i)=>out.push({id:'x'+i,icon:a[0]||'🔗',judul:a[1]||'Link',sub:a[2]||'',url:a[3]}));
+  return out;
+}
+function getLinks(c){
+  if(c&&c.linkJson){try{const a=JSON.parse(c.linkJson);if(Array.isArray(a))return a.slice(0,30).map(l=>({id:String(l.id||''),icon:String(l.icon||'🔗').slice(0,4),judul:String(l.judul||'Link').slice(0,40),sub:String(l.sub||'').slice(0,60),url:String(l.url||'').slice(0,500)}));}catch(e){}}
+  return legacyLinks(c);
+}
+function sfLinkRender(){
+  const b=document.getElementById('sfLinkList'); if(!b) return;
+  if(!sfLinks) sfLinks=[];
+  b.innerHTML='';
+  if(!sfLinks.length){ const e=document.createElement('div'); e.className='lnkEmpty'; e.textContent='Belum ada link. Tekan ➕ Tambah Link.'; b.appendChild(e); return; }
+  sfLinks.forEach((l,i)=>{
+    const row=document.createElement('div'); row.className='lnkRow';
+    const top=document.createElement('div'); top.className='lnkTop';
+    const mk=(ph,val,key,cls,type)=>{ const inp=document.createElement('input'); inp.type=type||'text'; inp.placeholder=ph; inp.value=val||''; if(cls) inp.className=cls; inp.oninput=()=>{ sfLinks[i][key]=inp.value; }; return inp; };
+    const ico=mk('🔗',l.icon,'icon','lnkIco'); ico.maxLength=4;
+    const jud=mk('Judul (mis. TikTok Panduu)',l.judul,'judul'); jud.maxLength=40;
+    const del=document.createElement('button'); del.type='button'; del.className='lnkDel'; del.textContent='🗑️'; del.title='Hapus link ini';
+    del.onclick=()=>{ if(!confirm('Hapus link "'+(sfLinks[i].judul||'ini')+'"?')) return; sfLinks.splice(i,1); sfLinkRender(); showToast('Link dihapus • tekan 💾 Simpan Link'); };
+    top.appendChild(ico); top.appendChild(jud); top.appendChild(del);
+    const sub=mk('Keterangan (mis. @panduuxpungki)',l.sub,'sub'); sub.maxLength=60;
+    const url=mk(l.id==='wa'?'https://wa.me/... atau nomor WA':'https://...',l.url,'url'); url.maxLength=500;
+    row.appendChild(top); row.appendChild(sub); row.appendChild(url); b.appendChild(row);
+  });
+}
+function sfLinkAdd(){ if(!sfLinks) sfLinks=[]; if(sfLinks.length>=30){showToast('Maksimal 30 link');return;} sfLinks.push({id:'n'+Date.now().toString(36),icon:'🔗',judul:'',sub:'',url:''}); sfLinkRender(); }
+function sfLinksClean(){
+  return (sfLinks||[]).map(l=>({id:String(l.id||'').slice(0,20),icon:String(l.icon||'🔗').trim().slice(0,4)||'🔗',judul:String(l.judul||'').trim().slice(0,40)||'Link',sub:String(l.sub||'').trim().slice(0,60),url:String(l.url||'').trim().slice(0,500)}));
+}
+async function sfLinksSave(){
+  if(!await ownerActionReady()) return;
+  const list=sfLinksClean();
+  const bad=list.find(l=>l.url&&!normLink(l.url));
+  if(bad){ showToast('URL "'+bad.judul+'" tidak valid (harus diawali https://)'); return; }
+  const clean=list.filter(l=>l.url);
+  try{ await fbDB.ref('panduu_site/content/linkJson').set(JSON.stringify(clean)); await fbDB.ref('panduu_site/content/updatedAt').set(Date.now()); ownerLog('Edit link sosial'); showToast('✅ Link disimpan'); }
+  catch(e){ showToast('Gagal menyimpan link. Cek Firebase Rules'); }
+}
+
+// ===== FOTO PROFIL MEMBER (SIAPA SAJA) =====
+function fileToSquare(file,size,q){
+  return new Promise((res,rej)=>{
+    if(!file||!/^image\//.test(file.type)){rej(new Error('bukan gambar'));return;}
+    const r=new FileReader();
+    r.onerror=()=>rej(new Error('baca gagal'));
+    r.onload=()=>{ const img=new Image(); img.onerror=()=>rej(new Error('gambar rusak')); img.onload=()=>{
+      const m=Math.min(img.width,img.height),sx=(img.width-m)/2,sy=(img.height-m)/2,cv=document.createElement('canvas'); cv.width=cv.height=size;
+      cv.getContext('2d').drawImage(img,sx,sy,m,m,0,0,size,size); res(cv.toDataURL('image/jpeg',q||.8)); };
+      img.src=r.result; };
+    r.readAsDataURL(file);
+  });
+}
+function setProfilFoto(){
+  const el=document.getElementById('profilFoto'); if(!el) return;
+  const u=getUserAsli(),mine=safeImg(u.foto);
+  el.src=mine||CONFIG.fotoAnos;
+  const rb=document.getElementById('pfReset'); if(rb) rb.style.display=mine?'inline-block':'none';
+}
+async function pickMyFoto(inp){
+  const f=inp.files&&inp.files[0]; inp.value='';
+  const u=getUserAsli();
+  if(!f) return;
+  if(!ownerUser||!u.username){ showToast('Login dulu'); return; }
+  try{
+    const d=await fileToSquare(f,160,.78);
+    await fbDB.ref('panduu_members/'+u.username+'/foto').set(d);
+    localStorage.setItem('panduu_user',JSON.stringify({...u,foto:d}));
+    setProfilFoto(); showToast('📷 Foto profil diganti');
+  }catch(e){ showToast(e&&e.message==='bukan gambar'?'File bukan gambar':'Gagal ganti foto. Cek Firebase Rules'); }
+}
+async function resetMyFoto(){
+  const u=getUserAsli(); if(!ownerUser||!u.username) return;
+  if(!confirm('Hapus foto profilmu?')) return;
+  try{ await fbDB.ref('panduu_members/'+u.username+'/foto').remove(); localStorage.setItem('panduu_user',JSON.stringify({...u,foto:''})); setProfilFoto(); showToast('Foto dihapus'); }
+  catch(e){ showToast('Gagal menghapus foto'); }
+}
+
+// ===== EDIT PROFIL DI HOME (OWNER) =====
+function renderHomeEdit(){ const b=document.getElementById('homeEditBtn'); if(b) b.style.display=(ownerUser&&activeStaffRole==='owner')?'inline-block':'none'; }
+let hmFoto='';
+function openHomeEdit(){
+  if(!ownerUser||activeStaffRole!=='owner'){ showToast('Hanya Owner yang bisa edit profil Home'); return; }
+  closeHomeEdit();
+  const c=siteData||{}; hmFoto=safeImg(c.foto)||'';
+  const w=document.createElement('div'); w.className='hmModal'; w.id='hmModal';
+  w.onclick=e=>{ if(e.target===w) closeHomeEdit(); };
+  const box=document.createElement('div'); box.className='hmBox'; w.appendChild(box);
+  const h=document.createElement('h3'); h.textContent='✏️ Edit Profil Home'; box.appendChild(h);
+  const lab=t=>{ const l=document.createElement('label'); l.textContent=t; box.appendChild(l); return l; };
+  lab('Foto profil');
+  const pv=document.createElement('div'); pv.className='hmPrev';
+  const im=document.createElement('img'); im.id='hmImg'; im.alt=''; im.src=hmFoto||CONFIG.fotoAnos; pv.appendChild(im);
+  const fi=document.createElement('input'); fi.type='file'; fi.accept='image/*'; fi.style.cssText='font-size:10px;color:#aaa';
+  fi.onchange=async()=>{ const f=fi.files&&fi.files[0]; if(!f) return; try{ hmFoto=await fileToSquare(f,320,.85); im.src=hmFoto; }catch(e){ showToast('File bukan gambar'); } };
+  pv.appendChild(fi); box.appendChild(pv);
+  lab('Nama di beranda'); const nm=document.createElement('input'); nm.type='text'; nm.id='hmNama'; nm.maxLength=40; nm.value=c.nama||'Panduu'; box.appendChild(nm);
+  lab('Teks mengetik (satu baris = satu teks)'); const ty=document.createElement('textarea'); ty.id='hmTyping'; ty.value=c.typing||CONFIG.typingTexts.join('\n'); box.appendChild(ty);
+  lab('Deskripsi singkat'); const bi=document.createElement('textarea'); bi.id='hmBio'; bi.value=c.bio||'Wellcome to Panduu.web.id\nDeveloper & Creator dari **SIDOARJO**.'; box.appendChild(bi);
+  const act=document.createElement('div'); act.className='hmAct';
+  const bc=document.createElement('button'); bc.style.cssText='background:#333;color:#fff'; bc.textContent='Batal'; bc.onclick=closeHomeEdit;
+  const bs=document.createElement('button'); bs.style.cssText='background:#ffaa00;color:#000'; bs.textContent='💾 Simpan'; bs.onclick=saveHomeEdit;
+  act.appendChild(bc); act.appendChild(bs); box.appendChild(act);
+  document.body.appendChild(w);
+}
+function closeHomeEdit(){ const m=document.getElementById('hmModal'); if(m) m.remove(); }
+async function saveHomeEdit(){
+  if(!await ownerActionReady('owner')) return;
+  const nama=document.getElementById('hmNama').value.trim().slice(0,40),typing=document.getElementById('hmTyping').value.trim().slice(0,400),bio=document.getElementById('hmBio').value.trim().slice(0,600);
+  if(hmFoto&&!safeImg(hmFoto)){ showToast('Foto tidak valid'); return; }
+  const up={updatedAt:Date.now(),by:ownerUser.uid};
+  up.nama=nama||null; up.typing=typing||null; up.bio=bio||null; up.foto=hmFoto||null;
+  try{ await fbDB.ref('panduu_site/content').update(up); ownerLog('Edit profil Home'); closeHomeEdit(); showToast('✅ Profil Home diperbarui'); }
+  catch(e){ showToast('Gagal menyimpan. Cek Firebase Rules'); }
+}
 function showToast(t){ let el=document.getElementById('toast'); el.innerText=t; el.style.display='block'; setTimeout(()=>el.style.display='none',2200); }
 window.addEventListener('load',()=>{ let room=new URLSearchParams(location.search).get('room'); if(room){ setTimeout(()=>{ goSlide('game'); document.getElementById('kodeJoin').value=room; showToast('🔗 Link undangan terdeteksi! Pencet Gabung'); },800); } });
 renderTools(); renderTTT(); initCatur(); updateSkorUI(); cekLogin(); ambilBerita('viral');
+</script>
+<script>
+/* ===== STAFF COMMAND CENTER + EXTRAS ===== */
+(function(){
+const E=escapeOwnerText,RC={owner:'#ffaa00',admin:'#f87171',moderator:'#38bdf8'},RX=['👍','😂','🔥','❤️'];
+const R=()=>activeStaffRole,can=l=>(l==='moderate'?['owner','admin','moderator']:['owner','admin']).includes(R());
+const fmt=t=>t?new Date(t).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';
+const TABS=[['ringkas','📊','Ringkas'],['lapor','🚩','Laporan'],['chat','💬','Chat'],['member','🔍','Member'],['staff','👮','Staff']];
+let tab='ringkas',mode='staff',mute=null,slow=0,bad=[],refs=[],tmp=null;
+const on=(p,ev,fn,qr)=>{const r=qr?qr(fbDB.ref(p)):fbDB.ref(p);r.on(ev,fn);refs.push(r);};
+const ik=()=>'sc_inbox_'+myUsername,inb=()=>{try{return JSON.parse(localStorage.getItem(ik())||'[]');}catch(e){return[];}};
+function bell(){const n=inb().filter(x=>x.n).length,e=$id('scBellN');if(e){e.textContent=n;e.style.display=n?'block':'none';}}
+function addInbox(t,b){if(!myUsername)return;const a=inb();a.unshift({t,b:String(b).slice(0,160),at:Date.now(),n:1});localStorage.setItem(ik(),JSON.stringify(a.slice(0,30)));bell();}
+function log(a,t,d){try{fbDB.ref('panduu_modlog').push({by:myUsername,role:R(),a,t:t||'',d:String(d||'').slice(0,100),at:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});}catch(e){}ownerLog(a+(t?' @'+t:''));}
+const guardStaff=u=>{if(staffMap[u]&&R()!=='owner'){showToast('Tidak bisa menindak sesama staff');return true;}return false;};
+function alertBox(t,m,c){const w=document.createElement('div');w.className='scM on';w.style.zIndex=320;w.innerHTML='<div style="background:#12100c;border:1px solid '+c+';border-radius:16px;padding:18px;max-width:330px;margin:auto;text-align:center"><div style="font-size:30px">'+t[0]+'</div><h3 style="margin:6px 0">'+E(t.slice(2))+'</h3><p style="color:#ccc;font-size:12px;line-height:1.6;margin-bottom:12px">'+E(m)+'</p><button class="btn btnW">Mengerti</button></div>';w.querySelector('button').onclick=()=>w.remove();document.body.appendChild(w);}
+
+/* ---- aksi moderasi ---- */
+async function warn(u,why){
+  if(guardStaff(u)||!await ownerActionReady('moderate'))return;
+  why=why||prompt('Alasan peringatan untuk @'+u+':');if(!why)return;
+  try{await fbDB.ref('panduu_warns/'+u).push({r:why.slice(0,100),by:myUsername,at:Date.now()});
+    const n=(await fbDB.ref('panduu_warns/'+u).once('value')).numChildren();log('Warn',u,why);
+    if(n>=3)await doMute(u,60,'Auto-mute: 3 peringatan',1);
+    showToast('⚠️ @'+u+' diperingatkan ('+n+'/3)');}catch(e){showToast('Gagal. Cek Firebase Rules');}
+}
+async function doMute(u,min,why,auto){
+  if(!auto&&(guardStaff(u)||!await ownerActionReady('moderate')))return;
+  try{await fbDB.ref('panduu_mutes/'+u).set({until:Date.now()+min*6e4,r:(why||'Pelanggaran aturan').slice(0,80),by:myUsername});log('Mute '+min+'m',u,why);showToast('🔇 @'+u+' dimute '+min+' menit');}catch(e){showToast('Gagal mute. Cek Rules');}
+}
+
+/* ---- tampilan sheet ---- */
+function openSheet(m,t){
+  mode=m;if(t)tab=t;
+  const box=$id('scM');box.classList.add('on');box.style.setProperty('--sc',RC[R()]||'#a78bfa');
+  $id('scTabs').style.display=m==='staff'?'flex':'none';
+  render();
+}
+function closeSheet(){if(tmp){tmp.off();tmp=null;}$id('scM').classList.remove('on');}
+async function render(){
+  if(tmp){tmp.off();tmp=null;}
+  const b=$id('scBody');
+  if(mode==='inbox'){
+    $id('scT').textContent='🔔 Kotak Masuk';const a=inb();
+    b.innerHTML=a.length?a.map(x=>'<div class="scCard"><b>'+E(x.t)+'</b> <small style="color:#777;float:right">'+fmt(x.at)+'</small><br>'+E(x.b)+'</div>').join('')+'<button data-sa="clrinbox">🧹 Bersihkan</button>':'<div class="scCard">Belum ada notifikasi. Peringatan staff, mention, dan siaran akan muncul di sini.</div>';
+    a.forEach(x=>x.n=0);localStorage.setItem(ik(),JSON.stringify(a));bell();return;
+  }
+  $id('scT').innerHTML=(R()==='owner'?'👑':R()==='admin'?'🛡️':'🔨')+' Command Center • '+R().toUpperCase();
+  $id('scTabs').innerHTML=TABS.map(t=>'<button data-sa="tab" data-k="'+t[0]+'" class="'+(t[0]===tab?'on':'')+'">'+t[1]+' '+t[2]+'</button>').join('');
+  b.innerHTML='<div class="loading"><div class="spin"></div>Memuat…</div>';
+  try{await({ringkas:vRingkas,lapor:vLapor,chat:vChat,member:vMember,staff:vStaff}[tab])(b);}catch(e){b.innerHTML='<div class="scCard">Gagal memuat. Periksa Firebase Rules untuk path moderasi (lihat panduan di bawah file).</div>';}
+}
+async function vRingkas(b){
+  const g=p=>fbDB.ref(p).once('value');
+  const [m,o,bn,rp]=await Promise.all(['panduu_members','panduu_online','panduu_bans','panduu_reports'].map(g));
+  const open=Object.values(rp.val()||{}).filter(r=>r.status!=='done').length,days=[];
+  for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*864e5);days.push([d.toLocaleDateString('id-ID',{weekday:'short'}),dayKey(d)]);}
+  const vs=await Promise.all(days.map(d=>g('panduu_stats/daily/'+d[1]).then(x=>x.val()||0))),mx=Math.max(1,...vs);
+  const P=[['Hapus pesan chat','moderate'],['Warn & mute member','moderate'],['Kick sesi online','moderate'],['Ban / buka blokir','admin'],['Kunci chat & slow-mode','admin'],['Filter kata & lockdown','admin'],['Beri/kurangi poin','admin']];
+  b.innerHTML='<div class="scGrid"><div class="scStat"><b>'+m.numChildren()+'</b><small>Total member</small></div><div class="scStat"><b style="color:#22c55e">'+o.numChildren()+'</b><small>Online sekarang</small></div><div class="scStat"><b style="color:#fbbf24">'+open+'</b><small>Laporan terbuka</small></div><div class="scStat"><b style="color:#f87171">'+bn.numChildren()+'</b><small>Diblokir</small></div></div>'
+  +'<div class="scCard"><b>📈 Kunjungan 7 hari</b><div class="scBars">'+vs.map((v,i)=>'<div><small>'+v+'</small><i style="height:'+Math.round(v/mx*100)+'%"></i>'+days[i][0]+'</div>').join('')+'</div></div>'
+  +'<div class="scCard"><b>🔑 Izin role '+R().toUpperCase()+'</b><br>'+P.map(p=>'<span class="scChip '+(can(p[1])?'ok':'no')+'">'+p[0]+'</span>').join('')+'</div>'
+  +(can('admin')?'<div class="scCard"><b>⚡ Aksi cepat</b><br><button class="scDanger" data-sa="lockdown">🚨 Lockdown chat</button><button data-sa="unlockdown">✅ Cabut lockdown</button><button data-sa="maint" data-k="1">🔧 Maintenance ON</button><button data-sa="maint" data-k="0">🟢 Maintenance OFF</button></div>':'<div class="scCard">Moderator fokus ke chat & laporan. Butuh ban atau kontrol website? Eskalasi lewat Ruang Staff.</div>');
+}
+async function vLapor(b){
+  const s=await fbDB.ref('panduu_reports').limitToLast(40).once('value'),a=Object.entries(s.val()||{}).filter(([k,r])=>r.status!=='done').reverse();
+  b.innerHTML='<button data-sa="refresh">↻ Segarkan</button>'+(a.length?a.map(([k,r])=>'<div class="scCard"><b>🚩 @'+E(r.target)+'</b> <small style="color:#777">oleh @'+E(r.by)+' • '+fmt(r.at)+'</small><br>'+E(r.alasan)+'<br>'+btns(r.target,k)+'</div>').join(''):'<div class="scCard">✅ Antrean bersih. Tidak ada laporan terbuka.</div>');
+}
+function btns(u,k){u=E(u);return '<button data-sa="warn" data-u="'+u+'">⚠️ Warn</button><button data-sa="mute" data-u="'+u+'" data-m="10">🔇 10m</button><button data-sa="mute" data-u="'+u+'" data-m="60">🔇 1j</button>'+(can('admin')?'<button class="scDanger" data-sa="ban" data-u="'+u+'">⛔ Ban</button>':'')+'<button data-sa="insp" data-u="'+u+'">🔍</button>'+(k?'<button class="scGo" data-sa="done" data-k="'+k+'">✅ Tutup</button>':'');}
+async function vChat(b){
+  const a=can('admin');
+  b.innerHTML=(a?'<div class="scCard"><b>🎛️ Kontrol chat</b> <span class="scChip '+(chatLocked?'bad':'ok')+'">'+(chatLocked?'Terkunci':'Terbuka')+'</span><div class="scRow"><button data-sa="lock" data-k="1">🔒 Kunci</button><button data-sa="lock" data-k="0">🔓 Buka</button></div><div class="scRow"><select id="scSlow">'+[0,5,10,30,60].map(n=>'<option value="'+n+'"'+(n===slow?' selected':'')+'>Slow-mode '+(n?n+' detik':'mati')+'</option>').join('')+'</select><button data-sa="slow">Terapkan</button></div></div><div class="scCard"><b>🚫 Filter kata terlarang</b><textarea id="scBw" placeholder="kata1, kata2, kata3">'+E(bad.join(', '))+'</textarea><button class="scGo" data-sa="bw">Simpan filter</button></div>':'')
+  +'<div class="scCard"><b>📡 Live chat</b> <span id="scPulse" class="scChip"></span> <button data-sa="refresh">↻</button><div id="scLive" class="scFeed" style="max-height:340px"></div></div>';
+  const s=await fbDB.ref('panduu_chat').limitToLast(30).once('value'),e=Object.entries(s.val()||{}).reverse(),now=Date.now();
+  $id('scPulse').textContent=e.filter(([k,m])=>now-(m.at||0)<3e5).length+' pesan / 5 menit';
+  $id('scLive').innerHTML=e.map(([k,m])=>'<div>'+badge(m.user)+'<b>'+E(m.nama||m.user)+'</b> <small style="color:#777">@'+E(m.user)+' • '+fmt(m.at)+'</small><br>'+E(m.text||'')+'<br><button data-sa="del" data-k="'+k+'">🗑️</button>'+(m.user!==myUsername?'<button data-sa="warn" data-u="'+E(m.user)+'">⚠️</button><button data-sa="mute" data-u="'+E(m.user)+'" data-m="10">🔇 10m</button>':'')+'</div>').join('')||'Belum ada pesan.';
+}
+function vMember(b){
+  b.innerHTML='<div class="scCard"><b>🔍 Inspektur member</b><div class="scRow"><input id="scQ" placeholder="username…" autocapitalize="none"><button class="scGo" data-sa="search">Cari</button></div></div><div id="scIns"></div>';
+  $id('scQ').onkeydown=e=>{if(e.key==='Enter')inspect($id('scQ').value);};
+}
+async function inspect(u){
+  u=(u||'').toLowerCase().replace('@','').trim();if(!u)return;const o=$id('scIns');o.innerHTML='<div class="loading">Memuat…</div>';
+  const g=p=>fbDB.ref(p).once('value').then(x=>x.val());
+  const [m,rw,mu,wr,nt,bn]=await Promise.all(['panduu_members/'+u,'panduu_rewards/'+u,'panduu_mutes/'+u,'panduu_warns/'+u,'panduu_notes/'+u,'panduu_bans/'+u].map(g).map(p=>p.catch(()=>null)));
+  if(!m){o.innerHTML='<div class="scCard">Member @'+E(u)+' tidak ditemukan.</div>';return;}
+  const muted=mu&&mu.until>Date.now(),nw=Object.keys(wr||{}).length,ue=E(u);
+  o.innerHTML='<div class="scCard"><div style="display:flex;gap:10px;align-items:center"><img src="'+(safeImg(m.foto)||CONFIG.fotoAnos)+'" style="width:46px;height:46px;border-radius:50%;object-fit:cover"><div><b style="font-size:13px">'+E(m.nama||u)+'</b> '+badge(u)+'<br><small style="color:#888">@'+ue+' • '+E(m.kota||'-')+'<br>Login terakhir: '+fmt(m.lastLogin)+'</small></div></div>'
+  +'<div style="margin-top:8px"><span class="scChip">💰 '+((rw||{}).points||0)+' poin</span><span class="scChip '+(nw?'bad':'')+'">⚠️ '+nw+'/3 warn</span>'+(muted?'<span class="scChip bad">🔇 mute s/d '+fmt(mu.until)+'</span>':'')+(bn?'<span class="scChip bad">⛔ diblokir</span>':'<span class="scChip ok">aktif</span>')+'</div>'
+  +(muted?'<small style="color:#888">Alasan mute: '+E(mu.r||'-')+' (oleh @'+E(mu.by||'-')+')</small><br>':'')
+  +'<div style="margin-top:6px">'+btns(u,'').replace(/<button data-sa="insp"[^>]*>🔍<\/button>/,'')+'<button data-sa="unmute" data-u="'+ue+'">🔊 Unmute</button>'+(can('admin')?(bn?'<button data-sa="unban" data-u="'+ue+'">♻️ Buka blokir</button>':'')+'<button data-sa="pts" data-u="'+ue+'" data-n="100">➕100</button><button data-sa="pts" data-u="'+ue+'" data-n="-100">➖100</button>':'')+'<button data-sa="note" data-u="'+ue+'">📝 Catatan</button></div></div>'
+  +'<div class="scCard"><b>📝 Catatan staff</b>'+(nt?Object.values(nt).slice(-5).reverse().map(n=>'<div style="border-bottom:1px solid #1a1a24;padding:4px 0">'+E(n.t)+'<br><small style="color:#777">@'+E(n.by)+' • '+fmt(n.at)+'</small></div>').join(''):'<br><small style="color:#777">Belum ada catatan.</small>')+'</div>'
+  +(nw?'<div class="scCard"><b>⚠️ Riwayat peringatan</b>'+Object.values(wr).reverse().map(w=>'<div style="padding:3px 0">'+E(w.r)+' <small style="color:#777">— @'+E(w.by)+', '+fmt(w.at)+'</small></div>').join('')+'</div>':'');
+}
+async function vStaff(b){
+  b.innerHTML='<div class="scCard"><b>🔒 Ruang Staff</b> <small style="color:#777">hanya terlihat owner/admin/mod</small><div id="scSC" class="scFeed" style="max-height:220px"></div><div class="scRow"><input id="scSCi" maxlength="200" placeholder="Pesan ke tim staff…"><button class="scGo" data-sa="scsend">Kirim</button></div></div><div class="scCard"><b>📜 Log moderasi</b><div id="scLog" class="scFeed" style="max-height:300px">Memuat…</div></div>';
+  $id('scSCi').onkeydown=e=>{if(e.key==='Enter')staffSend();};
+  const r=fbDB.ref('panduu_staffchat').limitToLast(30);tmp=r;
+  r.on('child_added',s=>{const m=s.val(),f=$id('scSC');if(!f||!m)return;const d=document.createElement('div');d.innerHTML=badgeR(m.role)+'<b>@'+E(m.u)+'</b> <small style="color:#777">'+fmt(m.at)+'</small><br>'+E(m.t);f.appendChild(d);f.scrollTop=f.scrollHeight;});
+  const s=await fbDB.ref('panduu_modlog').limitToLast(60).once('value'),l=Object.values(s.val()||{}).reverse(),cnt={};
+  l.forEach(x=>cnt[x.by]=(cnt[x.by]||0)+1);
+  const top=Object.entries(cnt).sort((a,c)=>c[1]-a[1]).slice(0,3).map(x=>'@'+E(x[0])+' ('+x[1]+')').join(' • ');
+  $id('scLog').innerHTML=(can('admin')&&top?'<div style="color:#fbbf24">🏅 Staff teraktif: '+top+'</div>':'')+(l.map(x=>'<div>'+badgeR(x.role)+'<b>'+E(x.a)+'</b>'+(x.t?' → @'+E(x.t):'')+(x.d?'<br><small style="color:#999">'+E(x.d)+'</small>':'')+'<br><small style="color:#777">@'+E(x.by)+' • '+fmt(x.at)+'</small></div>').join('')||'Belum ada aktivitas.');
+}
+async function staffSend(){const i=$id('scSCi'),t=i.value.trim();if(!t)return;i.value='';try{await fbDB.ref('panduu_staffchat').push({u:myUsername,role:R(),t:t.slice(0,200),at:Date.now()});}catch(e){showToast('Gagal kirim');}}
+
+/* ---- delegasi klik ---- */
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-sa]');if(!el)return;
+  const a=el.dataset.sa,u=el.dataset.u,k=el.dataset.k,v=id=>($id(id)||{}).value;
+  try{
+  if(a==='open')openSheet('staff');
+  else if(a==='inbox')openSheet('inbox');
+  else if(a==='close')closeSheet();
+  else if(a==='tab'){tab=k;render();}
+  else if(a==='refresh')render();
+  else if(a==='clrinbox'){localStorage.removeItem(ik());bell();render();}
+  else if(a==='warn')await warn(u);
+  else if(a==='mute')await doMute(u,+el.dataset.m,prompt('Alasan mute @'+u+' (opsional):')||'Pelanggaran aturan');
+  else if(a==='unmute'){if(!await ownerActionReady('moderate'))return;await fbDB.ref('panduu_mutes/'+u).remove();log('Unmute',u);showToast('🔊 Mute dicabut');inspect(u);}
+  else if(a==='ban'){if(guardStaff(u))return;await banMember(encodeURIComponent(u));if((await fbDB.ref('panduu_bans/'+u).once('value')).exists())log('Ban',u);}
+  else if(a==='unban'){await unbanMember(encodeURIComponent(u));log('Buka blokir',u);inspect(u);}
+  else if(a==='done'){await fbDB.ref('panduu_reports/'+k).update({status:'done',doneBy:myUsername,doneAt:Date.now()});log('Tutup laporan');render();}
+  else if(a==='del'){await gcDel(k);log('Hapus pesan');render();}
+  else if(a==='insp'||a==='search'){if(a==='insp'){tab='member';await render();}inspect(a==='insp'?u:v('scQ'));}
+  else if(a==='note'){if(!await ownerActionReady('moderate'))return;const t=prompt('Catatan untuk @'+u+':');if(!t)return;await fbDB.ref('panduu_notes/'+u).push({t:t.slice(0,160),by:myUsername,at:Date.now()});log('Catatan',u);inspect(u);}
+  else if(a==='pts'){if(!await ownerActionReady('admin'))return;const n=+el.dataset.n;await fbDB.ref('panduu_rewards/'+u+'/points').transaction(x=>Math.max(0,(x||0)+n));log('Poin '+n,u);showToast('💰 Poin @'+u+' '+(n>0?'+':'')+n);inspect(u);}
+  else if(a==='lock'){if(!await ownerActionReady('admin'))return;await fbDB.ref('panduu_control/chatLock').set(k==='1');log(k==='1'?'Kunci chat':'Buka chat');setTimeout(render,400);}
+  else if(a==='slow'){if(!await ownerActionReady('admin'))return;await fbDB.ref('panduu_control/slowmode').set(+v('scSlow'));log('Slow-mode '+v('scSlow')+'s');showToast('🐢 Slow-mode diperbarui');}
+  else if(a==='bw'){if(!await ownerActionReady('admin'))return;await fbDB.ref('panduu_control/badwords').set(v('scBw').slice(0,600));log('Update filter kata');showToast('🚫 Filter disimpan');}
+  else if(a==='lockdown'){if(!await ownerActionReady('admin'))return;if(!confirm('Aktifkan LOCKDOWN? Chat dikunci & slow-mode 30 dtk untuk member.'))return;await fbDB.ref().update({'panduu_control/chatLock':true,'panduu_control/slowmode':30});log('LOCKDOWN aktif');showToast('🚨 Lockdown aktif');}
+  else if(a==='unlockdown'){if(!await ownerActionReady('admin'))return;await fbDB.ref().update({'panduu_control/chatLock':false,'panduu_control/slowmode':0});log('Lockdown dicabut');showToast('✅ Lockdown dicabut');}
+  else if(a==='maint'){await toggleMaintenance(k==='1');log('Maintenance '+(k==='1'?'ON':'OFF'));}
+  else if(a==='scsend')staffSend();
+  else if(a==='rx'){if(!myUsername){showToast('Login dulu');return;}await fbDB.ref('panduu_chat/'+k+'/r/'+el.dataset.i+'/'+myUsername).set(el.classList.contains('me')?null:true);}
+  else if(a==='pal')openPal();
+  }catch(err){showToast('Gagal. Cek Firebase Rules');}
+});
+
+/* ---- chat: guard, reaksi, mention ---- */
+window.scChatGuard=function(t){
+  if(R()!=='guest')return true;
+  if(mute&&mute.until>Date.now()){showToast('🔇 Dimute '+Math.ceil((mute.until-Date.now())/6e4)+' menit lagi • '+(mute.r||''));return false;}
+  const low=t.toLowerCase();if(bad.some(w=>w&&low.includes(w))){showToast('🚫 Pesan mengandung kata terlarang');return false;}
+  if(slow&&Date.now()-gcLast<slow*1000){showToast('🐢 Slow-mode: tunggu '+Math.ceil((slow*1000-(Date.now()-gcLast))/1000)+' detik');return false;}
+  return true;
+};
+function rx(bar,r){bar.innerHTML=RX.map((x,i)=>{const n=Object.keys(r[i]||{}).length;return '<button data-sa="rx" data-k="'+bar.dataset.k+'" data-i="'+i+'" class="'+(r[i]&&r[i][myUsername]?'me':'')+'">'+x+(n?' '+n:'')+'</button>';}).join('')+(can('moderate')&&bar.dataset.u!==myUsername?'<button class="stf" data-sa="warn" data-u="'+E(bar.dataset.u)+'">⚠️</button><button class="stf" data-sa="mute" data-u="'+E(bar.dataset.u)+'" data-m="10">🔇</button>':'');}
+window.scRx=rx;
+window.scDecorate=function(d,k,m){
+  if(myUsername&&m.user!==myUsername&&new RegExp('@'+myUsername.replace(/\./g,'\\.')+'(\\W|$)','i').test(m.text||'')){d.style.cssText+=';background:#1d9bf01a;border-left:3px solid #1d9bf0;padding-left:6px';if(Date.now()-(m.at||0)<15000){addInbox('💬 Mention dari @'+m.user,m.text);notif('Mention dari @'+m.user,m.text);}}
+  const bar=document.createElement('div');bar.className='scRx';bar.dataset.k=k;bar.dataset.u=m.user||'';d.appendChild(bar);rx(bar,m.r||{});
+};
+
+/* ---- palet perintah ---- */
+let pi=0;
+const CMDS=()=>[['🏠 Beranda',()=>goSlide('home')],['🔍 Tools',()=>goSlide('search')],['🎮 Game',()=>goSlide('game')],['💬 Chat',()=>goSlide('chat')],['👤 Profil',()=>goSlide('profil')],['🔔 Kotak masuk',()=>openSheet('inbox')],...(R()!=='guest'?[['🛡️ Command Center',()=>openSheet('staff','ringkas')],['🚩 Antrean laporan',()=>openSheet('staff','lapor')],['🔍 Cari member',()=>openSheet('staff','member')],['📡 Live chat staff',()=>openSheet('staff','chat')]]:[]),...TOOLS.map(t=>[t.icon+' '+t.nama,()=>{goSlide('search');bukaTool(t.id);}])];
+function openPal(){$id('scP').classList.add('on');const i=$id('scPi');i.value='';palList();setTimeout(()=>i.focus(),50);}
+function palList(){const q=$id('scPi').value.toLowerCase(),l=CMDS().filter(c=>c[0].toLowerCase().includes(q)).slice(0,30);pi=Math.min(pi,Math.max(0,l.length-1));$id('scPl').innerHTML=l.map((c,i)=>'<div class="'+(i===pi?'on':'')+'" data-p="'+i+'">'+E(c[0])+'</div>').join('')||'<div>Tidak ada hasil</div>';return l;}
+function runPal(i){const l=palList();if(l[i]){$id('scP').classList.remove('on');l[i][1]();}}
+
+/* ---- achievement ---- */
+const ACH=[['🔥','Streak 3',v=>(v.streak||0)>=3],['⚡','Streak 7',v=>(v.streak||0)>=7],['💰','500 Poin',v=>(v.points||0)>=500],['👑','2000 Poin',v=>(v.points||0)>=2000],['🎨','Warna Nama',v=>!!v.color],['🐣','Peliharaan',v=>(v.pet||0)>=30],['🐉','Naga Maks',v=>(v.pet||0)>=500],['🎯','Misi Beres',()=>misi().done]];
+function achRender(){
+  const p=$id('slide-profil');if(!p||!getUserAsli().username)return;let s=$id('achBox');
+  if(!s){s=document.createElement('div');s.id='achBox';s.className='section';const x=$id('xtra');x.parentNode.insertBefore(s,x);}
+  const v=window._rew||{},n=ACH.filter(a=>a[2](v)).length;
+  s.innerHTML='<h2>🏆 Pencapaian <small style="color:#888;font-weight:600">'+n+'/'+ACH.length+'</small></h2><div class="scAch">'+ACH.map(a=>'<div class="'+(a[2](v)?'':'lk')+'"><span>'+a[0]+'</span>'+a[1]+'</div>').join('')+'</div>';
+}
+const _rx=renderXtra;renderXtra=function(){_rx();try{achRender();}catch(e){}};
+
+/* ---- siklus auth ---- */
+window.scOff=function(){refs.forEach(r=>r.off());refs=[];mute=null;slow=0;bad=[];$id('scFab').style.display='none';bell();};
+window.scAfterAuth=function(){
+  scOff();if(!ownerUser||!myUsername)return;const U=myUsername,staff=R()!=='guest';
+  on('panduu_mutes/'+U,'value',x=>{mute=x.val();});
+  on('panduu_control/slowmode','value',x=>{slow=+x.val()||0;});
+  on('panduu_control/badwords','value',x=>{bad=String(x.val()||'').toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);});
+  on('panduu_warns/'+U,'child_added',s=>{const w=s.val()||{},sk='sc_seen_'+U;let seen=[];try{seen=JSON.parse(localStorage.getItem(sk)||'[]');}catch(e){}
+    if(seen.includes(s.key)||Date.now()-(w.at||0)>6048e5)return;seen.push(s.key);localStorage.setItem(sk,JSON.stringify(seen.slice(-30)));
+    addInbox('⚠️ Peringatan dari staff',w.r||'');alertBox('⚠️ Peringatan dari staff',(w.r||'Pelanggaran aturan')+' — 3 peringatan = mute otomatis.','#fbbf24');});
+  const f=$id('scFab');f.style.display=staff?'flex':'none';f.style.setProperty('--sc',RC[R()]||'#38bdf8');
+  if(staff)on('panduu_reports','value',x=>{const n=Object.values(x.val()||{}).filter(r=>r.status!=='done').length,e=$id('scFabN');e.textContent=n;e.style.display=n?'block':'none';},r=>r.limitToLast(40));
+  bell();
+};
+
+/* ---- pasang UI ---- */
+(function init(){
+  const st=document.createElement('div');st.innerHTML='<button class="scFab" id="scFab" data-sa="open" title="Command Center">🛡️<i id="scFabN" style="display:none"></i></button>'
+  +'<div class="scM" id="scM"><div class="scBox"><div class="scHd"><b id="scT"></b><button data-sa="close">✕ Tutup</button></div><div class="scTabs" id="scTabs"></div><div id="scBody"></div></div></div>'
+  +'<div class="scM" id="scP" style="align-items:flex-start"><div class="scPbox"><input id="scPi" placeholder="Ketik perintah atau nama tool…" autocomplete="off"><div id="scPl"></div></div></div>';
+  while(st.firstChild)document.body.appendChild(st.firstChild);
+  const top=document.querySelector('.top'),live=top&&top.querySelector('.live');
+  if(top){const w=document.createElement('div');w.className='scTop';w.innerHTML='<button data-sa="pal" title="Palet perintah (Ctrl+K)">⌘</button><button data-sa="inbox" title="Kotak masuk">🔔<i id="scBellN" style="display:none"></i></button>';top.appendChild(w);if(live)w.appendChild(live);}
+  $id('scP').addEventListener('click',e=>{if(e.target.id==='scP')$id('scP').classList.remove('on');const d=e.target.closest('[data-p]');if(d)runPal(+d.dataset.p);});
+  $id('scPi').addEventListener('input',()=>{pi=0;palList();});
+  $id('scPi').addEventListener('keydown',e=>{const n=palList().length;if(e.key==='ArrowDown'){pi=(pi+1)%n;palList();e.preventDefault();}else if(e.key==='ArrowUp'){pi=(pi-1+n)%n;palList();e.preventDefault();}else if(e.key==='Enter')runPal(pi);else if(e.key==='Escape')$id('scP').classList.remove('on');});
+  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPal();}});
+})();
+})();
 </script>
 </body>
 </html>
