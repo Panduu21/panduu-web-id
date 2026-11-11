@@ -285,7 +285,7 @@ body{background:#000;color:#fff;overflow-x:hidden;padding-bottom:78px;font-size:
 </div>
 
 <div id="slide-profil" class="slide">
-  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Masuk ke Panduu 🔐</h2><p>Cukup username dan sandi.</p><div class="authTabs"><button id="tabMasuk" class="on" onclick="authTab('masuk')">Masuk</button><button id="tabDaftar" onclick="authTab('daftar')">Daftar</button></div><input id="loginUser" placeholder="Username" autocomplete="username" autocapitalize="none"><div style="position:relative"><input id="loginPass" type="password" placeholder="Sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><span onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer">👁️</span></div><button id="authBtn" onclick="doLogin()">🔐 Masuk</button><div style="text-align:center;color:#666;margin:8px 0;font-size:10px">— atau —</div><button id="googleBtn" onclick="loginGoogle()" style="background:#fff;color:#1f1f1f;width:100%;display:flex;align-items:center;justify-content:center;gap:9px"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" style="flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Masuk dengan Google</span></button><p id="authStatus" style="color:#ffaa00"></p></div></div>
+  <div id="loginBox"><div class="loginCard"><div style="text-align:center"><img data-foto src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"></div><h2>Masuk ke Panduu 🔐</h2><p id="authHint">Masuk dengan username atau email.</p><div class="authTabs"><button id="tabMasuk" class="on" onclick="authTab('masuk')">Masuk</button><button id="tabDaftar" onclick="authTab('daftar')">Daftar</button></div><input id="loginUser" placeholder="Username atau email" autocomplete="username" autocapitalize="none"><input id="loginEmail" type="email" placeholder="Email (opsional, untuk reset sandi)" autocomplete="email" autocapitalize="none" style="display:none"><div style="position:relative"><input id="loginPass" type="password" placeholder="Sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"><span onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer">👁️</span></div><button id="authBtn" onclick="doLogin()">🔐 Masuk</button><div style="text-align:center;margin-top:9px"><a id="forgotLink" onclick="lupaSandi()" style="color:#a78bfa;font-size:10px;cursor:pointer">Lupa sandi?</a></div><div style="text-align:center;color:#666;margin:8px 0;font-size:10px">— atau —</div><button id="googleBtn" onclick="loginGoogle()" style="background:#fff;color:#1f1f1f;width:100%;display:flex;align-items:center;justify-content:center;gap:9px"><svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" style="flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Masuk dengan Google</span></button><p id="authStatus" style="color:#ffaa00"></p></div></div>
   <div id="profilBox" style="display:none"><div class="profilCard"><div class="pfWrap"><img id="profilFoto" src="https://i.pinimg.com/originals/66/a6/7e/66a67e50748e356648d0c90507f08de1.jpg" alt="Foto profil"><label class="pfCam" title="Ganti foto profil">📷<input type="file" accept="image/*" onchange="pickMyFoto(this)" hidden></label></div><button id="pfReset" class="pfReset" onclick="resetMyFoto()" style="display:none">Hapus foto</button><h2><span id="profilNama">Nama Lo</span> <span class="verified" data-vf="profil" id="profilVf" style="display:none"><svg viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></h2><p style="color:#888;font-size:11px;margin-top:4px"><span id="profilUser">@username</span> • <span id="profilKota">Kota</span><br><span id="roleBadge"></span><br>Owner: Panduu ✓ • Sidoarjo</p><div class="btnRow"><button class="btn btnW" onclick="goSlide('game')">🎮 Mabar</button><button class="btn btnB" onclick="goSlide('search')">🛠️ Tools</button><button class="btn btnG" onclick="doLogout()">🚪 Logout</button></div></div>
   <div class="section"><h2>📊 Skor Lo</h2><div class="stats"><div class="stat"><b id="profilMenang">0</b><br><small>Menang TTT</small></div><div class="stat"><b id="profilMain">0</b><br><small>Total Main</small></div><div class="stat"><b id="profilCatur">0</b><br><small>Catur</small></div><div class="stat"><b id="profilLogin">1</b><br><small>Login</small></div></div></div>
   <div class="section" id="dailyRewardCard"><h2>🎁 Hadiah Harian</h2><p class="sub">Check-in setiap hari untuk mengumpulkan poin.</p><div class="stats"><div class="stat"><b id="dailyPoints">0</b><small>Total Poin</small></div><div class="stat"><b id="dailyStreak">0</b><small>Streak Hari</small></div></div><button class="btn btnB" style="width:100%" onclick="claimDailyReward()">🎁 Klaim 25 Poin Hari Ini</button><small id="dailyRewardStatus" style="display:block;color:#aaa;margin-top:6px"></small></div>
@@ -1324,9 +1324,9 @@ let staffMap={},myUsername='',authMode='masuk',gcRef=null,gcLast=0;
 const ROLEMAP={owner:['👑','OWNER'],admin:['🛡️','ADMIN'],moderator:['🔨','MOD']};
 function badgeR(r){const m=ROLEMAP[r];return m?'<span class="rb rb-'+r+'">'+m[0]+' '+m[1]+'</span> '+(r==='owner'?vfInline()+' ':''):'';}
 function badge(u){return badgeR(staffMap[(u||'').toLowerCase()]);}
-function authTab(m){authMode=m;$id('tabMasuk').classList.toggle('on',m==='masuk');$id('tabDaftar').classList.toggle('on',m==='daftar');$id('authBtn').innerText=m==='masuk'?'🔐 Masuk':'✨ Buat Akun';}
+function authTab(m){authMode=m;$id('tabMasuk').classList.toggle('on',m==='masuk');$id('tabDaftar').classList.toggle('on',m==='daftar');$id('authBtn').innerText=m==='masuk'?'🔐 Masuk':'✨ Buat Akun';$id('loginEmail').style.display=m==='daftar'?'block':'none';$id('loginUser').placeholder=m==='masuk'?'Username atau email':'Pilih username (3-20, huruf kecil)';$id('authHint').innerText=m==='masuk'?'Masuk dengan username atau email.':'Email boleh dikosongkan, tapi dibutuhkan untuk reset sandi. Akun yang daftar dengan email masuk memakai email itu.';$id('forgotLink').style.display=m==='masuk'?'inline':'none';}
 function togglePass(){const i=$id('loginPass');i.type=i.type==='password'?'text':'password';}
-function authErr(e){const M={'auth/email-already-in-use':'Username sudah dipakai.','auth/invalid-credential':'Username atau sandi salah.','auth/wrong-password':'Sandi salah.','auth/user-not-found':'Username belum terdaftar.','auth/weak-password':'Sandi terlalu lemah (min 6).','auth/too-many-requests':'Terlalu banyak percobaan, tunggu sebentar.','auth/operation-not-allowed':'Aktifkan Email/Password di Firebase Authentication.','auth/network-request-failed':'Koneksi bermasalah.'};return M[e&&e.code]||('Gagal: '+((e&&e.message)||''));}
+function authErr(e){const M={'auth/email-already-in-use':'Username atau email sudah dipakai.','auth/invalid-email':'Format email tidak valid.','auth/invalid-credential':'Username atau sandi salah.','auth/wrong-password':'Sandi salah.','auth/user-not-found':'Username belum terdaftar.','auth/weak-password':'Sandi terlalu lemah (min 6).','auth/too-many-requests':'Terlalu banyak percobaan, tunggu sebentar.','auth/operation-not-allowed':'Aktifkan Email/Password di Firebase Authentication.','auth/network-request-failed':'Koneksi bermasalah.'};return M[e&&e.code]||('Gagal: '+((e&&e.message)||''));}
 async function doLogin(){
   if(!fbAuth){alert('Firebase belum siap');return;}
   const raw=$id('loginUser').value.trim().replace(/^@/,'').toLowerCase(),pass=$id('loginPass').value,st=$id('authStatus'),isMail=raw.includes('@');
@@ -1335,8 +1335,13 @@ async function doLogin(){
   st.innerText='Memproses...';
   try{
     if(!isMail){const b=await fbDB.ref('panduu_bans/'+raw).once('value');if(b.exists()){st.innerText='⛔ Username ini diblokir.';return;}}
-    const email=isMail?raw:raw+AUTH_DOMAIN;
-    if(authMode==='daftar'&&!isMail)await fbAuth.createUserWithEmailAndPassword(email,pass);else await fbAuth.signInWithEmailAndPassword(email,pass);
+    let email=isMail?raw:raw+AUTH_DOMAIN;
+    if(authMode==='daftar'){
+      let pend='';
+      if(!isMail){pend=raw;const em=($id('loginEmail').value||'').trim().toLowerCase();if(em){if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){st.innerText='Format email tidak valid.';return;}email=em;}}
+      localStorage.setItem('panduu_pending_un',pend);
+      try{await fbAuth.createUserWithEmailAndPassword(email,pass);}catch(e){localStorage.removeItem('panduu_pending_un');throw e;}
+    }else await fbAuth.signInWithEmailAndPassword(email,pass);
     $id('loginPass').value='';st.innerText='';
   }catch(e){st.innerText=authErr(e);}
 }
@@ -1344,10 +1349,12 @@ async function doLogout(){if(confirm('Logout?')){try{await fbAuth.signOut();}cat
 async function onAuth(user){
   ownerUser=user||null;activeStaffRole='guest';
   if(!user){localStorage.removeItem('panduu_user');myUsername='';chatStop();try{scOff();}catch(e){}document.getElementById('ownerPanel').style.display='none';renderStaff();renderHomeEdit();cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();return;}
-  let un=(user.email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g,'')||('u'+user.uid.slice(0,6).toLowerCase()),prof={nama:un,kota:'Indonesia'};
+  const pend=localStorage.getItem('panduu_pending_un')||'';localStorage.removeItem('panduu_pending_un');const stored=/^@[a-z0-9_.]{3,20}$/.test(user.displayName||'')?user.displayName.slice(1):'';
+  let un=stored||(/^[a-z0-9_.]{3,20}$/.test(pend)?pend:'')||(user.email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g,'')||('u'+user.uid.slice(0,6).toLowerCase()),prof={nama:un,kota:'Indonesia'};
   try{
     const um=await fbDB.ref('panduu_usernames/'+un).once('value');
     if(um.exists()&&um.val()!==user.uid)un='u'+user.uid.slice(0,8).toLowerCase();
+    if(pend&&!stored)user.updateProfile({displayName:'@'+un}).catch(()=>{});
     if((await fbDB.ref('panduu_bans/'+un).once('value')).exists()){await fbAuth.signOut();alert('Akun ini diblokir oleh owner.');return;}
     const m=(await fbDB.ref('panduu_members/'+un).once('value')).val()||{};
     prof={nama:m.nama||user.displayName||un,kota:m.kota||'Indonesia',color:m.color||'',guild:m.guild||'',foto:safeImg(m.foto)||''};
@@ -1965,6 +1972,97 @@ window.scAfterAuth=function(){
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPal();}});
 })();
 })();
+</script>
+<script>
+/* ===== UPDATE BESAR: Event Mabar, Hall of Fame, Kartu Profil, Reply, Auto-Mod ===== */
+(function(){
+const E=escapeOwnerText,fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1e3)),h=Math.floor(s/3600),m=Math.floor(s%3600/60);return (h?h+'j ':'')+String(m).padStart(2,'0')+'m '+String(s%60).padStart(2,'0')+'d';};
+const LV=[[0,'Rakyat Biasa'],[50,'Prajurit'],[150,'Ksatria'],[300,'Penyihir'],[600,'Iblis'],[1000,'Raja Iblis'],[2000,'Anos Voldigoad']];
+const isAdm=()=>['owner','admin'].includes(activeStaffRole);let evs={};
+function ready(f){const t=setInterval(()=>{try{if(fbDB){clearInterval(t);f();}}catch(e){}},500);setTimeout(()=>clearInterval(t),3e4);}
+function box(id,after){let b=$id(id);if(!b){const h=document.querySelector('#slide-home .hero');if(!h)return null;b=document.createElement('div');b.id=id;(after&&$id(after)?$id(after):h).after(b);}return b;}
+
+/* ---- Event Mabar ---- */
+function evRender(){
+  const b=box('evBox');if(!b)return;const now=Date.now(),adm=isAdm();
+  const l=Object.entries(evs).filter(([k,e])=>e&&e.at+72e5>now).sort((a,c)=>a[1].at-c[1].at).slice(0,2);
+  b.innerHTML=(l.length||adm)?'<div class="scCard" style="border-color:#22c55e66;background:linear-gradient(135deg,#0a2a1a,#10101a)"><b style="font-size:13px">🎉 Event Mabar</b>'+(adm?' <button class="btn btnG" data-ev="new" style="float:right;padding:4px 9px">➕ Buat</button>':'')
+  +(l.length?l.map(([k,e])=>{const n=Object.keys(e.rsvp||{}).length,me=(e.rsvp||{})[myUsername];return '<div style="margin-top:9px;padding-top:8px;border-top:1px solid #1f3a2a"><b style="font-size:12px">'+E(e.t)+'</b>'+(e.prize?' <span class="scChip ok">🎁 '+e.prize+' poin</span>':'')+'<br><span data-cd="'+e.at+'" style="font-size:18px;font-weight:900;color:#22c55e"></span><br><button class="btn '+(me?'btnG':'btnB')+'" data-ev="rsvp" data-k="'+k+'">'+(me?'✔ Terdaftar':'🙋 Ikut')+' • '+n+' orang</button>'+(adm?' <button class="btn btnG" data-ev="pay" data-k="'+k+'">🎁 Bagikan hadiah</button> <button class="btn btnG" data-ev="del" data-k="'+k+'">🗑️</button>':'')+'</div>';}).join(''):'<br><small style="color:#888">Belum ada event terjadwal.</small>')+'</div>':'';
+  tick();
+}
+function tick(){document.querySelectorAll('[data-cd]').forEach(s=>{const d=+s.dataset.cd-Date.now();s.textContent=d>0?'⏳ '+fmtT(d):'🔴 SEDANG BERLANGSUNG';});}
+setInterval(tick,1e3);
+
+/* ---- Hall of Fame ---- */
+async function hof(){
+  try{const s=await fbDB.ref('panduu_rewards').orderByChild('points').limitToLast(5).once('value'),a=[];s.forEach(x=>{a.unshift([x.key,(x.val()||{}).points||0]);});
+    const b=box('hofBox','evBox');if(!b||!a.length)return;
+    b.innerHTML='<div class="scCard"><b style="font-size:13px">🏆 Hall of Fame</b>'+a.map((x,i)=>'<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1a1a24"><span>'+['🥇','🥈','🥉','4️⃣','5️⃣'][i]+' '+badge(x[0])+'<b data-pf="'+E(x[0])+'" style="cursor:pointer">@'+E(x[0])+'</b></span><span style="color:#fbbf24">💰 '+x[1]+'</span></div>').join('')+'</div>';
+  }catch(e){}
+}
+
+/* ---- Kartu profil publik ---- */
+async function profCard(u){
+  const w=document.createElement('div');w.className='scM on';w.style.zIndex=320;w.style.alignItems='center';w.style.setProperty('--sc','#a78bfa');
+  w.onclick=e=>{if(e.target===w)w.remove();};w.innerHTML='<div class="scCard" style="width:300px;text-align:center;border-color:#a78bfa;padding:16px"><div class="loading"><div class="spin"></div></div></div>';document.body.appendChild(w);
+  const g=p=>fbDB.ref(p).once('value').then(x=>x.val()).catch(()=>null);
+  const [m,r]=await Promise.all([g('panduu_members/'+u),g('panduu_rewards/'+u)]),p=(r||{}).points||0;let i=0;LV.forEach((t,k)=>{if(p>=t[0])i=k;});
+  const on=Object.values(fbOnlineData||{}).some(o=>o.username===u);
+  w.firstChild.innerHTML=m?'<img src="'+(safeImg(m.foto)||CONFIG.fotoAnos)+'" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #a78bfa"><h3 style="margin-top:8px;font-size:15px">'+E(m.nama||u)+'</h3><small style="color:#888">@'+E(u)+' • '+E(m.kota||'-')+'</small><br>'+badge(u)+'<div style="margin-top:8px"><span class="scChip ok">'+(on?'🟢 Online':'⚫ Offline')+'</span><span class="scChip">⚔️ Lv.'+(i+1)+' '+LV[i][1]+'</span><span class="scChip">💰 '+p+'</span>'+(m.guild?'<span class="scChip">🏰 '+E(m.guild)+'</span>':'')+(r&&r.streak?'<span class="scChip">🔥 '+r.streak+' hari</span>':'')+'</div><button class="btn btnW" style="margin-top:12px" onclick="this.closest(\'.scM\').remove()">Tutup</button>':'Member tidak ditemukan.';
+}
+
+/* ---- klik: event, profil, reply ---- */
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-ev],[data-pf],[data-rp]');if(!el)return;
+  try{
+    if(el.dataset.pf)return profCard(el.dataset.pf);
+    if(el.dataset.rp){const i=$id('gcInput');if(i){i.value='↪ @'+el.dataset.rp+' “'+el.dataset.rt+'” ';i.focus();}return;}
+    const a=el.dataset.ev,k=el.dataset.k;
+    if(a==='rsvp'){if(!myUsername){showToast('Login dulu');return;}await fbDB.ref('panduu_events/'+k+'/rsvp/'+myUsername).set((evs[k].rsvp||{})[myUsername]?null:true);}
+    else if(a==='new'){if(!await ownerActionReady('admin'))return;const t=prompt('Judul event:');if(!t)return;const mn=+prompt('Mulai berapa menit lagi?','60');if(!mn&&mn!==0)return;const pz=+prompt('Hadiah poin per peserta (0 = tanpa hadiah):','50')||0;
+      await fbDB.ref('panduu_events').push({t:t.slice(0,60),at:Date.now()+mn*6e4,prize:Math.max(0,Math.min(500,pz)),by:myUsername});ownerLog('Buat event: '+t);showToast('🎉 Event dibuat');}
+    else if(a==='pay'){if(!await ownerActionReady('admin'))return;const ev=evs[k];if(!ev||ev.paid||!ev.prize){showToast(ev&&ev.paid?'Hadiah sudah dibagikan':'Event ini tanpa hadiah');return;}
+      const us=Object.keys(ev.rsvp||{});if(!us.length||!confirm('Bagikan '+ev.prize+' poin ke '+us.length+' peserta?'))return;
+      await fbDB.ref('panduu_events/'+k+'/paid').set(true);await Promise.all(us.map(u=>fbDB.ref('panduu_rewards/'+u+'/points').transaction(v=>(v||0)+ev.prize)));ownerLog('Hadiah event '+ev.t);showToast('🎁 Hadiah dibagikan');hof();}
+    else if(a==='del'){if(!await ownerActionReady('admin'))return;if(confirm('Hapus event ini?'))await fbDB.ref('panduu_events/'+k).remove();}
+  }catch(err){showToast('Gagal. Cek Firebase Rules');}
+});
+
+/* ---- dekorasi chat: nama bisa diklik + tombol balas ---- */
+const _dec=window.scDecorate;
+window.scDecorate=function(d,k,m){
+  _dec(d,k,m);const nb=d.querySelector('b');if(nb&&m.user){nb.dataset.pf=m.user;nb.style.cursor='pointer';}
+  if(m.user!==myUsername){const a=document.createElement('a');a.textContent=' ↩️';a.dataset.rp=m.user;a.dataset.rt=(m.text||'').slice(0,40);d.appendChild(a);}
+};
+
+/* ---- Auto-moderasi spam ---- */
+const _g=window.scChatGuard;let ts=[],last=[];
+window.scChatGuard=function(t){
+  if(activeStaffRole!=='guest')return _g(t);
+  const now=Date.now(),am=+localStorage.getItem('sc_am')||0;
+  if(am>now){showToast('🤖 AutoMod: tunggu '+Math.ceil((am-now)/6e4)+' menit (terdeteksi spam)');return false;}
+  ts=ts.filter(x=>now-x<1e4);ts.push(now);last=last.filter(x=>now-x[0]<3e4);last.push([now,t.toLowerCase()]);
+  const rep=last.filter(x=>x[1]===t.toLowerCase()).length;
+  if(ts.length>5||rep>=3){localStorage.setItem('sc_am',now+3e5);ts=[];last=[];showToast('🤖 AutoMod: spam terdeteksi, chat dijeda 5 menit');
+    try{fbDB.ref('panduu_reports').push({by:'AutoMod',target:myUsername,alasan:rep>=3?'Spam: pesan sama berulang':'Spam: >5 pesan dalam 10 detik',at:now});}catch(e){}return false;}
+  return _g(t);
+};
+
+ready(()=>{fbDB.ref('panduu_events').limitToLast(12).on('value',x=>{evs=x.val()||{};evRender();});hof();setInterval(hof,12e4);});
+window.addEventListener('load',()=>setTimeout(evRender,1500));
+})();
+</script>
+<script>
+async function lupaSandi(){
+  let e=($id('loginUser').value||'').trim().toLowerCase();
+  if(!e.includes('@'))e=($id('loginEmail').value||'').trim().toLowerCase();
+  if(!e.includes('@'))e=(prompt('Masukkan email akunmu:')||'').trim().toLowerCase();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)){showToast('Isi email yang valid');return;}
+  if(!fbAuth){showToast('Firebase belum siap');return;}
+  try{await fbAuth.sendPasswordResetEmail(e);$id('authStatus').innerText='📧 Tautan reset dikirim ke '+e+' (cek folder spam).';}
+  catch(err){$id('authStatus').innerText=authErr(err);}
+}
+authTab('masuk');
 </script>
 </body>
 </html>
