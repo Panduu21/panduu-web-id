@@ -3265,13 +3265,30 @@ const $=i=>document.getElementById(i),toast=t=>window.showToast?showToast(t):ale
 const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isOwnerAcc=()=>!!(ownerUser&&ownerUser.uid===OWNER_UID);
 async function refresh(){try{await onAuth(ownerUser);}catch(e){}}
+async function strays(b){
+  const box=document.createElement('div');box.innerHTML='<h3 style="margin-top:14px">👑 Owner Lain</h3><div id="stL"><small style="color:#888">Memuat...</small></div>';b.appendChild(box);
+  try{
+    const [st,ro]=await Promise.all([fbDB.ref('panduu_staff').once('value'),fbDB.ref('panduu_roles').once('value')]),S=st.val()||{},R=ro.val()||{},L=[];
+    Object.entries(S).forEach(([un,v])=>{if(v==='owner'&&un!==myUsername)L.push({un,uid:null});});
+    Object.entries(R).forEach(([uid,v])=>{if(v&&v.role==='owner'&&uid!==OWNER_UID){const x=L.find(y=>y.un===v.username);if(x)x.uid=uid;else L.push({un:v.username||uid,uid});}});
+    $('stL').innerHTML=L.length?L.map((x,i)=>'<div class="xRow"><div><b>@'+E(x.un)+'</b><small>Role owner (tidak sah, owner hanya satu)</small></div><button data-i="'+i+'" style="margin-left:auto;background:#ef4444;color:#fff">Cabut</button></div>').join(''):'<small style="color:#888">Tidak ada owner lain ✅</small>';
+    $('stL').querySelectorAll('[data-i]').forEach(bt=>bt.onclick=async()=>{
+      const x=L[+bt.dataset.i];if(!confirm('Cabut role owner dari @'+x.un+'?'))return;
+      try{let uid=x.uid||(await fbDB.ref('panduu_usernames/'+x.un).once('value')).val();
+        if(uid===OWNER_UID){toast('Akun owner utama tidak bisa dicabut');return;}
+        const up={['panduu_staff/'+x.un]:null};if(uid)up['panduu_roles/'+uid]=null;
+        await fbDB.ref().update(up);try{ownerLog('Cabut owner @'+x.un);}catch(e){}toast('Role owner @'+x.un+' dicabut');box.remove();strays(b);
+      }catch(e){toast('Gagal. Periksa Firebase Rules.');}
+    });
+  }catch(e){$('stL').innerText='Gagal memuat (cek Rules).';}
+}
 window.pdRole=async function(b){
   const rs=await ownerResigned(),r=activeStaffRole,N={owner:'👑 Owner',admin:'🛡️ Admin',moderator:'🔨 Moderator',guest:'👤 Member biasa'};
   let h='<div class="xBig"><div style="font-size:34px">'+(N[r]||N.guest).split(' ')[0]+'</div><b>Role kamu: '+(N[r]||N.guest)+'</b><p style="color:#888;font-size:10px;margin-top:6px">Owner hanya satu akun. Role owner tidak bisa diberikan ke orang lain.</p></div>';
   if(isOwnerAcc()&&!rs)h+='<button class="xBtn" id="rBtn" style="width:100%;background:#ef4444;color:#fff;padding:11px">Lepas jabatan Owner</button><p style="color:#888;font-size:10px;margin-top:6px">Kamu jadi member biasa. Hanya akun ini yang bisa mengambil kembali jabatan Owner.</p>';
   else if(isOwnerAcc()&&rs)h+='<button class="xBtn" id="rBtn" style="width:100%;padding:11px">👑 Ambil kembali jabatan Owner</button>';
   else if(r==='admin'||r==='moderator')h+='<button class="xBtn" id="rBtn" style="width:100%;background:#ef4444;color:#fff;padding:11px">Lepas role saya</button>';
-  b.innerHTML=h;const bt=$('rBtn');if(!bt)return;
+  b.innerHTML=h;if(isOwnerAcc()&&!rs)strays(b);const bt=$('rBtn');if(!bt)return;
   bt.onclick=async()=>{
     try{
       if(isOwnerAcc()&&rs){await fbDB.ref('panduu_control/ownerResigned').set(false);localStorage.removeItem('pd_owner_res');await refresh();toast('👑 Jabatan Owner aktif kembali');}
