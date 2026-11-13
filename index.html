@@ -1354,25 +1354,27 @@ async function doLogin(){
   }catch(e){st.innerText=authErr(e);}
 }
 async function doLogout(){if(confirm('Logout?')){try{await fbAuth.signOut();}catch(e){}showToast('👋 Sampai jumpa lagi!');}}
+const ownerResigned=async()=>{try{return (await _to(fbDB.ref('panduu_control/ownerResigned').once('value'))).val()===true;}catch(e){return localStorage.getItem('pd_owner_res')==='1';}};
+const _to=(p,ms=7000)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);
 async function onAuth(user){
   ownerUser=user||null;activeStaffRole='guest';
   if(!user){localStorage.removeItem('panduu_user');myUsername='';chatStop();try{scOff();}catch(e){}document.getElementById('ownerPanel').style.display='none';renderStaff();renderHomeEdit();cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();return;}
   const pend=localStorage.getItem('panduu_pending_un')||'';localStorage.removeItem('panduu_pending_un');const stored=/^@[a-z0-9_.]{3,20}$/.test(user.displayName||'')?user.displayName.slice(1):'';
   let un=stored||(/^[a-z0-9_.]{3,20}$/.test(pend)?pend:'')||(user.email||'').split('@')[0].toLowerCase().replace(/[^a-z0-9_.]/g,'')||('u'+user.uid.slice(0,6).toLowerCase()),prof={nama:un,kota:'Indonesia'};
   try{
-    const um=await fbDB.ref('panduu_usernames/'+un).once('value');
+    const um=await _to(fbDB.ref('panduu_usernames/'+un).once('value'));
     if(um.exists()&&um.val()!==user.uid)un='u'+user.uid.slice(0,8).toLowerCase();
     if(pend&&!stored)user.updateProfile({displayName:'@'+un}).catch(()=>{});
-    if((await fbDB.ref('panduu_bans/'+un).once('value')).exists()){await fbAuth.signOut();alert('Akun ini diblokir oleh owner.');return;}
-    const m=(await fbDB.ref('panduu_members/'+un).once('value')).val()||{};
+    if((await _to(fbDB.ref('panduu_bans/'+un).once('value'))).exists()){await fbAuth.signOut();alert('Akun ini diblokir oleh owner.');return;}
+    const m=(await _to(fbDB.ref('panduu_members/'+un).once('value'))).val()||{};
     prof={nama:m.nama||user.displayName||un,kota:m.kota||'Indonesia',color:m.color||'',guild:m.guild||'',foto:safeImg(m.foto)||''};
-    await fbDB.ref().update({['panduu_usernames/'+un]:user.uid,['panduu_members/'+un]:{nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',...(prof.foto?{foto:prof.foto}:{}),uid:user.uid,lastLogin:Date.now(),createdAt:m.createdAt||Date.now()}});
+    await _to(fbDB.ref().update({['panduu_usernames/'+un]:user.uid,['panduu_members/'+un]:{nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',...(prof.foto?{foto:prof.foto}:{}),uid:user.uid,lastLogin:Date.now(),createdAt:m.createdAt||Date.now()}}));
   }catch(e){console.log('profil',e);}
   localStorage.setItem('panduu_user',JSON.stringify({nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',username:un,uid:user.uid,foto:prof.foto||''}));
   localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1));
   myUsername=un;
-  if(user.uid===OWNER_UID){activeStaffRole='owner';fbDB.ref('panduu_staff/'+un).set('owner').catch(()=>{});}
-  else{try{const rd=(await fbDB.ref('panduu_roles/'+user.uid).once('value')).val()||{};if(rd.enabled===true&&['admin','moderator'].includes(rd.role))activeStaffRole=rd.role;}catch(e){}}
+  if(user.uid===OWNER_UID&&!(await ownerResigned())){activeStaffRole='owner';fbDB.ref('panduu_staff/'+un).set('owner').catch(()=>{});}
+  else{try{const rd=(await _to(fbDB.ref('panduu_roles/'+user.uid).once('value'))).val()||{};if(rd.enabled===true&&['admin','moderator'].includes(rd.role))activeStaffRole=rd.role;}catch(e){}}
   const staff=activeStaffRole!=='guest',otc=$id('ownerThemeControls');
   if(otc)otc.style.display=activeStaffRole==='owner'?'block':'none';
   $id('ownerPanel').style.display=staff?'block':'none';
@@ -3083,8 +3085,8 @@ window.doLogin=async function(){
     if(!RE_MAIL.test(email)){st.innerText='Masukkan email yang valid.';return;}
     if(!pass){st.innerText='Isi sandi.';return;}
     st.innerText='Memproses...';
-    try{await fbAuth.signInWithEmailAndPassword(email,pass);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='';}
-    catch(e){st.innerText=authErr(e);}
+    try{await Promise.race([fbAuth.signInWithEmailAndPassword(email,pass),new Promise((_,r)=>setTimeout(()=>r({code:'timeout'}),15000))]);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='✅ Berhasil, memuat profil...';setTimeout(()=>{if(st.innerText.startsWith('✅'))st.innerText='';},8000);}
+    catch(e){st.innerText=e&&e.code==='timeout'?'Koneksi lambat, coba lagi.':authErr(e);}
     return;
   }
   const un=$('loginUser').value.trim().replace(/^@/,'').toLowerCase(),email=$('loginEmail').value.trim().toLowerCase();
@@ -3102,6 +3104,7 @@ window.doLogin=async function(){
   if(await sendOtp())st.innerText='';else st.innerText='';
 };
 authTab('masuk');
+const tR=setInterval(()=>{if(typeof fbAuth!=='undefined'&&fbAuth){clearInterval(tR);fbAuth.onAuthStateChanged(u=>{if(!u){authTab('masuk');pw.value='';}});}},400);
 })();
 </script>
 
@@ -3121,8 +3124,8 @@ document.body.appendChild(fab);document.body.appendChild(ov);
 const me=()=>(typeof myUsername!=='undefined'&&myUsername)||'';
 const need=()=>{if(!me()||!fbDB){toast('Login dulu');return false;}return true;};
 let tab='streak';
-const TABS=[['streak','🔥 Streak'],['cari','🔎 Member'],['riwayat','🕘 Riwayat'],['aman','🛡️ Keamanan'],['app','📲 Install']];
-function open(t){tab=t||tab;ov.classList.add('on');$('xTabs').innerHTML=TABS.map(x=>'<button class="'+(x[0]===tab?'on':'')+'" data-t="'+x[0]+'">'+x[1]+'</button>').join('');render();}
+const TABS=[['streak','🔥 Streak'],['cari','🔎 Member'],['riwayat','🕘 Riwayat'],['aman','🛡️ Keamanan'],['role','👑 Role',['moderator','admin','owner']],['mod','🔨 Panel Mod',['moderator','owner']],['adm','🛠️ Panel Admin',['admin','owner']],['app','📲 Install']];
+function open(t){tab=t||tab;ov.classList.add('on');$('xTabs').innerHTML=TABS.filter(x=>!x[2]||x[2].includes(activeStaffRole)||(x[0]==='role'&&ownerUser&&ownerUser.uid===OWNER_UID)).map(x=>'<button class="'+(x[0]===tab?'on':'')+'" data-t="'+x[0]+'">'+x[1]+'</button>').join('');render();}
 fab.onclick=()=>open();$('xClose').onclick=()=>ov.classList.remove('on');ov.onclick=e=>{if(e.target===ov)ov.classList.remove('on');};
 $('xTabs').onclick=e=>{const t=e.target.dataset.t;if(t)open(t);};
 async function render(){
@@ -3132,6 +3135,8 @@ async function render(){
     $('xInst').onclick=async()=>{if(window._xp){window._xp.prompt();window._xp=null;}else toast('Buka menu browser → "Tambahkan ke layar utama"');};return;
   }
   if(!need()){b.innerHTML='<p style="color:#888;text-align:center;padding:16px">Login dulu untuk memakai fitur ini.</p>';return;}
+  if(tab==='role'){window.pdRole(b);return;}
+  if(tab==='mod'||tab==='adm'){window.pdPanel(b,tab);return;}
   if(tab==='aman'){window.pdSecurity?window.pdSecurity(b):0;return;}
   if(tab==='streak'){
     const s=await getStreak(),bd=badgeOf(s.n);
@@ -3250,6 +3255,68 @@ async function push(){try{
   const reg=await navigator.serviceWorker.register('firebase-messaging-sw.js'),t=await firebase.messaging().getToken({vapidKey:PD_CFG.vapidKey,serviceWorkerRegistration:reg});
   await fn('subscribeChat')({token:t});localStorage.setItem('pd_push','1');toast('🔔 Notifikasi aktif');$('sPu')&&($('sPu').innerText='Aktif ✓');
 }catch(e){toast(er(e));}}
+})();
+</script>
+
+<script>
+/* ===== ROLE: owner tunggal, lepas role, Panel Admin & Panel Moderator ===== */
+(function(){
+const $=i=>document.getElementById(i),toast=t=>window.showToast?showToast(t):alert(t);
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isOwnerAcc=()=>!!(ownerUser&&ownerUser.uid===OWNER_UID);
+async function refresh(){try{await onAuth(ownerUser);}catch(e){}}
+window.pdRole=async function(b){
+  const rs=await ownerResigned(),r=activeStaffRole,N={owner:'👑 Owner',admin:'🛡️ Admin',moderator:'🔨 Moderator',guest:'👤 Member biasa'};
+  let h='<div class="xBig"><div style="font-size:34px">'+(N[r]||N.guest).split(' ')[0]+'</div><b>Role kamu: '+(N[r]||N.guest)+'</b><p style="color:#888;font-size:10px;margin-top:6px">Owner hanya satu akun. Role owner tidak bisa diberikan ke orang lain.</p></div>';
+  if(isOwnerAcc()&&!rs)h+='<button class="xBtn" id="rBtn" style="width:100%;background:#ef4444;color:#fff;padding:11px">Lepas jabatan Owner</button><p style="color:#888;font-size:10px;margin-top:6px">Kamu jadi member biasa. Hanya akun ini yang bisa mengambil kembali jabatan Owner.</p>';
+  else if(isOwnerAcc()&&rs)h+='<button class="xBtn" id="rBtn" style="width:100%;padding:11px">👑 Ambil kembali jabatan Owner</button>';
+  else if(r==='admin'||r==='moderator')h+='<button class="xBtn" id="rBtn" style="width:100%;background:#ef4444;color:#fff;padding:11px">Lepas role saya</button>';
+  b.innerHTML=h;const bt=$('rBtn');if(!bt)return;
+  bt.onclick=async()=>{
+    try{
+      if(isOwnerAcc()&&rs){await fbDB.ref('panduu_control/ownerResigned').set(false);localStorage.removeItem('pd_owner_res');await refresh();toast('👑 Jabatan Owner aktif kembali');}
+      else if(isOwnerAcc()){if(!confirm('Yakin lepas jabatan Owner? Kamu jadi member biasa.'))return;await fbDB.ref().update({'panduu_control/ownerResigned':true,['panduu_staff/'+myUsername]:null});localStorage.setItem('pd_owner_res','1');await refresh();toast('Jabatan Owner dilepas');}
+      else{if(!confirm('Yakin lepas role '+r+'? Role bisa diberikan lagi oleh Owner.'))return;await fbDB.ref().update({['panduu_roles/'+ownerUser.uid]:null,['panduu_staff/'+myUsername]:null});await refresh();toast('Role dilepas');}
+      window.pdRole(b);
+    }catch(e){toast('Gagal. Periksa Firebase Rules.');}
+  };
+};
+window.pdPanel=async function(b,which){
+  const adm=which==='adm',ok=await ownerActionReady(adm?'admin':'moderate');
+  if(!ok){b.innerHTML='<p style="color:#888;padding:14px">Akses ditolak.</p>';return;}
+  b.innerHTML='<h3>'+(adm?'🛠️ Panel Admin':'🔨 Panel Moderator')+'</h3><div id="pnR">Memuat...</div><h3 style="margin-top:14px">💬 Chat Terbaru</h3><div id="pnC">Memuat...</div>'+(adm?'<h3 style="margin-top:14px">⛔ Ban / Unban</h3><input class="xIn" id="pnU" placeholder="username"><button class="xBtn" id="pnB" style="width:100%;margin-top:8px;background:#ef4444;color:#fff">Ban user</button><div id="pnL" style="margin-top:8px"></div>':'');
+  const log=t=>{try{ownerLog(t);}catch(e){}};
+  async function reps(){
+    try{const v=(await fbDB.ref('panduu_reports').limitToLast(30).once('value')).val()||{},l=Object.entries(v).filter(([k,x])=>x.status!=='done').reverse();
+      $('pnR').innerHTML=l.length?l.map(([k,x])=>'<div class="xRow"><div><b>@'+E(x.target)+'</b><small>'+E(x.alasan||'-')+' · oleh '+E(x.by||'?')+'</small></div><span style="margin-left:auto;display:flex;gap:5px"><button data-d="'+E(k)+'">Tutup</button>'+(adm?'<button data-b="'+E(x.target)+'" style="background:#ef4444;color:#fff">Ban</button>':'')+'</span></div>').join(''):'<small style="color:#888">Tidak ada laporan 🎉</small>';
+      $('pnR').querySelectorAll('[data-d]').forEach(x=>x.onclick=async()=>{await fbDB.ref('panduu_reports/'+x.dataset.d).update({status:'done',doneBy:myUsername,doneAt:Date.now()});log('Tutup laporan');reps();});
+      $('pnR').querySelectorAll('[data-b]').forEach(x=>x.onclick=()=>ban(x.dataset.b));
+    }catch(e){$('pnR').innerText='Gagal memuat (cek Rules).';}
+  }
+  async function chat(){
+    try{const v=(await fbDB.ref('panduu_chat').limitToLast(15).once('value')).val()||{},l=Object.entries(v).reverse();
+      $('pnC').innerHTML=l.length?l.map(([k,x])=>'<div class="xRow"><div><b>@'+E(x.user)+'</b><small>'+E(x.text)+'</small></div><button data-c="'+E(k)+'" style="margin-left:auto;background:#ef4444;color:#fff">Hapus</button></div>').join(''):'<small style="color:#888">Belum ada chat.</small>';
+      $('pnC').querySelectorAll('[data-c]').forEach(x=>x.onclick=async()=>{await fbDB.ref('panduu_chat/'+x.dataset.c).remove();log('Hapus pesan chat');chat();});
+    }catch(e){$('pnC').innerText='Gagal memuat chat.';}
+  }
+  async function ban(un){
+    un=(un||'').trim().toLowerCase().replace('@','');if(!un)return;
+    const uid=(await fbDB.ref('panduu_usernames/'+un).once('value')).val();
+    if(!uid){toast('Username tidak ditemukan');return;}
+    if(uid===OWNER_UID){toast('Owner tidak bisa di-ban');return;}
+    if(!confirm('Ban @'+un+'?'))return;
+    try{const m=(await fbDB.ref('panduu_members/'+un).once('value')).val()||{};await fbDB.ref('panduu_bans/'+un).set({nama:m.nama||un,at:Date.now(),by:myUsername});log('Ban @'+un);toast('@'+un+' di-ban');bans();}catch(e){toast('Gagal. Periksa Rules.');}
+  }
+  async function bans(){
+    if(!adm)return;
+    try{const v=(await fbDB.ref('panduu_bans').once('value')).val()||{};const l=Object.keys(v);
+      $('pnL').innerHTML=l.length?l.map(u=>'<div class="xRow"><b>@'+E(u)+'</b><button data-u="'+E(u)+'" style="margin-left:auto">Unban</button></div>').join(''):'<small style="color:#888">Tidak ada yang di-ban.</small>';
+      $('pnL').querySelectorAll('[data-u]').forEach(x=>x.onclick=async()=>{await fbDB.ref('panduu_bans/'+x.dataset.u).remove();log('Unban @'+x.dataset.u);bans();});
+    }catch(e){$('pnL').innerText='Gagal memuat.';}
+  }
+  if(adm)$('pnB').onclick=()=>{ban($('pnU').value);$('pnU').value='';};
+  reps();chat();bans();
+};
 })();
 </script>
 
