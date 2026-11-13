@@ -3266,7 +3266,19 @@ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','
 const isOwnerAcc=()=>!!(ownerUser&&ownerUser.uid===OWNER_UID);
 async function refresh(){try{await onAuth(ownerUser);}catch(e){}}
 async function strays(b){
-  const box=document.createElement('div');box.innerHTML='<h3 style="margin-top:14px">👑 Owner Lain</h3><div id="stL"><small style="color:#888">Memuat...</small></div>';b.appendChild(box);
+  const box=document.createElement('div');box.innerHTML='<h3 style="margin-top:14px">👑 Owner Lain</h3><small style="color:#888;display:block;margin-bottom:6px">Username aktif: @'+E(myUsername)+' · versi file: R3</small><button class="xBtn" id="stClean" style="width:100%;margin-bottom:8px">🧹 Bersihkan semua label owner tambahan</button><div id="stL"><small style="color:#888">Memuat...</small></div>';b.appendChild(box);
+  $('stClean').onclick=async()=>{
+    try{
+      const v=(await fbDB.ref('panduu_staff').once('value')).val()||{},up={};
+      Object.entries(v).forEach(([k,r])=>{if(r==='owner'&&k!==myUsername)up['panduu_staff/'+k]=null;});
+      const n=Object.keys(up).length;
+      if(!n){toast('Tidak ada label tambahan');return;}
+      await fbDB.ref().update(up);
+      const after=(await fbDB.ref('panduu_staff').once('value')).val()||{},left=Object.entries(after).filter(([k,r])=>r==='owner'&&k!==myUsername).length;
+      toast(left?'Gagal: '+left+' label masih ada (database menolak, cek Rules)':'✅ '+n+' label dicabut');
+      box.remove();strays(b);
+    }catch(e){toast('Gagal: '+(e.code||e.message));}
+  };
   try{
     const [st,ro]=await Promise.all([fbDB.ref('panduu_staff').once('value'),fbDB.ref('panduu_roles').once('value')]),S=st.val()||{},R=ro.val()||{},L=[];
     Object.entries(S).forEach(([un,v])=>{if(v==='owner'&&un!==myUsername)L.push({un,uid:null});});
@@ -3277,9 +3289,9 @@ async function strays(b){
       try{let uid=x.uid||(await fbDB.ref('panduu_usernames/'+x.un).once('value')).val();
         const up={['panduu_staff/'+x.un]:null};if(uid&&uid!==OWNER_UID)up['panduu_roles/'+uid]=null;
         await fbDB.ref().update(up);try{ownerLog('Cabut owner @'+x.un);}catch(e){}toast('Role owner @'+x.un+' dicabut');box.remove();strays(b);
-      }catch(e){toast('Gagal. Periksa Firebase Rules.');}
+      }catch(e){toast('Gagal: '+(e.code||e.message));}
     });
-  }catch(e){$('stL').innerText='Gagal memuat (cek Rules).';}
+  }catch(e){$('stL').innerText='Gagal memuat: '+(e.code||e.message);}
 }
 window.pdRole=async function(b){
   const rs=await ownerResigned(),r=activeStaffRole,N={owner:'👑 Owner',admin:'🛡️ Admin',moderator:'🔨 Moderator',guest:'👤 Member biasa'};
