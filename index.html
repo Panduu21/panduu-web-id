@@ -2987,6 +2987,8 @@ window.renderTools($('cariTools')?$('cariTools').value:'');
 /* ===== AUTH: daftar + verifikasi email lewat link Firebase (tanpa server) ===== */
 (function(){
 const $=i=>document.getElementById(i),RE_MAIL=/^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+window.addEventListener('error',e=>{window.__lastErr=(e&&e.message)||'';});
+window.addEventListener('unhandledrejection',e=>{const r=e&&e.reason;window.__lastErr=(r&&(r.message||r.code))||String(r||'');});
 const VERIFY_SINCE=Date.parse('2026-11-13T00:00:00Z'); // hanya akun baru yang wajib verifikasi
 let cur=null,poll=null,rsT=null,nextSend=0;
 const css=document.createElement('style');
@@ -3052,8 +3054,18 @@ window.doLogin=async function(){
     if(!RE_MAIL.test(email)){st.innerText='Masukkan email yang valid.';return;}
     if(!pass){st.innerText='Isi sandi.';return;}
     st.innerText='Memproses...';
-    try{await fbAuth.signInWithEmailAndPassword(email,pass);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='';}
-    catch(e){st.innerText=authErr(e);}
+    try{
+      window.__lastErr='';
+      await fbAuth.signInWithEmailAndPassword(email,pass);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='';
+      setTimeout(()=>{
+        const lb=$('loginBox');
+        if(lb&&lb.style.display!=='none'&&!ov.classList.contains('on')){
+          st.innerText='⚠️ Sandi benar, tapi profil gagal dimuat'+(window.__lastErr?': '+window.__lastErr:'. Coba muat ulang halaman.');
+          try{st.scrollIntoView({block:'center'});}catch(e){}
+        }
+      },3000);
+    }
+    catch(e){st.innerText=authErr(e);try{st.scrollIntoView({block:'center'});}catch(_){}}
     return;
   }
   const un=$('loginUser').value.trim().replace(/^@/,'').toLowerCase(),email=$('loginEmail').value.trim().toLowerCase();
