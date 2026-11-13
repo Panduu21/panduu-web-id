@@ -1355,7 +1355,6 @@ async function doLogin(){
 }
 async function doLogout(){if(confirm('Logout?')){try{await fbAuth.signOut();}catch(e){}showToast('👋 Sampai jumpa lagi!');}}
 async function onAuth(user){
-  if(user&&window.needVerify&&window.needVerify(user)){window.showVerify(user);return;}
   ownerUser=user||null;activeStaffRole='guest';
   if(!user){localStorage.removeItem('panduu_user');myUsername='';chatStop();try{scOff();}catch(e){}document.getElementById('ownerPanel').style.display='none';renderStaff();renderHomeEdit();cekLogin();if(window._fbUpdateOnline)window._fbUpdateOnline();return;}
   const pend=localStorage.getItem('panduu_pending_un')||'';localStorage.removeItem('panduu_pending_un');const stored=/^@[a-z0-9_.]{3,20}$/.test(user.displayName||'')?user.displayName.slice(1):'';
@@ -2983,45 +2982,75 @@ window.renderTools($('cariTools')?$('cariTools').value:'');
 })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <script>
-/* ===== AUTH: daftar + verifikasi email lewat link Firebase (tanpa server) ===== */
+/* ===== AUTH OTP EMAIL (Daftar: username+email+sandi → OTP | Masuk: email+sandi) ===== */
+const OTP_CFG={
+  publicKey:'63ohzdyWKy2a_Uqsx',   // EmailJS > Account > Public Key
+  serviceId:'service_d6s65bq',           // EmailJS > Email Services
+  templateId:'template_dszcrnm',         // EmailJS > Email Templates (variabel: {{to_email}} {{otp_code}} {{username}} {{expire_min}})
+  expireMin:5, maxTry:5, resendSec:60
+};
 (function(){
 const $=i=>document.getElementById(i),RE_MAIL=/^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-window.addEventListener('error',e=>{window.__lastErr=(e&&e.message)||'';});
-window.addEventListener('unhandledrejection',e=>{const r=e&&e.reason;window.__lastErr=(r&&(r.message||r.code))||String(r||'');});
-const VERIFY_SINCE=Date.parse('2026-11-13T00:00:00Z'); // hanya akun baru yang wajib verifikasi
-let cur=null,poll=null,rsT=null,nextSend=0;
+let pend=null,otpState=null,timerI=null;
 const css=document.createElement('style');
 css.textContent='#otpOv{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px)}#otpOv.on{display:flex}.otpBox{background:linear-gradient(135deg,#1a1033,#111);border:1px solid #a78bfa66;border-radius:18px;padding:18px;width:100%;max-width:360px;text-align:center}.otpBox h3{font-size:16px}.otpBox p{font-size:11px;color:#aaa;margin:6px 0 12px;line-height:1.5}.otpRow{display:flex;gap:6px;justify-content:center}.otpRow input{width:42px!important;height:50px;text-align:center;font-size:20px;font-weight:800;padding:0!important;margin:0!important;background:#000;border:1px solid #333;border-radius:10px;color:#fff;outline:none}.otpRow input:focus{border-color:#a78bfa}.otpRow.err{animation:shk .3s}@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}.otpBox button{width:100%;margin-top:10px;padding:11px;border:none;border-radius:20px;font-weight:800;cursor:pointer;background:#a78bfa;color:#000}.otpBox button.g{background:#222;color:#ccc}.otpBox button:disabled{opacity:.5}#otpMsg{min-height:16px;font-size:11px;color:#ffaa00;margin-top:8px}#pwMeter{height:5px;background:#222;border-radius:9px;overflow:hidden;margin:2px 0 6px;display:none}#pwMeter i{display:block;height:100%;width:0;transition:.3s}#capsW{display:none;color:#ffaa00;font-size:10px;margin:2px 0}';
 document.head.appendChild(css);
 const ov=document.createElement('div');ov.id='otpOv';
-ov.innerHTML='<div class="otpBox"><div style="font-size:34px">📩</div><h3>Cek Email Kamu</h3><p>Link verifikasi dikirim ke <b id="otpMail"></b>.<br>Buka emailnya (cek folder spam), klik link, lalu kembali ke sini.</p><div id="otpMsg"></div><button id="otpOk">✅ Saya sudah verifikasi</button><button class="g" id="otpResend">Kirim ulang email</button><button class="g" id="otpCancel">Keluar</button></div>';
+ov.innerHTML='<div class="otpBox"><div style="font-size:34px">📩</div><h3>Verifikasi Email</h3><p>Kode 6 digit dikirim ke <b id="otpMail"></b>.<br>Berlaku <span id="otpLeft">05:00</span>. Cek folder spam juga.</p><div class="otpRow" id="otpRow">'+[0,1,2,3,4,5].map(i=>'<input inputmode="numeric" maxlength="1" autocomplete="one-time-code" data-i="'+i+'">').join('')+'</div><div id="otpMsg"></div><button id="otpOk">✅ Verifikasi &amp; Buat Akun</button><button class="g" id="otpResend">Kirim ulang kode</button><button class="g" id="otpCancel">Batal</button></div>';
 document.body.appendChild(ov);
+const boxes=[...ov.querySelectorAll('.otpRow input')];
+boxes.forEach((b,i)=>{
+  b.addEventListener('input',()=>{b.value=b.value.replace(/\D/g,'').slice(-1);if(b.value&&i<5)boxes[i+1].focus();if(boxes.every(x=>x.value))verify();});
+  b.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!b.value&&i>0)boxes[i-1].focus();});
+  b.addEventListener('paste',e=>{const t=(e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6);if(!t)return;e.preventDefault();t.split('').forEach((c,k)=>boxes[k].value=c);boxes[Math.min(t.length,5)].focus();if(t.length===6)verify();});
+});
 const msg=t=>{$('otpMsg').innerText=t||'';};
-window.needVerify=u=>!!(u&&u.email&&!u.emailVerified&&!u.email.endsWith(AUTH_DOMAIN)&&Date.parse((u.metadata&&u.metadata.creationTime)||0)>VERIFY_SINCE);
-function tick(){const rs=Math.max(0,Math.ceil((nextSend-Date.now())/1000)),r=$('otpResend');r.disabled=rs>0;r.innerText=rs>0?'Kirim ulang email ('+rs+'d)':'Kirim ulang email';}
-function hide(){ov.classList.remove('on');clearInterval(poll);clearInterval(rsT);cur=null;msg('');}
-window.showVerify=function(u){cur=u;$('otpMail').innerText=u.email;ov.classList.add('on');clearInterval(poll);clearInterval(rsT);rsT=setInterval(tick,1000);tick();poll=setInterval(()=>check(true),5000);};
-async function check(silent){
-  if(!cur)return;
-  try{await cur.reload();}catch(e){return;}
-  const u=fbAuth.currentUser;if(!u)return;
-  if(u.emailVerified){
-    try{await u.getIdToken(true);}catch(e){}
-    hide();$('loginPass').value='';$('authStatus').innerText='';
-    if(window.showToast)showToast('🎉 Email terverifikasi!');
-    onAuth(u);
-  }else if(!silent)msg('Belum terverifikasi. Klik link di email dulu, cek juga folder spam.');
+const sha=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function tick(){
+  if(!otpState)return;
+  const left=Math.max(0,Math.ceil((otpState.exp-Date.now())/1000)),rs=Math.max(0,Math.ceil((otpState.nextSend-Date.now())/1000));
+  $('otpLeft').innerText=left?fmt(left):'habis';
+  const r=$('otpResend');r.disabled=rs>0;r.innerText=rs>0?'Kirim ulang ('+rs+'d)':'Kirim ulang kode';
 }
-async function resend(){
-  if(!cur||Date.now()<nextSend)return;
-  try{await cur.sendEmailVerification();nextSend=Date.now()+60000;msg('Email terkirim ulang. Cek inbox & spam.');}
-  catch(e){msg(e.code==='auth/too-many-requests'?'Terlalu sering. Tunggu beberapa menit.':authErr(e));}
-  tick();
+async function sendOtp(){
+  if(window.PD_SERVER&&window.firebase&&firebase.functions){try{await PD_FN('requestOtp')({email:pend.email,purpose:'signup',username:pend.un});}catch(e){msg((e.message||'Gagal kirim OTP').replace(/^.*?:\s*/,''));return false;}otpState={server:true,exp:Date.now()+OTP_CFG.expireMin*60000,tries:0,nextSend:Date.now()+OTP_CFG.resendSec*1000};boxes.forEach(b=>b.value='');boxes[0].focus();msg('');tick();return true;}
+  if(!window.emailjs||OTP_CFG.publicKey.startsWith('ISI_')){msg('⚙️ EmailJS belum diatur. Isi OTP_CFG di kode (lihat panduan).');return false;}
+  const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,'0'),salt=crypto.getRandomValues(new Uint32Array(2)).join('-');
+  try{
+    emailjs.init({publicKey:OTP_CFG.publicKey});
+    await emailjs.send(OTP_CFG.serviceId,OTP_CFG.templateId,{to_email:pend.email,otp_code:code,username:pend.un,expire_min:OTP_CFG.expireMin});
+  }catch(e){msg('Gagal kirim email: '+((e&&(e.text||e.message))||'cek konfigurasi EmailJS'));return false;}
+  otpState={salt,hash:await sha(salt+code),exp:Date.now()+OTP_CFG.expireMin*60000,tries:0,nextSend:Date.now()+OTP_CFG.resendSec*1000};
+  boxes.forEach(b=>b.value='');boxes[0].focus();msg('');tick();return true;
 }
-$('otpOk').onclick=()=>check(false);
-$('otpResend').onclick=resend;
-$('otpCancel').onclick=async()=>{hide();try{await fbAuth.signOut();}catch(e){}};
+async function verify(){
+  if(!otpState||!pend)return;
+  const c=boxes.map(b=>b.value).join('');if(c.length<6)return msg('Isi 6 digit kode.');
+  if(otpState.server){$('otpOk').disabled=true;msg('Memverifikasi...');try{await PD_FN('verifySignup')({username:pend.un,email:pend.email,password:pend.pass,code:c});localStorage.setItem('panduu_pending_un',pend.un);await fbAuth.signInWithEmailAndPassword(pend.email,pend.pass);close();$('loginPass').value='';$('authStatus').innerText='';if(window.showToast)showToast('🎉 Akun terverifikasi & berhasil dibuat!');}catch(e){localStorage.removeItem('panduu_pending_un');$('otpRow').classList.add('err');setTimeout(()=>$('otpRow').classList.remove('err'),350);boxes.forEach(b=>b.value='');boxes[0].focus();msg((e.message||'Gagal verifikasi').replace(/^.*?:\s*/,''));}$('otpOk').disabled=false;return;}
+  if(Date.now()>otpState.exp)return msg('Kode kedaluwarsa. Kirim ulang kode.');
+  if(otpState.tries>=OTP_CFG.maxTry)return msg('Terlalu banyak salah. Kirim ulang kode baru.');
+  $('otpOk').disabled=true;
+  if(await sha(otpState.salt+c)!==otpState.hash){
+    otpState.tries++;$('otpRow').classList.add('err');setTimeout(()=>$('otpRow').classList.remove('err'),350);
+    boxes.forEach(b=>b.value='');boxes[0].focus();$('otpOk').disabled=false;
+    return msg('Kode salah. Sisa percobaan: '+(OTP_CFG.maxTry-otpState.tries));
+  }
+  msg('Membuat akun...');
+  try{
+    localStorage.setItem('panduu_pending_un',pend.un);
+    await fbAuth.createUserWithEmailAndPassword(pend.email,pend.pass);
+    close();$('loginPass').value='';$('authStatus').innerText='';
+    if(window.showToast)showToast('🎉 Akun terverifikasi & berhasil dibuat!');
+  }catch(e){localStorage.removeItem('panduu_pending_un');msg(authErr(e));}
+  $('otpOk').disabled=false;
+}
+function open(){$('otpMail').innerText=pend.email;ov.classList.add('on');clearInterval(timerI);timerI=setInterval(tick,1000);}
+function close(){ov.classList.remove('on');clearInterval(timerI);otpState=null;pend=null;boxes.forEach(b=>b.value='');msg('');}
+$('otpOk').onclick=verify;$('otpCancel').onclick=close;
+$('otpResend').onclick=async()=>{if(otpState&&Date.now()<otpState.nextSend)return;$('otpResend').disabled=true;await sendOtp();};
 
 /* ---- UI Daftar / Masuk ---- */
 const pw=$('loginPass'),meter=document.createElement('div');
@@ -3036,13 +3065,13 @@ $('loginUser').setAttribute('autocapitalize','none');
 window.authTab=function(m){
   authMode=m;
   $('tabMasuk').classList.toggle('on',m==='masuk');$('tabDaftar').classList.toggle('on',m==='daftar');
-  $('authBtn').innerText=m==='masuk'?'🔐 Masuk':'📩 Daftar';
-  $('loginEmail').style.display=m==='daftar'?'block':'none';$('loginEmail').placeholder='Email aktif (link verifikasi dikirim ke sini)';
+  $('authBtn').innerText=m==='masuk'?'🔐 Masuk':'📩 Daftar & Kirim OTP';
+  $('loginEmail').style.display=m==='daftar'?'block':'none';$('loginEmail').placeholder='Email aktif (kode OTP dikirim ke sini)';
   $('loginUser').placeholder=m==='masuk'?'Email':'Username (3-20, huruf kecil/angka)';
   $('loginUser').type=m==='masuk'?'email':'text';
   pw.autocomplete=m==='masuk'?'current-password':'new-password';
   meter.style.display=m==='daftar'?'block':'none';
-  $('authHint').innerText=m==='masuk'?'Masuk dengan email & sandi.':'Isi username, email & sandi. Link verifikasi akan dikirim ke emailmu.';
+  $('authHint').innerText=m==='masuk'?'Masuk cukup dengan email & sandi. Tanpa OTP lagi.':'Isi username, email & sandi. Kode OTP akan dikirim ke emailmu.';
   $('forgotLink').style.display=m==='masuk'?'inline':'none';
   if(m==='masuk'){const r=localStorage.getItem('panduu_last_email');if(r&&!$('loginUser').value)$('loginUser').value=r;}
 };
@@ -3054,45 +3083,173 @@ window.doLogin=async function(){
     if(!RE_MAIL.test(email)){st.innerText='Masukkan email yang valid.';return;}
     if(!pass){st.innerText='Isi sandi.';return;}
     st.innerText='Memproses...';
-    try{
-      window.__lastErr='';
-      await fbAuth.signInWithEmailAndPassword(email,pass);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='';
-      setTimeout(()=>{
-        const lb=$('loginBox');
-        if(lb&&lb.style.display!=='none'&&!ov.classList.contains('on')){
-          st.innerText='⚠️ Sandi benar, tapi profil gagal dimuat'+(window.__lastErr?': '+window.__lastErr:'. Coba muat ulang halaman.');
-          try{st.scrollIntoView({block:'center'});}catch(e){}
-        }
-      },3000);
-    }
-    catch(e){st.innerText=authErr(e);try{st.scrollIntoView({block:'center'});}catch(_){}}
+    try{await fbAuth.signInWithEmailAndPassword(email,pass);localStorage.setItem('panduu_last_email',email);pw.value='';st.innerText='';}
+    catch(e){st.innerText=authErr(e);}
     return;
   }
   const un=$('loginUser').value.trim().replace(/^@/,'').toLowerCase(),email=$('loginEmail').value.trim().toLowerCase();
   if(!/^[a-z0-9_.]{3,20}$/.test(un)){st.innerText='Username 3-20 karakter: huruf kecil, angka, _ atau .';return;}
   if(!RE_MAIL.test(email)){st.innerText='Masukkan email yang valid.';return;}
-  if(pass.length<8){st.innerText='Sandi minimal 8 karakter.';return;}
+  if(pass.length<6){st.innerText='Sandi minimal 6 karakter.';return;}
   st.innerText='Memeriksa...';
   try{
     if((await fbDB.ref('panduu_bans/'+un).once('value')).exists()){st.innerText='⛔ Username ini diblokir.';return;}
     if((await fbDB.ref('panduu_usernames/'+un).once('value')).exists()){st.innerText='Username sudah dipakai.';return;}
   }catch(e){}
   try{if((await fbAuth.fetchSignInMethodsForEmail(email)).length){st.innerText='Email sudah terdaftar, silakan Masuk.';return;}}catch(e){}
-  if(($('hpWebsite')||{}).value){return;} /* honeypot terisi = bot */
-  st.innerText='Membuat akun...';
-  try{
-    localStorage.setItem('panduu_pending_un',un);
-    const cr=await fbAuth.createUserWithEmailAndPassword(email,pass);
-    try{await cr.user.updateProfile({displayName:'@'+un});}catch(e){}
-    try{await cr.user.sendEmailVerification();nextSend=Date.now()+60000;tick();}catch(e){}
-    pw.value='';st.innerText='';
-  }catch(e){localStorage.removeItem('panduu_pending_un');st.innerText=authErr(e);}
+  pend={un,email,pass};otpState=null;open();
+  st.innerText='Mengirim kode OTP...';
+  if(await sendOtp())st.innerText='';else st.innerText='';
 };
-
-const hp=document.createElement('input');hp.id='hpWebsite';hp.name='website';hp.tabIndex=-1;hp.autocomplete='off';hp.setAttribute('aria-hidden','true');
-hp.style.cssText='position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important';
-$('loginEmail').after(hp);
 authTab('masuk');
+})();
+</script>
+
+<script>
+/* ===== FITUR TAMBAHAN: Streak+Badge, Onboarding, Cari Member+Follow, Riwayat Login, Install App ===== */
+(function(){
+const $=i=>document.getElementById(i),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast=t=>window.showToast?showToast(t):alert(t),day=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const BADGES=[[100,'💎','Legenda'],[30,'🥇','Setia'],[7,'🥈','Rajin'],[3,'🥉','Mulai Konsisten']];
+const badgeOf=n=>(BADGES.find(b=>n>=b[0])||[0,'🌱','Pemula']);
+const css=document.createElement('style');
+css.textContent='#xFab{position:fixed;right:12px;bottom:92px;width:46px;height:46px;border-radius:50%;border:none;background:#a78bfa;color:#000;font-size:21px;z-index:9990;box-shadow:0 4px 16px #a78bfa77;cursor:pointer}#xOv{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99998;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px)}#xOv.on{display:flex}.xSheet{background:#111;border:1px solid #a78bfa55;border-radius:18px 18px 0 0;width:100%;max-width:480px;max-height:82vh;overflow:auto;padding:14px}.xSheet h3{font-size:15px;margin-bottom:8px}.xTabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}.xTabs button{flex:none;padding:7px 11px;border-radius:20px;border:1px solid #333;background:#222;color:#aaa;font-weight:700;font-size:11px;cursor:pointer}.xTabs button.on{background:#a78bfa;color:#000}.xRow{display:flex;gap:8px;align-items:center;background:#000;border:1px solid #222;border-radius:12px;padding:9px;margin-top:6px;font-size:11px}.xRow b{display:block}.xRow small{color:#888}.xRow button,.xBtn{background:#a78bfa;color:#000;border:none;border-radius:16px;padding:7px 11px;font-weight:800;font-size:11px;cursor:pointer}.xIn{width:100%;background:#000;border:1px solid #333;border-radius:12px;padding:10px;color:#fff;margin-top:6px;outline:none}.xBig{text-align:center;padding:12px}.xBig .n{font-size:44px;font-weight:900;color:#a78bfa}';
+document.head.appendChild(css);
+const fab=document.createElement('button');fab.id='xFab';fab.innerText='✨';fab.setAttribute('aria-label','Menu fitur');
+const ov=document.createElement('div');ov.id='xOv';ov.innerHTML='<div class="xSheet"><div class="xTabs" id="xTabs"></div><div id="xBody"></div><button class="xBtn" style="width:100%;margin-top:12px;background:#222;color:#ccc" id="xClose">Tutup</button></div>';
+document.body.appendChild(fab);document.body.appendChild(ov);
+const me=()=>(typeof myUsername!=='undefined'&&myUsername)||'';
+const need=()=>{if(!me()||!fbDB){toast('Login dulu');return false;}return true;};
+let tab='streak';
+const TABS=[['streak','🔥 Streak'],['cari','🔎 Member'],['riwayat','🕘 Riwayat'],['aman','🛡️ Keamanan'],['app','📲 Install']];
+function open(t){tab=t||tab;ov.classList.add('on');$('xTabs').innerHTML=TABS.map(x=>'<button class="'+(x[0]===tab?'on':'')+'" data-t="'+x[0]+'">'+x[1]+'</button>').join('');render();}
+fab.onclick=()=>open();$('xClose').onclick=()=>ov.classList.remove('on');ov.onclick=e=>{if(e.target===ov)ov.classList.remove('on');};
+$('xTabs').onclick=e=>{const t=e.target.dataset.t;if(t)open(t);};
+async function render(){
+  const b=$('xBody');
+  if(tab==='app'){
+    b.innerHTML='<div class="xBig"><div style="font-size:40px">📲</div><p style="color:#aaa;margin:8px 0">Pasang Panduu di layar utama biar terbuka seperti aplikasi.</p><button class="xBtn" id="xInst">Install Sekarang</button><p style="color:#666;font-size:10px;margin-top:10px">iPhone: Safari → Bagikan → Tambah ke Layar Utama</p></div>';
+    $('xInst').onclick=async()=>{if(window._xp){window._xp.prompt();window._xp=null;}else toast('Buka menu browser → "Tambahkan ke layar utama"');};return;
+  }
+  if(!need()){b.innerHTML='<p style="color:#888;text-align:center;padding:16px">Login dulu untuk memakai fitur ini.</p>';return;}
+  if(tab==='aman'){window.pdSecurity?window.pdSecurity(b):0;return;}
+  if(tab==='streak'){
+    const s=await getStreak(),bd=badgeOf(s.n);
+    b.innerHTML='<div class="xBig"><div class="n">🔥 '+s.n+'</div><b>hari berturut-turut</b><p style="color:#888;margin-top:4px">Rekor terbaik: '+s.best+' hari</p><div style="font-size:34px;margin-top:8px">'+bd[1]+'</div><b>'+bd[2]+'</b></div>'+BADGES.slice().reverse().map(x=>'<div class="xRow"><span style="font-size:22px">'+x[1]+'</span><div><b>'+x[2]+'</b><small>Login '+x[0]+' hari beruntun</small></div><span style="margin-left:auto">'+(s.best>=x[0]?'✅':'🔒')+'</span></div>').join('');
+  }else if(tab==='cari'){
+    b.innerHTML='<input class="xIn" id="xQ" placeholder="Cari username / nama / kota"><div id="xRes"></div>';$('xQ').oninput=cari;cari();
+  }else if(tab==='riwayat'){
+    b.innerHTML='<p style="color:#888;font-size:10px">10 login terakhir akunmu. Kalau ada yang asing, segera ganti sandi di tab Profil.</p><div id="xRes">Memuat...</div>';
+    try{const v=(await fbDB.ref('panduu_logins/'+me()).limitToLast(10).once('value')).val()||{};
+      const l=Object.values(v).sort((a,c)=>c.t-a.t);$('xRes').innerHTML=l.length?l.map(x=>'<div class="xRow"><span style="font-size:20px">'+(x.m?'📱':'💻')+'</span><div><b>'+esc(x.d)+'</b><small>'+new Date(x.t).toLocaleString('id-ID')+'</small></div></div>').join(''):'Belum ada riwayat.';
+    }catch(e){$('xRes').innerText='Riwayat tidak bisa dimuat (cek aturan database).';}
+  }
+}
+async function getStreak(){try{return (await fbDB.ref('panduu_streak/'+me()).once('value')).val()||{n:0,best:0};}catch(e){return JSON.parse(localStorage.getItem('pd_streak_'+me())||'{"n":0,"best":0}');}}
+async function cari(){
+  const q=($('xQ').value||'').trim().toLowerCase(),o=$('xRes');
+  try{
+    const [mm,ff]=await Promise.all([fbDB.ref('panduu_members').once('value'),fbDB.ref('panduu_follow/'+me()).once('value')]),M=mm.val()||{},F=ff.val()||{};
+    const l=Object.entries(M).filter(([k,v])=>k!==me()&&(!q||(k+' '+(v.nama||'')+' '+(v.kota||'')).toLowerCase().includes(q))).slice(0,25);
+    o.innerHTML=l.length?l.map(([k,v])=>'<div class="xRow"><div><b>'+esc(v.nama||k)+'</b><small>@'+esc(k)+(v.kota?' · '+esc(v.kota):'')+'</small></div><button data-u="'+esc(k)+'" style="margin-left:auto">'+(F[k]?'✓ Mengikuti':'+ Ikuti')+'</button></div>').join(''):'<p style="color:#888;padding:10px">Tidak ketemu.</p>';
+    o.querySelectorAll('button').forEach(bt=>bt.onclick=async()=>{const u=bt.dataset.u,on=!F[u];try{await fbDB.ref('panduu_follow/'+me()+'/'+u).set(on?true:null);F[u]=on;bt.innerText=on?'✓ Mengikuti':'+ Ikuti';}catch(e){toast('Gagal (cek aturan database)');}});
+  }catch(e){o.innerText='Gagal memuat member.';}
+}
+/* streak harian + riwayat login + onboarding, jalan sekali per sesi login */
+let done='';
+async function afterLogin(user){
+  const un=me();if(!un||done===un)return;done=un;
+  const today=day(),y=new Date(Date.now()-864e5),yk=y.getFullYear()+'-'+String(y.getMonth()+1).padStart(2,'0')+'-'+String(y.getDate()).padStart(2,'0');
+  let s=await getStreak();
+  if(s.last!==today){s.n=s.last===yk?(s.n||0)+1:1;s.best=Math.max(s.best||0,s.n);s.last=today;
+    try{await fbDB.ref('panduu_streak/'+un).set(s);}catch(e){localStorage.setItem('pd_streak_'+un,JSON.stringify(s));}
+    const bd=badgeOf(s.n);toast('🔥 Streak '+s.n+' hari! '+bd[1]+' '+bd[2]);}
+  const ua=navigator.userAgent,mob=/Android|iPhone|iPad|Mobile/i.test(ua),br=/Edg\//.test(ua)?'Edge':/OPR\//.test(ua)?'Opera':/Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':/Firefox\//.test(ua)?'Firefox':'Browser';
+  const os=/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':/Linux/.test(ua)?'Linux':'?';
+  try{await fbDB.ref('panduu_logins/'+un).push({t:Date.now(),d:br+' · '+os,m:mob});}catch(e){}
+  const ct=user&&user.metadata&&Date.parse(user.metadata.creationTime);
+  if(ct&&Date.now()-ct<864e5&&!localStorage.getItem('pd_onb_'+un))onboarding(un);
+}
+function onboarding(un){
+  const w=document.createElement('div');w.id='xOnb';w.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px';
+  w.innerHTML='<div class="xSheet" style="border-radius:18px;max-width:360px;text-align:center"><div style="font-size:40px">🎉</div><h3>Selamat datang, @'+esc(un)+'!</h3><p style="color:#aaa;font-size:11px">Lengkapi profilmu dulu (bisa diubah nanti).</p><input class="xIn" id="oN" placeholder="Nama tampilan" maxlength="30"><input class="xIn" id="oK" placeholder="Kota" maxlength="30"><button class="xBtn" style="width:100%;margin-top:12px;padding:11px" id="oS">Mulai 🚀</button><a id="oX" style="display:block;color:#666;font-size:10px;margin-top:10px;cursor:pointer">Lewati</a></div>';
+  document.body.appendChild(w);
+  const end=()=>{localStorage.setItem('pd_onb_'+un,'1');w.remove();};
+  $('oX').onclick=end;
+  $('oS').onclick=async()=>{const u={};const n=$('oN').value.trim(),k=$('oK').value.trim();if(n)u.nama=n;if(k)u.kota=k;
+    try{if(Object.keys(u).length)await fbDB.ref('panduu_members/'+un).update(u);toast('Profil tersimpan ✅');}catch(e){toast('Gagal simpan profil');}end();};
+}
+const t0=setInterval(()=>{if(window.fbAuth||typeof fbAuth!=='undefined'&&fbAuth){clearInterval(t0);fbAuth.onAuthStateChanged(u=>{if(!u){done='';return;}let n=0;const w=setInterval(()=>{if(me()||++n>40){clearInterval(w);afterLogin(u);}},500);});}},400);
+/* PWA */
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window._xp=e;});
+try{const ic='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#000"/><text x="50" y="68" font-size="58" font-weight="900" text-anchor="middle" fill="#a78bfa" font-family="sans-serif">P</text></svg>');
+const mf=new Blob([JSON.stringify({name:'Panduu',short_name:'Panduu',display:'standalone',background_color:'#000000',theme_color:'#000000',start_url:location.href.split('#')[0],icons:[{src:ic,sizes:'192x192',type:'image/svg+xml'},{src:ic,sizes:'512x512',type:'image/svg+xml'}]})],{type:'application/manifest+json'});
+const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(mf);document.head.appendChild(l);
+const m=document.createElement('meta');m.name='theme-color';m.content='#000000';document.head.appendChild(m);}catch(e){}
+})();
+</script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@10.0.0/dist/bundle/index.umd.min.js"></script>
+<script>
+/* ===== FITUR SERVER: OTP aman, Lupa Sandi OTP, Ganti Email OTP, Passkey, Perangkat, Push ===== */
+window.PD_SERVER=false;                      // false = pakai EmailJS saja (tanpa Cloud Functions)
+const PD_CFG={vapidKey:'ISI_VAPID_KEY'};    // Firebase Console > Project Settings > Cloud Messaging > Web Push certificates
+window.PD_FN=n=>firebase.functions().httpsCallable(n);
+(function(){
+const $=i=>document.getElementById(i),fn=n=>PD_FN(n),toast=t=>window.showToast?showToast(t):alert(t);
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const er=e=>(e&&e.message&&e.message.replace(/^.*?:\s*/,''))||'Terjadi kesalahan';
+function modal(h){const w=document.createElement('div');w.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100000;display:flex;align-items:center;justify-content:center;padding:16px';w.innerHTML='<div class="xSheet" style="border-radius:18px;max-width:360px;text-align:center">'+h+'<p class="mErr" style="color:#ffaa00;font-size:11px;min-height:15px;margin-top:8px"></p><a class="mX" style="color:#888;font-size:11px;cursor:pointer">Batal</a></div>';document.body.appendChild(w);w.querySelector('.mX').onclick=()=>w.remove();return {w,err:t=>w.querySelector('.mErr').innerText=t||'',q:s=>w.querySelector(s)};}
+/* Lupa sandi dengan OTP */
+const _lupaOld=window.lupaSandi;
+window.lupaSandi=function(){
+  if(!window.PD_SERVER)return _lupaOld();
+  const m=modal('<div style="font-size:36px">🔑</div><h3>Lupa Sandi</h3><input class="xIn" id="fE" type="email" placeholder="Email akunmu" value="'+E(($('loginUser').value||'').includes('@')?$('loginUser').value:'')+'"><div id="fS2" style="display:none"><input class="xIn" id="fC" inputmode="numeric" maxlength="6" placeholder="Kode OTP 6 digit"><input class="xIn" id="fP" type="password" placeholder="Sandi baru (min 6)"></div><button class="xBtn" id="fB" style="width:100%;margin-top:10px;padding:11px">Kirim Kode OTP</button>');
+  let st=1;m.q('#fB').onclick=async()=>{const e=m.q('#fE').value.trim().toLowerCase();m.err('');
+    try{
+      if(st===1){m.q('#fB').disabled=true;await fn('requestOtp')({email:e,purpose:'reset'});st=2;m.q('#fS2').style.display='block';m.q('#fB').innerText='Ganti Sandi';m.err('Kode dikirim (jika email terdaftar). Cek spam.');}
+      else{await fn('resetPassword')({email:e,code:m.q('#fC').value.trim(),newPassword:m.q('#fP').value});m.w.remove();toast('✅ Sandi diganti, silakan masuk');$('loginUser').value=e;}
+    }catch(x){m.err(er(x));}m.q('#fB').disabled=false;};
+};
+/* Passkey login */
+async function pkLogin(){const st=$('authStatus');try{st.innerText='Menunggu passkey...';const o=(await fn('passkeyAuthOptions')()).data,r=await SimpleWebAuthnBrowser.startAuthentication(o),t=(await fn('passkeyAuthVerify')({response:r,challenge:o.challenge})).data.token;await fbAuth.signInWithCustomToken(t);st.innerText='';}catch(e){st.innerText=e&&e.name==='NotAllowedError'?'Passkey dibatalkan.':er(e);}}
+const gb=$('googleBtn');if(gb){const b=document.createElement('button');b.id='pkBtn';b.innerText='🔑 Masuk dengan Passkey (sidik jari / Face ID)';b.style.cssText='width:100%;margin-top:8px;background:#222;color:#fff;border:1px solid #444';b.onclick=pkLogin;gb.after(b);if(!window.PD_SERVER)b.style.display='none';}
+/* Sesi perangkat */
+let stop=null;
+function ready(f){const t=setInterval(()=>{if(typeof fbAuth!=='undefined'&&fbAuth&&typeof fbDB!=='undefined'&&fbDB){clearInterval(t);f();}},400);}
+ready(()=>fbAuth.onAuthStateChanged(u=>{
+  if(stop){stop();stop=null;}if(!u)return;
+  let sid=localStorage.getItem('pd_sid');if(!sid){sid=(crypto.randomUUID?crypto.randomUUID():Date.now()+''+Math.random()).replace(/\W/g,'');localStorage.setItem('pd_sid',sid);}
+  const ua=navigator.userAgent,r=fbDB.ref('panduu_sessions/'+u.uid+'/'+sid),d=(/Edg\//.test(ua)?'Edge':/Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':'Browser')+' · '+(/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':'Lain');
+  r.set({t:Date.now(),d,m:/Mobile|Android|iPhone/.test(ua)}).then(()=>{let had=false;const cb=s=>{if(s.exists())had=true;else if(had){fbAuth.signOut();toast('🔒 Sesi ini dikeluarkan dari perangkat lain');}};r.on('value',cb);stop=()=>r.off('value',cb);}).catch(()=>{});
+}));
+/* Tab Keamanan */
+window.pdSecurity=async function(b){
+  const u=fbAuth.currentUser;if(!u){b.innerHTML='<p style="color:#888;padding:14px">Login dulu.</p>';return;}
+  b.innerHTML='<div class="xRow"><div><b>✉️ Ganti Email</b><small>'+E(u.email||'-')+'</small></div><button id="sEm" style="margin-left:auto">Ubah</button></div><div class="xRow"><div><b>🔑 Passkey</b><small>Masuk pakai sidik jari / Face ID</small></div><button id="sPk" style="margin-left:auto">Buat</button></div><div class="xRow"><div><b>🔔 Notifikasi Chat</b><small>Pesan baru saat web ditutup</small></div><button id="sPu" style="margin-left:auto">'+(localStorage.getItem('pd_push')?'Aktif ✓':'Aktifkan')+'</button></div><h3 style="margin-top:14px">📱 Perangkat Aktif</h3><div id="sDev">Memuat...</div>';
+  $('sEm').onclick=ganti;$('sPk').onclick=async()=>{try{const o=(await fn('passkeyRegOptions')()).data,r=await SimpleWebAuthnBrowser.startRegistration(o);await fn('passkeyRegVerify')({response:r});toast('🔑 Passkey dibuat!');}catch(e){toast(e&&e.name==='NotAllowedError'?'Dibatalkan':er(e));}};
+  $('sPu').onclick=push;devs();
+};
+async function devs(){const o=$('sDev'),u=fbAuth.currentUser,me=localStorage.getItem('pd_sid');
+  try{const v=(await fbDB.ref('panduu_sessions/'+u.uid).once('value')).val()||{},l=Object.entries(v).sort((a,c)=>c[1].t-a[1].t);
+    o.innerHTML=l.map(([k,x])=>'<div class="xRow"><span style="font-size:20px">'+(x.m?'📱':'💻')+'</span><div><b>'+E(x.d)+(k===me?' (ini)':'')+'</b><small>'+new Date(x.t).toLocaleString('id-ID')+'</small></div>'+(k===me?'':'<button data-k="'+E(k)+'" style="margin-left:auto">Keluarkan</button>')+'</div>').join('')+(l.length>1?'<button class="xBtn" id="sAll" style="width:100%;margin-top:8px">Keluarkan semua perangkat lain</button>':'');
+    o.querySelectorAll('button[data-k]').forEach(x=>x.onclick=async()=>{await fbDB.ref('panduu_sessions/'+u.uid+'/'+x.dataset.k).remove();devs();});
+    const a=$('sAll');if(a)a.onclick=async()=>{for(const [k] of l)if(k!==me)await fbDB.ref('panduu_sessions/'+u.uid+'/'+k).remove();devs();};
+  }catch(e){o.innerText='Tidak bisa dimuat (cek Rules database).';}}
+function ganti(){const m=modal('<h3>✉️ Ganti Email</h3><input class="xIn" id="cE" type="email" placeholder="Email baru"><div id="cS" style="display:none"><input class="xIn" id="cC" inputmode="numeric" maxlength="6" placeholder="Kode OTP dari email baru"></div><button class="xBtn" id="cB" style="width:100%;margin-top:10px;padding:11px">Kirim Kode OTP</button>');let st=1;
+  m.q('#cB').onclick=async()=>{const e=m.q('#cE').value.trim().toLowerCase();m.err('');m.q('#cB').disabled=true;
+    try{if(st===1){await fn('requestOtp')({email:e,purpose:'change'});st=2;m.q('#cS').style.display='block';m.q('#cB').innerText='Verifikasi & Ganti';}
+      else{await fn('changeEmail')({newEmail:e,code:m.q('#cC').value.trim()});await fbAuth.currentUser.getIdToken(true);await fbAuth.currentUser.reload();m.w.remove();toast('✅ Email diganti ke '+e);}}
+    catch(x){m.err(er(x));}m.q('#cB').disabled=false;};}
+async function push(){try{
+  if(!('Notification' in window)||!('serviceWorker' in navigator))return toast('Browser tidak mendukung notifikasi');
+  if(PD_CFG.vapidKey.startsWith('ISI_'))return toast('VAPID key belum diisi');
+  if(await Notification.requestPermission()!=='granted')return toast('Izin notifikasi ditolak');
+  const reg=await navigator.serviceWorker.register('firebase-messaging-sw.js'),t=await firebase.messaging().getToken({vapidKey:PD_CFG.vapidKey,serviceWorkerRegistration:reg});
+  await fn('subscribeChat')({token:t});localStorage.setItem('pd_push','1');toast('🔔 Notifikasi aktif');$('sPu')&&($('sPu').innerText='Aktif ✓');
+}catch(e){toast(er(e));}}
 })();
 </script>
 
