@@ -1373,7 +1373,7 @@ async function onAuth(user){
   localStorage.setItem('panduu_user',JSON.stringify({nama:prof.nama,kota:prof.kota,color:prof.color||'',guild:prof.guild||'',username:un,uid:user.uid,foto:prof.foto||''}));
   localStorage.setItem('panduu_login_count',(parseInt(localStorage.getItem('panduu_login_count')||'0')+1));
   myUsername=un;
-  if(user.uid===OWNER_UID&&!(await ownerResigned())){activeStaffRole='owner';fbDB.ref('panduu_staff/'+un).set('owner').catch(()=>{});}
+  if(user.uid===OWNER_UID&&!(await ownerResigned())){activeStaffRole='owner';fbDB.ref('panduu_staff/'+un).set('owner').then(()=>fbDB.ref('panduu_staff').once('value')).then(sn=>{const up={};Object.entries(sn.val()||{}).forEach(([k,r])=>{if(r==='owner'&&k!==un)up['panduu_staff/'+k]=null;});if(Object.keys(up).length)return fbDB.ref().update(up);}).catch(()=>{});}
   else{try{const rd=(await _to(fbDB.ref('panduu_roles/'+user.uid).once('value'))).val()||{};if(rd.enabled===true&&['admin','moderator'].includes(rd.role))activeStaffRole=rd.role;}catch(e){}}
   const staff=activeStaffRole!=='guest',otc=$id('ownerThemeControls');
   if(otc)otc.style.display=activeStaffRole==='owner'?'block':'none';
@@ -1399,7 +1399,7 @@ async function setRole(un,role){
   if(!['admin','moderator','remove'].includes(role)){showToast('Role: admin / moderator / remove');return false;}
   const uid=(await fbDB.ref('panduu_usernames/'+un).once('value')).val();
   if(!uid){showToast('Username tidak ditemukan');return false;}
-  if(uid===OWNER_UID){showToast('Role owner tidak bisa diubah');return false;}
+  if(uid===OWNER_UID){if(role==='remove'&&un!==myUsername){try{await fbDB.ref('panduu_staff/'+un).set(null);ownerLog('Cabut alias owner @'+un);showToast('Label owner @'+un+' dicabut');$id('staffUid').value='';return true;}catch(e){showToast('Gagal. Periksa Firebase Rules.');return false;}}showToast(role==='remove'?'Itu username aktifmu. Pakai menu ✨ → Role → Lepas jabatan Owner':'Role owner utama tidak bisa diubah');return false;}
   const up={};
   if(role==='remove'){up['panduu_roles/'+uid]=null;up['panduu_staff/'+un]=null;}
   else{up['panduu_roles/'+uid]={role,enabled:true,username:un,updatedAt:Date.now(),updatedBy:ownerUser.uid};up['panduu_staff/'+un]=role;}
@@ -3275,8 +3275,7 @@ async function strays(b){
     $('stL').querySelectorAll('[data-i]').forEach(bt=>bt.onclick=async()=>{
       const x=L[+bt.dataset.i];if(!confirm('Cabut role owner dari @'+x.un+'?'))return;
       try{let uid=x.uid||(await fbDB.ref('panduu_usernames/'+x.un).once('value')).val();
-        if(uid===OWNER_UID){toast('Akun owner utama tidak bisa dicabut');return;}
-        const up={['panduu_staff/'+x.un]:null};if(uid)up['panduu_roles/'+uid]=null;
+        const up={['panduu_staff/'+x.un]:null};if(uid&&uid!==OWNER_UID)up['panduu_roles/'+uid]=null;
         await fbDB.ref().update(up);try{ownerLog('Cabut owner @'+x.un);}catch(e){}toast('Role owner @'+x.un+' dicabut');box.remove();strays(b);
       }catch(e){toast('Gagal. Periksa Firebase Rules.');}
     });
